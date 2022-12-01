@@ -6,11 +6,11 @@ namespace LightNote.Api.Registrars
 	{
         public void RegisterPipelineComponensts(WebApplication app)
         {
+            app.UseSwagger();
+            app.UseSwaggerUI();
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
-
-            app.MapControllers();
+            app.MapControllers();            
         }
     }
 }

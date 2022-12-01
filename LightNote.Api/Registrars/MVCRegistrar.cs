@@ -8,6 +8,7 @@ namespace LightNote.Api.Registrars
         public void RegisterServices(WebApplicationBuilder builder)
         {
             builder.Services.AddControllers();
+            builder.Services.AddSwaggerGen();
             builder.Services.AddApiVersioning(config => {
                 config.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0);
                 config.AssumeDefaultVersionWhenUnspecified = true;
@@ -18,7 +19,6 @@ namespace LightNote.Api.Registrars
                 config.GroupNameFormat = "'v'VVV";
                 config.SubstituteApiVersionInUrl = true;
             });
-            builder.Services.AddSwaggerGen();
         }
     }
 }
