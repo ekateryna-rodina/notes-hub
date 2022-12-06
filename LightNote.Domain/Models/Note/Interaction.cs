@@ -3,20 +3,23 @@ using LightNote.Domain.Models.User;
 
 namespace LightNote.Domain.Models.Note
 {
-	public class NoteInteraction
+	public class Interaction
     {
-		private NoteInteraction()
+		private Interaction()
 		{
 		}
 
         public Guid Id { get; private set; }
         public Guid NoteId { get; private set; }
-        public Guid? UserProfileId { get; private set; }
+        public Note Note { get; set; }
+        public Guid? CommentId { get; private set; }
+        public Comment Comment { get; set; }
+        public Guid UserProfileId { get; private set; }
         public UserProfile UserProfile { get; private set; }
         public InteractionTypes InteractionType { get; private set; }
-        public static NoteInteraction CreateNoteInteraction(Guid noteId, Guid userProfileId, InteractionTypes interactionType)
+        public static Interaction CreateNoteInteraction(Guid noteId, Guid userProfileId, InteractionTypes interactionType)
         {
-            return new NoteInteraction
+            return new Interaction
             {
                 NoteId = noteId,
                 UserProfileId = userProfileId,

@@ -1,5 +1,6 @@
 ﻿
 using System;
+using LightNote.Dal.Config;
 using LightNote.Domain.Models.Note;
 using LightNote.Domain.Models.User;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -13,8 +14,17 @@ namespace LightNote.Dal
 		{
 		}
 
-		public DbSet<UserProfile> UserProfiles { get; set; }
+        public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<Note> Notes { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfiguration(new UserProfileConfig());
+            modelBuilder.ApplyConfiguration(new NoteConfig());
+            modelBuilder.ApplyConfiguration(new CommentConfig());
+            modelBuilder.ApplyConfiguration(new InteractionConfig());
+        }
     }
 }
 

@@ -7,11 +7,10 @@ namespace LightNote.Domain.Models.User
         {
 
         }
-        public Guid Id { get; private set; }
-        public Guid IdentityId { get; private set; }
         public string FirstName { get; private set; }
         public string LastName { get; private set; }
         public string PhotoUrl { get; private set; }
+        public Guid? LocationId { get; set; }
         public Location Location { get; private set; }
 
 
@@ -27,9 +26,9 @@ namespace LightNote.Domain.Models.User
         {
             PhotoUrl = photoUrl;
         }
-        public void Updatelocation(Location location)
+        public void Updatelocation(Guid? locationId)
         {
-            Location = location;
+            LocationId = locationId;
         }
     }
 }

@@ -7,23 +7,28 @@ namespace LightNote.Domain.Models.Note
 	{
 		private readonly List<Tag> _tags = new List<Tag>();
         private readonly List<Comment> _comments = new List<Comment>();
-        private readonly List<NoteInteraction> _interactions = new List<NoteInteraction>();
+        private readonly List<Interaction> _interactions = new List<Interaction>();
+        private readonly List<Note> _links = new List<Note>();
 
         private Note()
 		{
 
 		}
+
 		public Guid Id { get; private set; }
 		public Guid UserId { get; private set; }
 		public UserProfile UserProfile { get; private set; }
         public string Title { get;private set; }
         public string Content { get; private set; }
         public bool IsPublic { get; private set; }
+        public Guid ReferenceId { get; private set; }
+        public Reference Reference { get; private set; }
 		public DateTime CreatedAt { get; private set; }
 		public DateTime UpdatedAt { get; private set; }
         public virtual IEnumerable<Tag> Tags { get { return _tags; } }
         public virtual IEnumerable<Comment> Comments { get { return _comments; } }
-		public virtual IEnumerable<NoteInteraction> Interactions { get { return _interactions; } }
+		public virtual IEnumerable<Interaction> Interactions { get { return _interactions; } }
+        public virtual IEnumerable<Note> Links { get { return _links; } }
 
 		public static Note CreateNote(Guid userId, string title, string content, bool isPublic) {
 			return new Note
@@ -67,13 +72,23 @@ namespace LightNote.Domain.Models.Note
         {
             _comments.Remove(comment);
         }
-        public void AddInteraction(NoteInteraction interaction)
+        public void AddInteraction(Interaction interaction)
         {
             _interactions.Add(interaction);
         }
-        public void RemoveInteraction(NoteInteraction interaction)
+        public void RemoveInteraction(Interaction interaction)
         {
             _interactions.Remove(interaction);
+        }
+        public void SetReference(Guid referenceId) {
+            ReferenceId = referenceId;
+        }
+        public void AddLink(Note note) {
+            _links.Add(note);
+        }
+        public void RemoveLink(Note note)
+        {
+            _links.Remove(note);
         }
     }
 }
