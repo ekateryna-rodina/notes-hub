@@ -17,7 +17,7 @@ namespace LightNote.Domain.Models.Note
         public Guid UserProfileId { get; private set; }
         public UserProfile UserProfile { get; private set; }
         public InteractionTypes InteractionType { get; private set; }
-        public static Interaction CreateNoteInteraction(Guid noteId, Guid userProfileId, InteractionTypes interactionType)
+        public static Interaction CreateInteraction(Guid noteId, Guid userProfileId, InteractionTypes interactionType)
         {
             return new Interaction
             {

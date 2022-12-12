@@ -6,4 +6,58 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Microsoft.EntityFrameworkCore" />
+    <None Remove="MediatR" />
+    <None Remove="AutoMapper" />
+    <None Remove="Notes\" />
+    <None Remove="Notes\Commands\" />
+    <None Remove="Notes\CommandHandlers\" />
+    <None Remove="Notes\Queries\" />
+    <None Remove="Notes\QueryHandlers\" />
+    <None Remove="Tag\Queries\" />
+    <None Remove="Tag\QueryHandlers\" />
+    <None Remove="Tag\Commands\" />
+    <None Remove="Tag\CommandHandlers\" />
+    <None Remove="References\" />
+    <None Remove="References\Queries\" />
+    <None Remove="References\QueryHandlers\" />
+    <None Remove="References\Commands\" />
+    <None Remove="References\CommandHandlers\" />
+    <None Remove="Users\" />
+    <None Remove="Users\Queries\" />
+    <None Remove="Users\QueryHandlers\" />
+    <None Remove="Users\Commands\" />
+    <None Remove="Users\CommandHandlers\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0" />
+    <PackageReference Include="MediatR" Version="11.1.0" />
+    <PackageReference Include="AutoMapper" Version="12.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Notes\" />
+    <Folder Include="Notes\Commands\" />
+    <Folder Include="Notes\CommandHandlers\" />
+    <Folder Include="Notes\Queries\" />
+    <Folder Include="Notes\QueryHandlers\" />
+    <Folder Include="Tags\Queries\" />
+    <Folder Include="Tags\QueryHandlers\" />
+    <Folder Include="Tags\Commands\" />
+    <Folder Include="Tags\CommandHandlers\" />
+    <Folder Include="References\" />
+    <Folder Include="References\Queries\" />
+    <Folder Include="References\QueryHandlers\" />
+    <Folder Include="References\Commands\" />
+    <Folder Include="References\CommandHandlers\" />
+    <Folder Include="Users\" />
+    <Folder Include="Users\Queries\" />
+    <Folder Include="Users\QueryHandlers\" />
+    <Folder Include="Users\Commands\" />
+    <Folder Include="Users\CommandHandlers\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LightNote.Domain\LightNote.Domain.csproj" />
+    <ProjectReference Include="..\LightNote.Dal\LightNote.Dal.csproj" />
+  </ItemGroup>
 </Project>

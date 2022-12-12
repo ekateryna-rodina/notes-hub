@@ -8,14 +8,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LightNote.Dal
 {
-	public class AppDbContext : IdentityDbContext
-	{
-		public AppDbContext(DbContextOptions options) : base(options)
-		{
-		}
+    public class AppDbContext : IdentityDbContext
+    {
+        public AppDbContext(DbContextOptions options) : base(options)
+        {
+        }
 
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<Note> Notes { get; set; }
+        public DbSet<Tag> Tags { get; set; }
+        public DbSet<Reference> References {get;set;}
+        public DbSet<Comment> Comments { get; set; }
+        public DbSet<Interaction> Interactions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

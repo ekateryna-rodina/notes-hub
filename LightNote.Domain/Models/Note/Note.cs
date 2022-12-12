@@ -80,7 +80,7 @@ namespace LightNote.Domain.Models.Note
         {
             _interactions.Remove(interaction);
         }
-        public void SetReference(Guid referenceId) {
+        public void UpdateReference(Guid referenceId) {
             ReferenceId = referenceId;
         }
         public void AddLink(Note note) {

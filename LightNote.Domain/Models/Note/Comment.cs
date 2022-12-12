@@ -23,19 +23,21 @@ namespace LightNote.Domain.Models.Note
         public string Text { get; private set; }
 		public DateTime CreatedAt { get; private set; }
 		public DateTime? UpdatedAt { get; private set; }
+        // TODO: Do we actually need these? 
         public virtual IEnumerable<Interaction> Interactions { get { return _interactions; } }
         public virtual IEnumerable<Comment> Comments { get { return _comments; } }
 
-        public static Comment CreateNoteComment(Guid noteId, Guid userProfileId, string text) {
+        public static Comment CreateComment(Guid noteId, Guid userProfileId, string text, Guid? commentedId) {
 			return new Comment
             {
 				NoteId = noteId,
 				UserProfileId = userProfileId,
 				Text = text,
-				CreatedAt = DateTime.UtcNow
+				CreatedAt = DateTime.UtcNow,
+                CommentId = commentedId
 			};
 		}
-        public void UpdateNoteComment(string text)
+        public void UpdateComment(string text)
         {
 			Text = text;
 			UpdatedAt = DateTime.UtcNow;
@@ -47,6 +49,10 @@ namespace LightNote.Domain.Models.Note
         public void RemoveInteraction(Interaction interaction)
         {
             _interactions.Remove(interaction);
+        }
+        public void RemoveComment(Comment comment)
+        {
+            _comments.Remove(comment);
         }
     }
 }
