@@ -10,10 +10,18 @@ namespace LightNote.Domain.Models.User
         public string FirstName { get; private set; }
         public string LastName { get; private set; }
         public string PhotoUrl { get; private set; }
-        public Guid? LocationId { get; set; }
-        public Location Location { get; private set; }
+        public string Country { get; private set; }
+        public string City { get; private set; }
 
-
+        public static BasicUserInfo CreateBasicUserInfo(string firstName, string lastName, string photoUrl, string country, string city) {
+            return new BasicUserInfo {
+                FirstName = firstName,
+                LastName = lastName,
+                PhotoUrl = photoUrl,
+                Country = country,
+                City = city
+            };
+        }
       
         public void UpdateFirstName(string firstName) {
             FirstName = firstName;
@@ -26,9 +34,10 @@ namespace LightNote.Domain.Models.User
         {
             PhotoUrl = photoUrl;
         }
-        public void Updatelocation(Guid? locationId)
+        public void Updatelocation(string country, string city)
         {
-            LocationId = locationId;
+            Country = country;
+            City = city;
         }
     }
 }

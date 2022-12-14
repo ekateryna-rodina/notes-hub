@@ -10,8 +10,8 @@ namespace LightNote.Dal.Config
         public void Configure(EntityTypeBuilder<UserProfile> builder)
         {
             builder.HasKey(up => up.Id);
-            builder.OwnsOne<BasicUserInfo>(up => up.BasicUserInfo);
-            builder.OwnsOne<Subscription>(up => up.Subscription);
+            builder.OwnsOne(up => up.BasicUserInfo);
+            builder.OwnsOne(up => up.Subscription);
         }
     }
 }

@@ -10,51 +10,37 @@
     <None Remove="Microsoft.EntityFrameworkCore" />
     <None Remove="MediatR" />
     <None Remove="AutoMapper" />
-    <None Remove="Notes\" />
-    <None Remove="Notes\Commands\" />
-    <None Remove="Notes\CommandHandlers\" />
-    <None Remove="Notes\Queries\" />
-    <None Remove="Notes\QueryHandlers\" />
     <None Remove="Tag\Queries\" />
     <None Remove="Tag\QueryHandlers\" />
     <None Remove="Tag\Commands\" />
     <None Remove="Tag\CommandHandlers\" />
-    <None Remove="References\" />
-    <None Remove="References\Queries\" />
-    <None Remove="References\QueryHandlers\" />
-    <None Remove="References\Commands\" />
-    <None Remove="References\CommandHandlers\" />
-    <None Remove="Users\" />
-    <None Remove="Users\Queries\" />
-    <None Remove="Users\QueryHandlers\" />
-    <None Remove="Users\Commands\" />
-    <None Remove="Users\CommandHandlers\" />
+    <None Remove="Options\" />
+    <None Remove="BusinessLogic\" />
+    <None Remove="BusinessLogic\Notes\" />
+    <None Remove="BusinessLogic\Identity\" />
+    <None Remove="BusinessLogic\References\" />
+    <None Remove="BusinessLogic\Tags\" />
+    <None Remove="BusinessLogic\Users\" />
+    <None Remove="System.IdentityModel.Tokens.Jwt" />
+    <None Remove="Helpers\" />
+    <None Remove="Exceptions\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0" />
     <PackageReference Include="MediatR" Version="11.1.0" />
     <PackageReference Include="AutoMapper" Version="12.0.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.25.1" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Notes\" />
-    <Folder Include="Notes\Commands\" />
-    <Folder Include="Notes\CommandHandlers\" />
-    <Folder Include="Notes\Queries\" />
-    <Folder Include="Notes\QueryHandlers\" />
-    <Folder Include="Tags\Queries\" />
-    <Folder Include="Tags\QueryHandlers\" />
-    <Folder Include="Tags\Commands\" />
-    <Folder Include="Tags\CommandHandlers\" />
-    <Folder Include="References\" />
-    <Folder Include="References\Queries\" />
-    <Folder Include="References\QueryHandlers\" />
-    <Folder Include="References\Commands\" />
-    <Folder Include="References\CommandHandlers\" />
-    <Folder Include="Users\" />
-    <Folder Include="Users\Queries\" />
-    <Folder Include="Users\QueryHandlers\" />
-    <Folder Include="Users\Commands\" />
-    <Folder Include="Users\CommandHandlers\" />
+    <Folder Include="Options\" />
+    <Folder Include="BusinessLogic\" />
+    <Folder Include="BusinessLogic\Notes\" />
+    <Folder Include="BusinessLogic\Identity\" />
+    <Folder Include="BusinessLogic\References\" />
+    <Folder Include="BusinessLogic\Tags\" />
+    <Folder Include="BusinessLogic\Users\" />
+    <Folder Include="Helpers\" />
+    <Folder Include="Exceptions\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LightNote.Domain\LightNote.Domain.csproj" />

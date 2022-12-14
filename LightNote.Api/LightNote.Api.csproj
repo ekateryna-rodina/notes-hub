@@ -22,6 +22,8 @@
     </PackageReference>
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+    <PackageReference Include="AutoMapper" Version="12.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,13 +37,36 @@
     <None Remove="Microsoft.EntityFrameworkCore.Design" />
     <None Remove="MediatR.Extensions.Microsoft.DependencyInjection" />
     <None Remove="AutoMapper.Extensions.Microsoft.DependencyInjection" />
+    <None Remove="Contracts\" />
+    <None Remove="Contracts\User\" />
+    <None Remove="Contracts\User\Request\" />
+    <None Remove="Contracts\User\Response\" />
+    <None Remove="AutoMapper" />
+    <None Remove="Microsoft.AspNetCore.Authentication.JwtBearer" />
+    <None Remove="Options\" />
+    <None Remove="Contracts\Identity\" />
+    <None Remove="MappingProfiles\" />
+    <None Remove="Contracts\Identity\Request\" />
+    <None Remove="Contracts\Identity\Response\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\" />
     <Folder Include="Extensions\" />
+    <Folder Include="Contracts\" />
+    <Folder Include="Contracts\User\" />
+    <Folder Include="Contracts\User\Request\" />
+    <Folder Include="Contracts\User\Response\" />
+    <Folder Include="Options\" />
+    <Folder Include="Contracts\Identity\" />
+    <Folder Include="MappingProfiles\" />
+    <Folder Include="Contracts\Identity\Request\" />
+    <Folder Include="Contracts\Identity\Response\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LightNote.Dal\LightNote.Dal.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
+    <ProjectReference Include="..\LightNote.Application\LightNote.Application.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
   </ItemGroup>

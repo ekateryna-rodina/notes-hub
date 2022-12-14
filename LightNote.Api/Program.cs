@@ -1,6 +1,4 @@
 ﻿using LightNote.Api.Extensions;
-using Microsoft.AspNetCore.Mvc.Versioning;
-using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 

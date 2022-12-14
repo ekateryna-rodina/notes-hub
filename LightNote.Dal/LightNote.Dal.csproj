@@ -13,6 +13,8 @@
     <None Remove="Config\" />
     <None Remove="Microsoft.EntityFrameworkCore.Design" />
     <None Remove="Npgsql.EntityFrameworkCore.PostgreSQL" />
+    <None Remove="Repository\" />
+    <None Remove="Contracts\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0" />
@@ -29,5 +31,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Config\" />
+    <Folder Include="Repository\" />
+    <Folder Include="Contracts\" />
   </ItemGroup>
 </Project>
