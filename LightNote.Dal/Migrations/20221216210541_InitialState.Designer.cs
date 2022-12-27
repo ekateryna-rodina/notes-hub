@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LightNote.Dal.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20221205085712_Initial")]
-    partial class Initial
+    [Migration("20221216210541_InitialState")]
+    partial class InitialState
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -57,7 +57,7 @@ namespace LightNote.Dal.Migrations
 
                     b.HasIndex("UserProfileId");
 
-                    b.ToTable("Comment");
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("LightNote.Domain.Models.Note.Interaction", b =>
@@ -86,7 +86,7 @@ namespace LightNote.Dal.Migrations
 
                     b.HasIndex("UserProfileId");
 
-                    b.ToTable("Interaction");
+                    b.ToTable("Interactions");
                 });
 
             modelBuilder.Entity("LightNote.Domain.Models.Note.Note", b =>
@@ -147,7 +147,7 @@ namespace LightNote.Dal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Reference");
+                    b.ToTable("References");
                 });
 
             modelBuilder.Entity("LightNote.Domain.Models.Note.Tag", b =>
@@ -161,24 +161,7 @@ namespace LightNote.Dal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tag");
-                });
-
-            modelBuilder.Entity("LightNote.Domain.Models.User.Location", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("City")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Country")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Location");
+                    b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("LightNote.Domain.Models.User.UserProfile", b =>
@@ -193,15 +176,10 @@ namespace LightNote.Dal.Migrations
                     b.Property<string>("IdentityId")
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("LocationId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("LocationId");
 
                     b.ToTable("UserProfiles");
                 });
@@ -507,14 +485,16 @@ namespace LightNote.Dal.Migrations
 
             modelBuilder.Entity("LightNote.Domain.Models.User.UserProfile", b =>
                 {
-                    b.HasOne("LightNote.Domain.Models.User.Location", null)
-                        .WithMany("Users")
-                        .HasForeignKey("LocationId");
-
                     b.OwnsOne("LightNote.Domain.Models.User.BasicUserInfo", "BasicUserInfo", b1 =>
                         {
                             b1.Property<Guid>("UserProfileId")
                                 .HasColumnType("uuid");
+
+                            b1.Property<string>("City")
+                                .HasColumnType("text");
+
+                            b1.Property<string>("Country")
+                                .HasColumnType("text");
 
                             b1.Property<string>("FirstName")
                                 .HasColumnType("text");
@@ -522,26 +502,15 @@ namespace LightNote.Dal.Migrations
                             b1.Property<string>("LastName")
                                 .HasColumnType("text");
 
-                            b1.Property<Guid?>("LocationId")
-                                .HasColumnType("uuid");
-
                             b1.Property<string>("PhotoUrl")
                                 .HasColumnType("text");
 
                             b1.HasKey("UserProfileId");
 
-                            b1.HasIndex("LocationId");
-
                             b1.ToTable("UserProfiles");
-
-                            b1.HasOne("LightNote.Domain.Models.User.Location", "Location")
-                                .WithMany()
-                                .HasForeignKey("LocationId");
 
                             b1.WithOwner()
                                 .HasForeignKey("UserProfileId");
-
-                            b1.Navigation("Location");
                         });
 
                     b.OwnsOne("LightNote.Domain.Models.User.Subscription", "Subscription", b1 =>
@@ -660,11 +629,6 @@ namespace LightNote.Dal.Migrations
             modelBuilder.Entity("LightNote.Domain.Models.Note.Reference", b =>
                 {
                     b.Navigation("Notes");
-                });
-
-            modelBuilder.Entity("LightNote.Domain.Models.User.Location", b =>
-                {
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("LightNote.Domain.Models.User.UserProfile", b =>

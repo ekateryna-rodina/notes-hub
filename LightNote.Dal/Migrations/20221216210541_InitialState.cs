@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LightNote.Dal.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class InitialState : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -52,20 +52,7 @@ namespace LightNote.Dal.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Location",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Country = table.Column<string>(type: "text", nullable: true),
-                    City = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Location", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Reference",
+                name: "References",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -75,11 +62,11 @@ namespace LightNote.Dal.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Reference", x => x.Id);
+                    table.PrimaryKey("PK_References", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Tag",
+                name: "Tags",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -87,7 +74,26 @@ namespace LightNote.Dal.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tag", x => x.Id);
+                    table.PrimaryKey("PK_Tags", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserProfiles",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    IdentityId = table.Column<string>(type: "text", nullable: true),
+                    BasicUserInfoFirstName = table.Column<string>(name: "BasicUserInfo_FirstName", type: "text", nullable: true),
+                    BasicUserInfoLastName = table.Column<string>(name: "BasicUserInfo_LastName", type: "text", nullable: true),
+                    BasicUserInfoPhotoUrl = table.Column<string>(name: "BasicUserInfo_PhotoUrl", type: "text", nullable: true),
+                    BasicUserInfoCountry = table.Column<string>(name: "BasicUserInfo_Country", type: "text", nullable: true),
+                    BasicUserInfoCity = table.Column<string>(name: "BasicUserInfo_City", type: "text", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserProfiles", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -197,35 +203,6 @@ namespace LightNote.Dal.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserProfiles",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    IdentityId = table.Column<string>(type: "text", nullable: true),
-                    BasicUserInfoFirstName = table.Column<string>(name: "BasicUserInfo_FirstName", type: "text", nullable: true),
-                    BasicUserInfoLastName = table.Column<string>(name: "BasicUserInfo_LastName", type: "text", nullable: true),
-                    BasicUserInfoPhotoUrl = table.Column<string>(name: "BasicUserInfo_PhotoUrl", type: "text", nullable: true),
-                    BasicUserInfoLocationId = table.Column<Guid>(name: "BasicUserInfo_LocationId", type: "uuid", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    LocationId = table.Column<Guid>(type: "uuid", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserProfiles", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_UserProfiles_Location_BasicUserInfo_LocationId",
-                        column: x => x.BasicUserInfoLocationId,
-                        principalTable: "Location",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_UserProfiles_Location_LocationId",
-                        column: x => x.LocationId,
-                        principalTable: "Location",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Notes",
                 columns: table => new
                 {
@@ -243,9 +220,9 @@ namespace LightNote.Dal.Migrations
                 {
                     table.PrimaryKey("PK_Notes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Notes_Reference_ReferenceId",
+                        name: "FK_Notes_References_ReferenceId",
                         column: x => x.ReferenceId,
-                        principalTable: "Reference",
+                        principalTable: "References",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -262,7 +239,7 @@ namespace LightNote.Dal.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Comment",
+                name: "Comments",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -275,20 +252,20 @@ namespace LightNote.Dal.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Comment", x => x.Id);
+                    table.PrimaryKey("PK_Comments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Comment_Comment_CommentId",
+                        name: "FK_Comments_Comments_CommentId",
                         column: x => x.CommentId,
-                        principalTable: "Comment",
+                        principalTable: "Comments",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Comment_Notes_NoteId",
+                        name: "FK_Comments_Notes_NoteId",
                         column: x => x.NoteId,
                         principalTable: "Notes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Comment_UserProfiles_UserProfileId",
+                        name: "FK_Comments_UserProfiles_UserProfileId",
                         column: x => x.UserProfileId,
                         principalTable: "UserProfiles",
                         principalColumn: "Id",
@@ -336,15 +313,15 @@ namespace LightNote.Dal.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_NoteTag_Tag_TagsId",
+                        name: "FK_NoteTag_Tags_TagsId",
                         column: x => x.TagsId,
-                        principalTable: "Tag",
+                        principalTable: "Tags",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Interaction",
+                name: "Interactions",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -355,20 +332,20 @@ namespace LightNote.Dal.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Interaction", x => x.Id);
+                    table.PrimaryKey("PK_Interactions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Interaction_Comment_CommentId",
+                        name: "FK_Interactions_Comments_CommentId",
                         column: x => x.CommentId,
-                        principalTable: "Comment",
+                        principalTable: "Comments",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Interaction_Notes_NoteId",
+                        name: "FK_Interactions_Notes_NoteId",
                         column: x => x.NoteId,
                         principalTable: "Notes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Interaction_UserProfiles_UserProfileId",
+                        name: "FK_Interactions_UserProfiles_UserProfileId",
                         column: x => x.UserProfileId,
                         principalTable: "UserProfiles",
                         principalColumn: "Id",
@@ -413,33 +390,33 @@ namespace LightNote.Dal.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comment_CommentId",
-                table: "Comment",
+                name: "IX_Comments_CommentId",
+                table: "Comments",
                 column: "CommentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comment_NoteId",
-                table: "Comment",
+                name: "IX_Comments_NoteId",
+                table: "Comments",
                 column: "NoteId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comment_UserProfileId",
-                table: "Comment",
+                name: "IX_Comments_UserProfileId",
+                table: "Comments",
                 column: "UserProfileId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Interaction_CommentId",
-                table: "Interaction",
+                name: "IX_Interactions_CommentId",
+                table: "Interactions",
                 column: "CommentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Interaction_NoteId",
-                table: "Interaction",
+                name: "IX_Interactions_NoteId",
+                table: "Interactions",
                 column: "NoteId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Interaction_UserProfileId",
-                table: "Interaction",
+                name: "IX_Interactions_UserProfileId",
+                table: "Interactions",
                 column: "UserProfileId");
 
             migrationBuilder.CreateIndex(
@@ -466,16 +443,6 @@ namespace LightNote.Dal.Migrations
                 name: "IX_NoteTag_TagsId",
                 table: "NoteTag",
                 column: "TagsId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserProfiles_BasicUserInfo_LocationId",
-                table: "UserProfiles",
-                column: "BasicUserInfo_LocationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserProfiles_LocationId",
-                table: "UserProfiles",
-                column: "LocationId");
         }
 
         /// <inheritdoc />
@@ -497,7 +464,7 @@ namespace LightNote.Dal.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Interaction");
+                name: "Interactions");
 
             migrationBuilder.DropTable(
                 name: "NoteNote");
@@ -512,22 +479,19 @@ namespace LightNote.Dal.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Comment");
+                name: "Comments");
 
             migrationBuilder.DropTable(
-                name: "Tag");
+                name: "Tags");
 
             migrationBuilder.DropTable(
                 name: "Notes");
 
             migrationBuilder.DropTable(
-                name: "Reference");
+                name: "References");
 
             migrationBuilder.DropTable(
                 name: "UserProfiles");
-
-            migrationBuilder.DropTable(
-                name: "Location");
         }
     }
 }

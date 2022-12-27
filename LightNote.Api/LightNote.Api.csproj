@@ -70,4 +70,7 @@
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+     <InternalsVisibleTo Include="LightNote.Tests" />
+</ItemGroup>
 </Project>

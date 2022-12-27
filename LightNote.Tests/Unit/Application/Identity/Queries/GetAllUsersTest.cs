@@ -1,15 +1,16 @@
 ﻿using FluentAssertions;
 using LightNote.Application.BusinessLogic.Users.Queries;
 using LightNote.Domain.Models.User;
+using LightNote.Tests.Unit.Fixtures;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LightNote.Tests.Unit.Application.Identity.Queries
 {
-	using static ConfiguredServices;
+	using static LightNoteDbFixture;
     [Collection("SetupFixture")]
     public class GetAllUsersTest
-	{
+    {
         [Fact]
         public async void GetAllUsersTest_ReturnsAllUsers() {
             // Arrange
@@ -26,7 +27,6 @@ namespace LightNote.Tests.Unit.Application.Identity.Queries
             result.Should().NotBeNull();
             result.Should().HaveCount(1);
         }
-
     }
 }
 

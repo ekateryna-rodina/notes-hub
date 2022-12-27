@@ -20,16 +20,23 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="FluentAssertions" Version="6.8.0" />
-    <PackageReference Include="Respawn" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="MediatR" Version="11.1.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.0" />
+    <PackageReference Include="Npgsql" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.0.1" />
+    <PackageReference Include="FluentMigrator" Version="3.3.2" />
+    <PackageReference Include="Respawn" Version="6.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.1" />
+    <PackageReference Include="Docker.DotNet" Version="3.125.12" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\LightNote.Application\LightNote.Application.csproj" />
     <ProjectReference Include="..\LightNote.Domain\LightNote.Domain.csproj" />
+    <ProjectReference Include="..\LightNote.Api\LightNote.Api.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Unit\" />
@@ -46,6 +53,17 @@
     <None Remove="Microsoft.Extensions.Configuration.Json" />
     <None Remove="MediatR.Extensions.Microsoft.DependencyInjection" />
     <None Remove="MediatR" />
+    <None Remove="Npgsql.EntityFrameworkCore.PostgreSQL" />
+    <None Remove="Npgsql" />
+    <None Remove="Microsoft.Data.SqlClient" />
+    <None Remove="FluentMigrator" />
+    <None Remove="Respawn.Postgres" />
+    <None Remove="NDbUnit.Postgresql" />
+    <None Remove="NDbUnit.Core" />
+    <None Remove="Microsoft.AspNetCore.Mvc.Testing" />
+    <None Remove="Unit\Fixtures\" />
+    <None Remove="Docker.DotNet" />
+    <None Remove="Unit\Utils\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Unit\" />
@@ -53,6 +71,8 @@
     <Folder Include="Unit\Application\Identity\" />
     <Folder Include="Unit\Application\Identity\Queries\" />
     <Folder Include="Unit\Application\Identity\Commands\" />
+    <Folder Include="Unit\Fixtures\" />
+    <Folder Include="Unit\Utils\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="appsettings.json" Condition="'$(ExcludeConfigFilesFromBuildOutput)'!='true'">
