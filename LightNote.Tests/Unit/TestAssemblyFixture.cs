@@ -16,8 +16,7 @@ namespace LightNote.Tests.Unit
         [OneTimeTearDown]
         public async Task RunAfterAllTestsAsync()
         {
-            Console.WriteLine("dfer");
-            await CloseConnection();
+            await RunAfterAllTests();
         }
     }
 }

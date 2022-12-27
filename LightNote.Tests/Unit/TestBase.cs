@@ -41,6 +41,11 @@ namespace LightNote.Tests.Unit
                 _respawner = await InitRespawn();
             }).Wait();
         }
+        public static async Task RunAfterAllTests()
+        {
+            await _dbConnection.CloseAsync();
+            await DockerPostgresqlDatabaseUtilities.CleanupContainerAndVolumes();
+        }
         private static IServiceCollection ConfigureServices() {
             var services = new ServiceCollection();
             services.AddMediatR(typeof(GetAllUsers));
@@ -93,10 +98,6 @@ namespace LightNote.Tests.Unit
             {
                 await Task.FromException(ex);
             }
-        }
-
-        public static async Task CloseConnection() {
-            await _dbConnection.CloseAsync();
         }
 
         public static async Task AddAsync<TEntity>(TEntity entity) where TEntity : class

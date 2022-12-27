@@ -25,9 +25,12 @@ namespace LightNote.Tests.Utils
                  .Build();
         }
 
-        public static async Task<(string containerId, string port, string ip)> EnsureDockerIsStartedAndGetContainerIdAndPortAsync() {
+        public static async Task CleanupContainerAndVolumes() {
             await CleanupRunningContainers();
             await CleanupRunningVolumes();
+        }
+        public static async Task<(string containerId, string port, string ip)> EnsureDockerIsStartedAndGetContainerIdAndPortAsync() {
+            await CleanupContainerAndVolumes();
             var dockerClient = GetDockerClient();
             var freePort = GetFreePort();
             
@@ -74,10 +77,6 @@ namespace LightNote.Tests.Utils
                             {
                                 { "5432/tcp", new List<PortBinding> { new PortBinding { HostPort = "5432" } } }
                             },
-                            //Binds = new List<string>
-                            //{
-                            //    $"{VOLUME_NAME}:/LightNote_data"
-                            //}
                         },
                         ExposedPorts = new Dictionary<string, EmptyStruct>
                             {
@@ -109,43 +108,15 @@ namespace LightNote.Tests.Utils
                 var connectionString = GetPostgresConnectionString("5432", ip, "postgres");
                 using var postgresConnection = new NpgsqlConnection(connectionString);
                 await postgresConnection.OpenAsync();
-                //postgresConnection.ChangeDatabase("postgres");
                 using var command = new NpgsqlCommand($"CREATE DATABASE {DB_NAME}", postgresConnection);
                 await command.ExecuteNonQueryAsync();
             }
             catch (Exception ex)
             {
-
+                await Task.FromException(ex);
             }
         }
-        private static async Task WaitUntilDatabaseAvailableAsync(string databasePort, string ip)
-        {
-            var start = DateTime.UtcNow;
-            const int maxWaitTimeSeconds = 60;
-            var connectionEstablished = false;
-            while (!connectionEstablished && start.AddSeconds(maxWaitTimeSeconds) > DateTime.UtcNow)
-            {
-                try
-                {
-                    var connectionString = GetPostgresConnectionString(databasePort, ip);
-                    using var postgresConnection = new NpgsqlConnection(connectionString);
-                    await postgresConnection.OpenAsync();
-                    connectionEstablished = true;
-                }
-                catch(Exception ex)
-                {
-                    // If opening the Postgres connection fails, Postgres Server is not ready yet
-                    await Task.Delay(500);
-                }
-            }
 
-            if (!connectionEstablished)
-            {
-                throw new Exception($"Connection to the Postgres docker database could not be established within {maxWaitTimeSeconds} seconds.");
-            }
-
-            return;
-        }
         public static string GetPostgresConnectionString(string port, string ip, string? name = "") {
             var dbName = string.IsNullOrEmpty(name) ? DB_NAME : name;
             return $"Server=localhost,{port};Database={dbName};Uid={DB_USER};Pwd={DB_PASSWORD};";
@@ -175,7 +146,7 @@ namespace LightNote.Tests.Utils
             return port.ToString();
         }
 
-        private static async Task CleanupRunningContainers(int hoursTillExpiration = -24)
+        private static async Task CleanupRunningContainers()
         {
             var dockerClient = GetDockerClient();
 
@@ -184,25 +155,18 @@ namespace LightNote.Tests.Utils
 
             foreach (var runningContainer in runningContainers.Where(cont => cont.Names.Any(n => n.Contains(CONTAINER_NAME))))
             {
-                // Stopping all test containers that are older than 24 hours
-                var expiration = hoursTillExpiration > 0
-                    ? hoursTillExpiration * -1
-                    : hoursTillExpiration;
-                if (runningContainer.Created < DateTime.UtcNow.AddHours(expiration))
+                try
                 {
-                    try
-                    {
-                        await EnsureDockerContainersStoppedAndRemovedAsync(runningContainer.ID);
-                    }
-                    catch
-                    {
-                        // Ignoring failures to stop running containers
-                    }
+                    await EnsureDockerContainersStoppedAndRemovedAsync(runningContainer.ID);
+                }
+                catch(Exception ex)
+                {
+                    await Task.FromException(ex);
                 }
             }
         }
 
-        private static async Task CleanupRunningVolumes(int hoursTillExpiration = -24)
+        private static async Task CleanupRunningVolumes()
         {
             var dockerClient = GetDockerClient();
 
@@ -210,20 +174,13 @@ namespace LightNote.Tests.Utils
 
             foreach (var runningVolume in runningVolumes.Volumes.Where(v => v.Name == VOLUME_NAME))
             {
-                // Stopping all test volumes that are older than 24 hours
-                var expiration = hoursTillExpiration > 0
-                    ? hoursTillExpiration * -1
-                    : hoursTillExpiration;
-                if (DateTime.Parse(runningVolume.CreatedAt) < DateTime.UtcNow.AddHours(expiration))
+                try
                 {
-                    try
-                    {
-                        await EnsureDockerVolumesRemovedAsync(runningVolume.Name);
-                    }
-                    catch
-                    {
-                        // Ignoring failures to stop running containers
-                    }
+                    await EnsureDockerVolumesRemovedAsync(runningVolume.Name);
+                }
+                catch(Exception ex)
+                {
+                    await Task.FromException(ex);
                 }
             }
         }
