@@ -1,20 +1,17 @@
-﻿using System;
-using LightNote.Application.BusinessLogic.Users.Queries;
+﻿using LightNote.Application.BusinessLogic.Users.Queries;
 using LightNote.Dal;
 using LightNote.Dal.Contracts;
 using LightNote.Tests.Utils;
 using MediatR;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
 using Respawn;
-using Respawn.Graph;
 
-namespace LightNote.Tests.Unit.Fixtures
+namespace LightNote.Tests.Unit
 {
-	public class LightNoteDbFixture : DbFixture
+    public class TestBase
     {
         private static IConfiguration _configuration;
         private static IServiceScopeFactory _scopeFactory;
@@ -22,25 +19,12 @@ namespace LightNote.Tests.Unit.Fixtures
      
         private static NpgsqlConnection _dbConnection;
         private static Respawner _respawner;
-        private string _dockerContainerId;
-        private string _dockerPort;
-        private string _dockerIp;
+        private static string _dockerContainerId;
+        private static string _dockerPort;
+        private static string _dockerIp;
         private static string _dockerConnectionString;
-        public LightNoteDbFixture()
-		{
-		}
 
-        public override async Task DisposeAsync()
-        {
-            await ResetState();
-        }
-
-        public override async Task InitializeAsync()
-        {
-            await RunBeforeAnyTests();
-        }
-
-        private async Task RunBeforeAnyTests()
+        public static async Task RunBeforeAnyTests()
         {
             (_dockerContainerId, _dockerPort, _dockerIp) = await DockerPostgresqlDatabaseUtilities.EnsureDockerIsStartedAndGetContainerIdAndPortAsync();
             _dockerConnectionString = DockerPostgresqlDatabaseUtilities.GetPostgresConnectionString(_dockerPort, _dockerIp);
@@ -57,18 +41,17 @@ namespace LightNote.Tests.Unit.Fixtures
                 _respawner = await InitRespawn();
             }).Wait();
         }
-        private IServiceCollection ConfigureServices() {
+        private static IServiceCollection ConfigureServices() {
             var services = new ServiceCollection();
             services.AddMediatR(typeof(GetAllUsers));
             services.AddDbContext<AppDbContext>(options => options.UseNpgsql(_dockerConnectionString));
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             return services;
         }
-        private async Task<Respawner> InitRespawn()
+        private static async Task<Respawner> InitRespawn()
         {
             try
             {
-                //using var dbConnection = new NpgsqlConnection(_dockerConnectionString);
                 await _dbConnection.OpenAsync();
                 var respawner = await Respawner.CreateAsync(_dbConnection,
                     new RespawnerOptions
@@ -104,17 +87,16 @@ namespace LightNote.Tests.Unit.Fixtures
         {
             try
             {
-                //using var dbConnection = new NpgsqlConnection(_dockerConnectionString);
-                //await _dbConnection.OpenAsync();
                 await _respawner.ResetAsync(_dbConnection);
             }
             catch (Exception ex)
             {
                 await Task.FromException(ex);
             }
-            finally {
-                await _dbConnection.CloseAsync();
-            }
+        }
+
+        public static async Task CloseConnection() {
+            await _dbConnection.CloseAsync();
         }
 
         public static async Task AddAsync<TEntity>(TEntity entity) where TEntity : class

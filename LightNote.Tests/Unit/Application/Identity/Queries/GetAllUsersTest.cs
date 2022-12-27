@@ -1,18 +1,16 @@
 ﻿using FluentAssertions;
 using LightNote.Application.BusinessLogic.Users.Queries;
 using LightNote.Domain.Models.User;
-using LightNote.Tests.Unit.Fixtures;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
+using NUnit.Framework;
 
 namespace LightNote.Tests.Unit.Application.Identity.Queries
 {
-	using static LightNoteDbFixture;
-    [Collection("SetupFixture")]
+    using static TestBase;
+    [TestFixture]
     public class GetAllUsersTest
     {
-        [Fact]
-        public async void GetAllUsersTest_ReturnsAllUsers() {
+        [Test]
+        public async Task GetAllUsersTest_ReturnsAllUsers() {
             // Arrange
             await AddAsync(UserProfile
 				.CreateUserProfile(string.Empty,
@@ -23,9 +21,33 @@ namespace LightNote.Tests.Unit.Application.Identity.Queries
             // Act
             var result = await SendAsync(query);
 
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().HaveCount(1);
+        }
+
+        [Test]
+        public async Task GetAllUsersTest_ReturnsAllUsers_()
+        {
+            // Arrange
+            await AddAsync(UserProfile
+                .CreateUserProfile(string.Empty,
+                                    BasicUserInfo.CreateBasicUserInfo("TestFirstName", "TestLastName", "photo", "Country", "City")));
+
+            var query = new GetAllUsers();
+
+            // Act
+            var result = await SendAsync(query);
+
             //// Assert
             result.Should().NotBeNull();
             result.Should().HaveCount(1);
+        }
+
+        [TearDown]
+        public async Task RunAfterEachTestAsync()
+        {
+            await ResetState();
         }
     }
 }
