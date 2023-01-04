@@ -4,5 +4,5 @@ builder.RegisterServices(typeof(Program));
 var app = builder.Build();
 app.RegisterPipelineComponents(typeof(Program));
 app.Run();
-public partial class Program { }
+//public partial class Program { }
 

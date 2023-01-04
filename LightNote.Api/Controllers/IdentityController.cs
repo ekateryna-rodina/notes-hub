@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LightNote.Api.Contracts.Identity.Request;
 using LightNote.Api.Contracts.Identity.Response;
+using LightNote.Api.Filters;
 using LightNote.Application.BusinessLogic.Identity.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ namespace LightNote.Api.Controllers
     [ApiVersion("1.0")]
     [Route(ApiRoutes.BaseRoute)]
     [ApiController]
+    [HandleException]
     public class IdentityController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -21,6 +23,7 @@ namespace LightNote.Api.Controllers
 
         [HttpPost]
         [Route(ApiRoutes.Identity.Register)]
+        [ValidateModel]
         public async Task<IActionResult> Register(Registration registerRequest)
         {
             var command = _mapper.Map<RegisterIdentity>(registerRequest);

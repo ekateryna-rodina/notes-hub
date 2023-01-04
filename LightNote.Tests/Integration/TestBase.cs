@@ -14,7 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
 using Respawn;
 
-namespace LightNote.Tests.Unit
+namespace LightNote.Tests.Integration
 {
     public class TestBase
     {
@@ -28,6 +28,12 @@ namespace LightNote.Tests.Unit
         private static string _dockerPort;
         private static string _dockerIp;
         private static string _dockerConnectionString;
+
+        public static  IUnitOfWork UnitOfWork { get {
+                var scope = _scopeFactory.CreateScope();
+                var unitOfWork =  scope.ServiceProvider.GetService<IUnitOfWork>();
+                return unitOfWork;
+            } }
 
         public static async Task RunBeforeAnyTests()
         {
@@ -56,9 +62,9 @@ namespace LightNote.Tests.Unit
             services.AddMediatR(typeof(GetAllUsers));
             services.AddDbContext<AppDbContext>(options => options.UseNpgsql(_dockerConnectionString));
             services.AddTransient<IUnitOfWork, UnitOfWork>();
-            services.Configure<JwtSettings>(_configuration.GetSection("JwtSettings"));
-            services.AddTransient<IToken, JwtService>();
-            services.AddIdentityCore<IdentityUser>().AddEntityFrameworkStores<AppDbContext>();
+            //services.Configure<JwtSettings>(_configuration.GetSection("JwtSettings"));
+            //services.AddTransient<IToken, JwtService>();
+            //services.AddIdentityCore<IdentityUser>().AddEntityFrameworkStores<AppDbContext>();
             return services;
         }
         private static async Task<Respawner> InitRespawn()

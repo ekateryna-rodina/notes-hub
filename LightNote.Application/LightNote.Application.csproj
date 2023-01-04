@@ -24,6 +24,8 @@
     <None Remove="System.IdentityModel.Tokens.Jwt" />
     <None Remove="Helpers\" />
     <None Remove="Exceptions\" />
+    <None Remove="Services\" />
+    <None Remove="Contracts\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0" />
@@ -41,6 +43,8 @@
     <Folder Include="BusinessLogic\Users\" />
     <Folder Include="Helpers\" />
     <Folder Include="Exceptions\" />
+    <Folder Include="Services\" />
+    <Folder Include="Contracts\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LightNote.Domain\LightNote.Domain.csproj" />

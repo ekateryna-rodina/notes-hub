@@ -11,7 +11,7 @@ namespace LightNote.Dal.Contracts
 		/// <summary>
 		/// Call to persist the entity in the database
 		/// </summary>
-		public void Save();
+		Task SaveAsync();
 		/// <summary>
 		/// Repository to manage user profiles
 		/// </summary>

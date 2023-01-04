@@ -13,54 +13,23 @@ using LightNote.Dal.Contracts;
 using LightNote.Application.Helpers;
 using LightNote.Application.Exceptions;
 using System.Collections.Generic;
+using LightNote.Application.Contracts;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace LightNote.Application.BusinessLogic.Identity.CommandHandlers
 {
     public class RegisterIdentityHandler : IRequestHandler<RegisterIdentity, OperationResult<string>>
-	{  
-        private readonly IOptions<JwtSettings> _jwtOptions;
+	{
+        private readonly IToken _tokenService;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IUnitOfWork _unitOfWork;
-		public RegisterIdentityHandler(UserManager<IdentityUser> userManager, IOptions<JwtSettings> jwtOptions, IUnitOfWork unitOfWork)
+		public RegisterIdentityHandler(UserManager<IdentityUser> userManager, IUnitOfWork unitOfWork, IToken tokenService)
 		{
             _userManager = userManager;
-            _jwtOptions = jwtOptions;
             _unitOfWork = unitOfWork;
+            _tokenService = tokenService;
 		}
-        private string GenerateJwtToken(string userId, string email) {
-            var signingKey = _jwtOptions.Value.SigningKey;
-            var issuer = _jwtOptions.Value.Issuer;
-            var audience = _jwtOptions.Value.Audiences[0];
-            // Set JWT claims
-            var claims = new List<Claim>
-    {
-        new Claim(JwtRegisteredClaimNames.Sub, userId),
-        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-        new Claim(ClaimTypes.Email, email),
-        
-    };
-
-            // Set JWT security key
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey));
-
-            // Set JWT signing credentials
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            // Set JWT expiration
-            var expiration = DateTime.UtcNow.AddDays(7);
-
-            // Create JWT token
-            var token = new JwtSecurityToken(
-                issuer,
-                audience,
-                claims: claims,
-                expires: expiration,
-                signingCredentials: creds
-            );
-
-            // Return JWT as string
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
+       
         public async Task<OperationResult<string>> Handle(RegisterIdentity request, CancellationToken cancellationToken)
         {
             var existingIdentity = await _userManager.FindByEmailAsync(request.Email);
@@ -74,35 +43,45 @@ namespace LightNote.Application.BusinessLogic.Identity.CommandHandlers
             };
 
             // Create transaction
-            using (var transaction = _unitOfWork.BeginTransaction())
-            {                 
-                try
-                {
-                    // create identity
-                    var result = await _userManager.CreateAsync(newIdentity, request.Password);
-                    if (!result.Succeeded) {
-                        await transaction.RollbackAsync(cancellationToken);
-                        var operationResult = OperationResult<string>.CreateFailure(result.Errors.Select(e => new Exception(e.Description)).ToArray());
-                        return operationResult;
-                    }
-                    // create user profile
-                    var basicInfo = BasicUserInfo.CreateBasicUserInfo(request.FirstName, request.LastName, request.PhotoUrl, request.Country, request.City);
-                    var userProfile = UserProfile.CreateUserProfile(newIdentity.Id, basicInfo);
-                    // generate token
-                    var token = GenerateJwtToken(newIdentity.Id, newIdentity.Email);
-
-                    _unitOfWork.UserRepository.Insert(userProfile);
-                    _unitOfWork.Save();
-
-                    transaction.Commit();
-                    return OperationResult<string>.CreateSuccess(token);
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    var operationResult = OperationResult<string>.CreateFailure(new[] { new ResourceAlreadyExistsException(ex.Message) });
+            using var transaction = _unitOfWork.BeginTransaction();
+            try
+            {
+                // create identity
+                var result = await _userManager.CreateAsync(newIdentity, request.Password);
+                if (!result.Succeeded) {
+                    await transaction.RollbackAsync(cancellationToken);
+                    var operationResult = OperationResult<string>.CreateFailure(result.Errors.Select(e => new Exception(e.Description)).ToArray());
                     return operationResult;
                 }
+                // create user profile
+                var newUserId = await CreateUserProfileAsync(newIdentity, request, transaction, cancellationToken);
+
+                // generate token
+                var token = _tokenService.GenerateJwtToken(newIdentity.Id, newUserId, newIdentity.Email);
+                return OperationResult<string>.CreateSuccess(token);
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                var operationResult = OperationResult<string>.CreateFailure(new[] { new ResourceAlreadyExistsException(ex.Message) });
+                return operationResult;
+            }
+        }
+
+        private async Task<Guid> CreateUserProfileAsync(IdentityUser identity, RegisterIdentity request, IDbContextTransaction transaction, CancellationToken cancellationToken) {
+            try
+            {
+                var basicInfo = BasicUserInfo.CreateBasicUserInfo(request.FirstName, request.LastName, request.PhotoUrl, request.Country, request.City);
+                var userProfile = UserProfile.CreateUserProfile(identity.Id, basicInfo);
+                _unitOfWork.UserRepository.Insert(userProfile);
+                transaction.Commit();
+                await _unitOfWork.SaveAsync();
+                return userProfile.Id;
+            }
+            catch
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                throw;
             }
         }
     }

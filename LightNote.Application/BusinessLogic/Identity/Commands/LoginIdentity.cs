@@ -1,11 +1,13 @@
 ﻿using System;
+using LightNote.Application.Helpers;
+using MediatR;
+
 namespace LightNote.Application.BusinessLogic.Identity.Commands
 {
-	public class LoginIdentity
+	public class LoginIdentity : IRequest<OperationResult<string>>
 	{
-		public LoginIdentity()
-		{
-		}
-	}
+        public string Email { get; set; } = default!;
+        public string Password { get; set; } = default!;
+    }
 }
 

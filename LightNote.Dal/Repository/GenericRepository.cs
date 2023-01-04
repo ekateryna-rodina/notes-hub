@@ -10,6 +10,10 @@ namespace LightNote.Dal.Repository
         internal AppDbContext _context;
         internal DbSet<TEntity> _dbSet;
 
+        public GenericRepository()
+        {
+        }
+
         public GenericRepository(AppDbContext context)
         {
             _context = context;

@@ -3,7 +3,7 @@ using LightNote.Application.BusinessLogic.Users.Queries;
 using LightNote.Domain.Models.User;
 using NUnit.Framework;
 
-namespace LightNote.Tests.Unit.Application.Identity.Queries
+namespace LightNote.Tests.Unit.Application.Users.Queries
 {
     using static TestBase;
     [TestFixture]
@@ -22,24 +22,6 @@ namespace LightNote.Tests.Unit.Application.Identity.Queries
             var result = await SendAsync(query);
 
             // Assert
-            result.Should().NotBeNull();
-            result.Should().HaveCount(1);
-        }
-
-        [Test]
-        public async Task GetAllUsersTest_ReturnsAllUsers_()
-        {
-            // Arrange
-            await AddAsync(UserProfile
-                .CreateUserProfile(string.Empty,
-                                    BasicUserInfo.CreateBasicUserInfo("TestFirstName", "TestLastName", "photo", "Country", "City")));
-
-            var query = new GetAllUsers();
-
-            // Act
-            var result = await SendAsync(query);
-
-            //// Assert
             result.Should().NotBeNull();
             result.Should().HaveCount(1);
         }

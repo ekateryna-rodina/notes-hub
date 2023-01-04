@@ -48,6 +48,8 @@
     <None Remove="MappingProfiles\" />
     <None Remove="Contracts\Identity\Request\" />
     <None Remove="Contracts\Identity\Response\" />
+    <None Remove="Filters\" />
+    <None Remove="Contracts\Common\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\" />
@@ -61,6 +63,8 @@
     <Folder Include="MappingProfiles\" />
     <Folder Include="Contracts\Identity\Request\" />
     <Folder Include="Contracts\Identity\Response\" />
+    <Folder Include="Filters\" />
+    <Folder Include="Contracts\Common\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LightNote.Dal\LightNote.Dal.csproj">

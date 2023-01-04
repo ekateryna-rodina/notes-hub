@@ -1,6 +1,10 @@
 ﻿using System;
+using LightNote.Application.Contracts;
 using LightNote.Application.Options;
+using LightNote.Application.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 namespace LightNote.Api.Registrars
@@ -36,6 +40,7 @@ namespace LightNote.Api.Registrars
                     jwt.Audience = jwtSettings.Audiences[0];
                     jwt.ClaimsIssuer = jwtSettings.Issuer;
                 });
+            builder.Services.AddTransient<IToken, JwtService>();
         }
     }
 }
