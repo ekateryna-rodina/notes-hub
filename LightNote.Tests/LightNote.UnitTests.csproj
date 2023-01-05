@@ -6,6 +6,7 @@
     <Nullable>disable</Nullable>
 
     <IsPackable>false</IsPackable>
+    <AssemblyName>LightNote.Tests</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -37,10 +38,7 @@
     <ProjectReference Include="..\LightNote.Api\LightNote.Api.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Unit\" />
-    <None Remove="Unit\Application\" />
     <None Remove="Unit\Application\Identity\Queries\" />
-    <None Remove="Unit\Application\Identity\Commands\" />
     <None Remove="FluentAssertions" />
     <None Remove="Respawn" />
     <None Remove="appsettings.json" />
@@ -59,26 +57,17 @@
     <None Remove="NDbUnit.Core" />
     <None Remove="Microsoft.AspNetCore.Mvc.Testing" />
     <None Remove="Docker.DotNet" />
-    <None Remove="Unit\Utils\" />
     <None Remove="NUnit" />
     <None Remove="NUnit3TestAdapter" />
     <None Remove="OpenCover" />
     <None Remove="ReportGenerator" />
-    <None Remove="Unit\Application\Identity\" />
     <None Remove="Moq" />
-    <None Remove="Unit\Mocks\" />
-    <None Remove="Integration\" />
+    <None Remove="Mocks\" />
+    <None Remove="Application\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Unit\" />
-    <Folder Include="Unit\Application\" />
-    <Folder Include="Unit\Application\Users\Queries\" />
-    <Folder Include="Unit\Application\Users\Commands\" />
-    <Folder Include="Unit\Utils\" />
-    <Folder Include="Unit\Application\Identity\" />
-    <Folder Include="Unit\Application\Identity\Commands\" />
-    <Folder Include="Unit\Mocks\" />
-    <Folder Include="Integration\" />
+    <Folder Include="Mocks\" />
+    <Folder Include="Application\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="appsettings.json" Condition="'$(ExcludeConfigFilesFromBuildOutput)'!='true'">

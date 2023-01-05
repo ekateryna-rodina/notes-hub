@@ -31,6 +31,16 @@ namespace LightNote.Api.Controllers
             var authResult = new AuthenticationResult { Token = operationResult.Value };            
             return Ok(authResult);
         }
+        [HttpPost]
+        [Route(ApiRoutes.Identity.Login)]
+        [ValidateModel]
+        public async Task<IActionResult> Loginf(Login loginRequest)
+        {
+            var command = _mapper.Map<LoginIdentity>(loginRequest);
+            var operationResult = await _mediator.Send(command);
+            var authResult = new AuthenticationResult { Token = operationResult.Value };
+            return Ok(authResult);
+        }
     }
 }
 

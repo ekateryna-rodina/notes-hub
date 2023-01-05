@@ -1,12 +1,10 @@
 ﻿using System;
-using NUnit.Framework;
-
-namespace LightNote.Tests.Unit
+namespace LightNote.IntegrationTests.Setup
 {
     using static TestBase;
     [SetUpFixture]
     public class TestAssemblyFixture
-	{
+    {
         [OneTimeSetUp]
         public async Task RunBeforeAllTestsAsync()
         {

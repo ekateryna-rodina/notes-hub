@@ -1,14 +1,12 @@
-﻿using System;
-using LightNote.Application.BusinessLogic.Identity.CommandHandlers;
+﻿using LightNote.Application.BusinessLogic.Identity.CommandHandlers;
 using LightNote.Application.Contracts;
 using LightNote.Dal.Contracts;
 using Microsoft.AspNetCore.Identity;
 using Moq;
 using NUnit.Framework;
 
-namespace LightNote.Tests.Unit.Application.Identity.Commands
+namespace LightNote.UnitTests.Application.Identity.Commands
 {
-    using static TestBase;
     [TestFixture]
     public class RegisterIdentityTest
     {

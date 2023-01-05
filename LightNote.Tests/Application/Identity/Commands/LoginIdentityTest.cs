@@ -1,14 +1,8 @@
-﻿using System;
-using System.ComponentModel;
-using System.Linq.Expressions;
-using FluentAssertions;
+﻿using System.Linq.Expressions;
 using LightNote.Application.BusinessLogic.Identity.CommandHandlers;
 using LightNote.Application.BusinessLogic.Identity.Commands;
 using LightNote.Application.Contracts;
 using LightNote.Application.Exceptions;
-using LightNote.Application.Options;
-using LightNote.Application.Services;
-using LightNote.Dal;
 using LightNote.Dal.Contracts;
 using LightNote.Dal.Repository;
 using LightNote.Domain.Models.User;
@@ -17,7 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Moq;
 using NUnit.Framework;
 
-namespace LightNote.Tests.Unit.Application.Identity.Commands
+namespace LightNote.UnitTests.Application.Identity.Commands
 {
     [TestFixture]
     public class LoginIdentityTest

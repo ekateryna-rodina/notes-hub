@@ -1,39 +1,40 @@
-﻿using System.ComponentModel;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
 using Docker.DotNet;
 using Docker.DotNet.Models;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
-namespace LightNote.Tests.Utils
+namespace LightNote.IntegrationTests.Utils
 {
     public static class DockerPostgresqlDatabaseUtilities
     {
         private static IConfiguration _configuration;
         public static string DB_PASSWORD { get { return _configuration["Database:Password"]; } }
-		public const string DB_IMAGE = "postgres";
-		public const string DB_IMAGE_TAG = "latest";
+        public const string DB_IMAGE = "postgres";
+        public const string DB_IMAGE_TAG = "latest";
         public static string DB_USER { get { return _configuration["Database:User"]; } }
         public static string DB_NAME { get { return _configuration["Database:Name"]; } }
         public const string CONTAINER_NAME = "LightNoteUnitTestsPostgres";
         public const string VOLUME_NAME = "LightNoteUnitTestsPostgresVolume";
 
-        static DockerPostgresqlDatabaseUtilities() {
+        static DockerPostgresqlDatabaseUtilities()
+        {
             _configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json")
                  .Build();
         }
 
-        public static async Task CleanupContainerAndVolumes() {
+        public static async Task CleanupContainerAndVolumes()
+        {
             await CleanupRunningContainers();
             await CleanupRunningVolumes();
         }
-        public static async Task<(string containerId, string port, string ip)> EnsureDockerIsStartedAndGetContainerIdAndPortAsync() {
+        public static async Task<(string containerId, string port, string ip)> EnsureDockerIsStartedAndGetContainerIdAndPortAsync()
+        {
             await CleanupContainerAndVolumes();
             var dockerClient = GetDockerClient();
             var freePort = GetFreePort();
-            
+
             // This call ensures that the latest SQL Server Docker image is pulled
             await dockerClient.Images.CreateImageAsync(new ImagesCreateParameters
             {
@@ -88,7 +89,6 @@ namespace LightNote.Tests.Utils
                         .Containers
                         .StartContainerAsync(container.ID, new ContainerStartParameters());
 
-                    //await WaitUntilDatabaseAvailableAsync(freePort); 
                     var containerInfo = await dockerClient.Containers.InspectContainerAsync(container.ID);
                     await CreateDatabase(freePort, containerInfo.NetworkSettings.Networks["bridge"].IPAddress);
                     return (container.ID, "5432", containerInfo.NetworkSettings.Networks["bridge"].IPAddress);
@@ -98,11 +98,12 @@ namespace LightNote.Tests.Utils
                     return (string.Empty, string.Empty, string.Empty);
                 }
             }
-            
+
             return (existingCont.ID, "5432", existingCont.NetworkSettings.Networks["bridge"].IPAddress);
         }
 
-        private static async Task CreateDatabase(string databasePort, string ip) {
+        private static async Task CreateDatabase(string databasePort, string ip)
+        {
             try
             {
                 var connectionString = GetPostgresConnectionString("5432", ip, "postgres");
@@ -117,7 +118,8 @@ namespace LightNote.Tests.Utils
             }
         }
 
-        public static string GetPostgresConnectionString(string port, string ip, string? name = "") {
+        public static string GetPostgresConnectionString(string port, string ip, string? name = "")
+        {
             var dbName = string.IsNullOrEmpty(name) ? DB_NAME : name;
             return $"Server=localhost,{port};Database={dbName};Uid={DB_USER};Pwd={DB_PASSWORD};";
         }
@@ -159,7 +161,7 @@ namespace LightNote.Tests.Utils
                 {
                     await EnsureDockerContainersStoppedAndRemovedAsync(runningContainer.ID);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     await Task.FromException(ex);
                 }
@@ -178,7 +180,7 @@ namespace LightNote.Tests.Utils
                 {
                     await EnsureDockerVolumesRemovedAsync(runningVolume.Name);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     await Task.FromException(ex);
                 }
