@@ -23,27 +23,30 @@ namespace LightNote.Application.BusinessLogic.Identity.CommandHandlers
         private readonly IToken _tokenService;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IUnitOfWork _unitOfWork;
+        private List<Exception> _exceptions = new();
+        private IdentityUser _newIdentity = new();
+        private Guid _userProfileId = default!;
         public RegisterIdentityHandler(UserManager<IdentityUser> userManager, IUnitOfWork unitOfWork, IToken tokenService)
         {
             _userManager = userManager;
             _unitOfWork = unitOfWork;
             _tokenService = tokenService;
         }
-
-        public async Task<OperationResult<string>> Handle(RegisterIdentity request, CancellationToken cancellationToken)
+        private async Task ValidateIfUserExists(RegisterIdentity request)
         {
             var existingIdentity = await _userManager.FindByEmailAsync(request.Email);
             if (existingIdentity != null)
             {
-                var operationResult = OperationResult<string>.CreateFailure(new[] { new ResourceAlreadyExistsException("User exists") });
-                return operationResult;
+                _exceptions.Add(new ResourceAlreadyExistsException("User exists"));
             }
+        }
+        private async Task<(IdentityUser, Guid)> CreateIdentityAndUserProfile(RegisterIdentity request, CancellationToken cancellationToken)
+        {
             var newIdentity = new IdentityUser
             {
                 Email = request.Email,
                 UserName = request.Email
             };
-
             // Create transaction
             using var transaction = _unitOfWork.BeginTransaction();
             try
@@ -53,22 +56,33 @@ namespace LightNote.Application.BusinessLogic.Identity.CommandHandlers
                 if (!result.Succeeded)
                 {
                     await transaction.RollbackAsync(cancellationToken);
-                    var operationResult = OperationResult<string>.CreateFailure(result.Errors.Select(e => new Exception(e.Description)).ToArray());
-                    return operationResult;
+                    result.Errors.ToList().ForEach(e => _exceptions.Add(new Exception(e.Description)));
+                    return (newIdentity, _userProfileId);
                 }
-                // create user profile
-                var newUserId = await CreateUserProfileAsync(newIdentity, request, transaction, cancellationToken);
 
-                // generate token
-                var token = _tokenService.GenerateClaimsAndJwtToken(newIdentity.Id, newUserId, newIdentity.Email);
-                return OperationResult<string>.CreateSuccess(_tokenService.WriteToken(token));
+                // create user profile
+                _userProfileId = await CreateUserProfileAsync(newIdentity, request, transaction, cancellationToken);
+                return (newIdentity, _userProfileId);
+
             }
             catch (Exception ex)
             {
                 await transaction.RollbackAsync(cancellationToken);
-                var operationResult = OperationResult<string>.CreateFailure(new[] { new ResourceAlreadyExistsException(ex.Message) });
-                return operationResult;
+                _exceptions.Add(ex);
+                return (newIdentity, _userProfileId);
             }
+        }
+        public async Task<OperationResult<string>> Handle(RegisterIdentity request, CancellationToken cancellationToken)
+        {
+            await ValidateIfUserExists(request);
+            (_newIdentity, _userProfileId) = await CreateIdentityAndUserProfile(request, cancellationToken);
+            if (_exceptions.Any())
+            {
+                return OperationResult<string>.CreateFailure(_exceptions);
+            }
+            // generate token
+            var token = _tokenService.GenerateClaimsAndJwtToken(_newIdentity.Id, _userProfileId, _newIdentity.Email!);
+            return OperationResult<string>.CreateSuccess(_tokenService.WriteToken(token));
         }
 
         private async Task<Guid> CreateUserProfileAsync(IdentityUser identity, RegisterIdentity request, IDbContextTransaction transaction, CancellationToken cancellationToken)
