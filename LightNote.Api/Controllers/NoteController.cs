@@ -3,16 +3,22 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LightNote.Api.Controllers
 {
-	[ApiVersion("1.0")]
-	[ApiController]
-	[Route("api/v{version:apiVersion}/{controller}")]
-	public class NoteController : ControllerBase
-	{
-		[Route("{id}")]
-		[HttpGet]
-		public IActionResult GetById(int id) {
-			return Ok("hello");
-		}
-	}
+    [ApiVersion("1.0")]
+    [ApiController]
+    [Route("api/v{version:apiVersion}/{controller}")]
+    public class NoteController : ControllerBase
+    {
+        [Route("{id}")]
+        [HttpGet]
+        public IActionResult GetById(int id)
+        {
+            return Ok("hello");
+        }
+        [HttpGet]
+        public IActionResult Get()
+        {
+            return Ok("hello!!!! You did it!");
+        }
+    }
 }
 

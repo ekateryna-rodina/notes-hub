@@ -5,21 +5,42 @@ using LightNote.Domain.Models.Note;
 using LightNote.Domain.Models.User;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace LightNote.Dal
 {
     public class AppDbContext : IdentityDbContext
     {
-        public AppDbContext(DbContextOptions options) : base(options)
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
+            try
+            {
+                var databaseCreator = Database.GetService<IDatabaseCreator>() as RelationalDatabaseCreator;
+                if (databaseCreator != null)
+                {
+                    if (!databaseCreator.CanConnect())
+                    {
+                        databaseCreator.Create();
+                    }
+                    if (!databaseCreator.HasTables())
+                    {
+                        databaseCreator.CreateTables();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
-        public DbSet<UserProfile> UserProfiles { get; set; }
-        public DbSet<Note> Notes { get; set; }
-        public DbSet<Tag> Tags { get; set; }
-        public DbSet<Reference> References {get;set;}
-        public DbSet<Comment> Comments { get; set; }
-        public DbSet<Interaction> Interactions { get; set; }
+        public DbSet<UserProfile> UserProfiles { get; set; } = default!;
+        public DbSet<Note> Notes { get; set; } = default!;
+        public DbSet<Tag> Tags { get; set; } = default!;
+        public DbSet<Reference> References { get; set; } = default!;
+        public DbSet<Comment> Comments { get; set; } = default!;
+        public DbSet<Interaction> Interactions { get; set; } = default!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

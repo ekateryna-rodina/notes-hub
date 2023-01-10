@@ -16,7 +16,8 @@ namespace LightNote.Api.Controllers
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
-        public IdentityController(IMediator mediator, IMapper mapper) {
+        public IdentityController(IMediator mediator, IMapper mapper)
+        {
             _mediator = mediator;
             _mapper = mapper;
         }
@@ -24,17 +25,17 @@ namespace LightNote.Api.Controllers
         [HttpPost]
         [Route(ApiRoutes.Identity.Register)]
         [ValidateModel]
-        public async Task<IActionResult> Register(Registration registerRequest)
+        public async Task<IActionResult> RegisterAsync(Registration registerRequest)
         {
             var command = _mapper.Map<RegisterIdentity>(registerRequest);
             var operationResult = await _mediator.Send(command);
-            var authResult = new AuthenticationResult { Token = operationResult.Value };            
+            var authResult = new AuthenticationResult { Token = operationResult.Value };
             return Ok(authResult);
         }
         [HttpPost]
         [Route(ApiRoutes.Identity.Login)]
         [ValidateModel]
-        public async Task<IActionResult> Loginf(Login loginRequest)
+        public async Task<IActionResult> LoginAsync(Login loginRequest)
         {
             var command = _mapper.Map<LoginIdentity>(loginRequest);
             var operationResult = await _mediator.Send(command);

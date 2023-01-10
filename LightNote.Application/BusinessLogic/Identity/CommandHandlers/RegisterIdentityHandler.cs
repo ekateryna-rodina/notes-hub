@@ -19,25 +19,27 @@ using Microsoft.EntityFrameworkCore.Storage;
 namespace LightNote.Application.BusinessLogic.Identity.CommandHandlers
 {
     public class RegisterIdentityHandler : IRequestHandler<RegisterIdentity, OperationResult<string>>
-	{
+    {
         private readonly IToken _tokenService;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IUnitOfWork _unitOfWork;
-		public RegisterIdentityHandler(UserManager<IdentityUser> userManager, IUnitOfWork unitOfWork, IToken tokenService)
-		{
+        public RegisterIdentityHandler(UserManager<IdentityUser> userManager, IUnitOfWork unitOfWork, IToken tokenService)
+        {
             _userManager = userManager;
             _unitOfWork = unitOfWork;
             _tokenService = tokenService;
-		}
-       
+        }
+
         public async Task<OperationResult<string>> Handle(RegisterIdentity request, CancellationToken cancellationToken)
         {
             var existingIdentity = await _userManager.FindByEmailAsync(request.Email);
-            if (existingIdentity != null) {
-                var operationResult = OperationResult<string>.CreateFailure(new []{ new ResourceAlreadyExistsException("User exists")});
+            if (existingIdentity != null)
+            {
+                var operationResult = OperationResult<string>.CreateFailure(new[] { new ResourceAlreadyExistsException("User exists") });
                 return operationResult;
             }
-            var newIdentity = new IdentityUser {
+            var newIdentity = new IdentityUser
+            {
                 Email = request.Email,
                 UserName = request.Email
             };
@@ -48,7 +50,8 @@ namespace LightNote.Application.BusinessLogic.Identity.CommandHandlers
             {
                 // create identity
                 var result = await _userManager.CreateAsync(newIdentity, request.Password);
-                if (!result.Succeeded) {
+                if (!result.Succeeded)
+                {
                     await transaction.RollbackAsync(cancellationToken);
                     var operationResult = OperationResult<string>.CreateFailure(result.Errors.Select(e => new Exception(e.Description)).ToArray());
                     return operationResult;
@@ -57,8 +60,8 @@ namespace LightNote.Application.BusinessLogic.Identity.CommandHandlers
                 var newUserId = await CreateUserProfileAsync(newIdentity, request, transaction, cancellationToken);
 
                 // generate token
-                var token = _tokenService.GenerateJwtToken(newIdentity.Id, newUserId, newIdentity.Email);
-                return OperationResult<string>.CreateSuccess(token);
+                var token = _tokenService.GenerateClaimsAndJwtToken(newIdentity.Id, newUserId, newIdentity.Email);
+                return OperationResult<string>.CreateSuccess(_tokenService.WriteToken(token));
             }
             catch (Exception ex)
             {
@@ -68,7 +71,8 @@ namespace LightNote.Application.BusinessLogic.Identity.CommandHandlers
             }
         }
 
-        private async Task<Guid> CreateUserProfileAsync(IdentityUser identity, RegisterIdentity request, IDbContextTransaction transaction, CancellationToken cancellationToken) {
+        private async Task<Guid> CreateUserProfileAsync(IdentityUser identity, RegisterIdentity request, IDbContextTransaction transaction, CancellationToken cancellationToken)
+        {
             try
             {
                 var basicInfo = BasicUserInfo.CreateBasicUserInfo(request.FirstName, request.LastName, request.PhotoUrl, request.Country, request.City);

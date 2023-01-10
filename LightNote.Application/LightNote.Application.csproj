@@ -28,7 +28,6 @@
     <None Remove="Contracts\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0" />
     <PackageReference Include="MediatR" Version="11.1.0" />
     <PackageReference Include="AutoMapper" Version="12.0.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.25.1" />

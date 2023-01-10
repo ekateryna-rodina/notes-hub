@@ -1,0 +1,21 @@
+version: '3'
+services:
+  mssql-server:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: Karie-docker!3
+      MSSQL_PID: Express
+    ports:
+      - 1433:1433
+  notehubapp:
+    build: .
+    environment:
+      DbUser: sa
+      DbPassword: Karie-docker!3
+      DbPort: 1433
+      DbName: master
+    ports:
+      - 4800:80
+    depends_on:
+      - mssql-server
