@@ -2,6 +2,8 @@
 using LightNote.Application.Options;
 using LightNote.Application.Services.TokenGenerators;
 using LightNote.Application.Services.TokenValidators;
+using LightNote.Dal.Contracts;
+using LightNote.Dal.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -43,6 +45,8 @@ namespace LightNote.Api.Registrars
                 });
             builder.Services.AddTransient<ITokenGenerator, TokenGenerator>();
             builder.Services.AddTransient<ITokenValidator, RefreshTokenValidator>();
+            builder.Services.AddTransient<IRefreshTokenRepository, RefreshTokenRepository>();
+            builder.Services.AddTransient<IAuthenticator, Authenticator>();
             builder.Services.AddSingleton<AccessTokenGenerator>();
             builder.Services.AddSingleton<RefreshTokenGenerator>();
         }

@@ -1,10 +1,10 @@
 ﻿using System;
 using LightNote.Application.BusinessLogic.Users.Queries;
 using LightNote.Application.Options;
-using LightNote.Application.Services;
 using LightNote.Application.Services.TokenGenerators;
 using LightNote.Dal;
 using LightNote.Dal.Contracts;
+using LightNote.Dal.Services;
 using LightNote.IntegrationTests.Utils;
 using MediatR;
 using Microsoft.AspNetCore.Identity;

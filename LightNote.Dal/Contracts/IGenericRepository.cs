@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LightNote.Dal.Contracts
 {
-	public interface IGenericRepository<TEntity>
-	{
+    public interface IGenericRepository<TEntity>
+    {
         /// <summary>
         /// Returns entities
         /// </summary>
@@ -21,7 +21,7 @@ namespace LightNote.Dal.Contracts
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        TEntity GetByID(Guid id);
+        Task<TEntity> GetByID(Guid id);
         /// <summary>
         /// Creates new entity
         /// </summary>

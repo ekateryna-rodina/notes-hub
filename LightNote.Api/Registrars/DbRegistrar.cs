@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using LightNote.Dal;
 using LightNote.Dal.Contracts;
+using LightNote.Dal.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,7 +20,6 @@ namespace LightNote.Api.Registrars
             var name = config["DbName"];
 
             var cs = $"Server={DockerHostMachineIpAddress}, {port};Initial Catalog={name};User ID={user};Password={password};TrustServerCertificate=True;";
-            Console.WriteLine("kjhfgierhgfoierghoier" + "_" + cs);
             builder.Services.AddDbContext<AppDbContext>(options => options
             .UseSqlServer(cs)
             .LogTo(s => System.Diagnostics.Debug.WriteLine(s)));

@@ -42,8 +42,8 @@ namespace LightNote.Api.Controllers
             var operationResult = await _mediator.Send(command);
             var authResult = new AuthenticationResult
             {
-                AccessToken = operationResult.Value.ToTuple<string, string>().Item1,
-                RefreshToken = operationResult.Value.ToTuple<string, string>().Item2
+                AccessToken = operationResult.Value.AccessToken,
+                RefreshToken = operationResult.Value.RefreshToken
             };
             return Ok(authResult);
         }

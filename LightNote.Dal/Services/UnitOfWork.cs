@@ -5,15 +5,16 @@ using LightNote.Domain.Models.Note;
 using LightNote.Domain.Models.User;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace LightNote.Dal
+namespace LightNote.Dal.Services
 {
-	public class UnitOfWork : IDisposable, IUnitOfWork
-	{
+    public class UnitOfWork : IDisposable, IUnitOfWork
+    {
         private readonly AppDbContext _context;
         private GenericRepository<UserProfile>? _userRepository;
         private GenericRepository<Note>? _noteRepository;
         private IDbContextTransaction? _transaction;
-        public UnitOfWork(AppDbContext context) {
+        public UnitOfWork(AppDbContext context)
+        {
             _context = context;
         }
         public GenericRepository<UserProfile> UserRepository
@@ -57,7 +58,7 @@ namespace LightNote.Dal
                     _context.Dispose();
                 }
             }
-             disposed = true;
+            disposed = true;
         }
 
         public void Dispose()
@@ -68,7 +69,7 @@ namespace LightNote.Dal
 
         public IDbContextTransaction BeginTransaction()
         {
-            return  _context.Database.BeginTransaction();
+            return _context.Database.BeginTransaction();
         }
     }
 }

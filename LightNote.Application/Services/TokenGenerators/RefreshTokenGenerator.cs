@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using LightNote.Application.Contracts;
 using LightNote.Application.Options;
+using LightNote.Dal.Contracts;
 using Microsoft.Extensions.Options;
 
 namespace LightNote.Application.Services.TokenGenerators
@@ -25,7 +26,8 @@ namespace LightNote.Application.Services.TokenGenerators
             var issuer = _jwtOptions.Value.Issuer;
             var audience = _jwtOptions.Value.Audiences[0];
             var expirationMinutes = _jwtOptions.Value.RefreshTokenExpiration;
-            return _tokenGenerator.Generate(signingKey, issuer, audience, expirationMinutes);
+            var refreshToken = _tokenGenerator.Generate(signingKey, issuer, audience, expirationMinutes);
+            return refreshToken;
         }
     }
 }

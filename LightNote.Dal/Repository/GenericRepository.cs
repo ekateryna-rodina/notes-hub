@@ -48,9 +48,9 @@ namespace LightNote.Dal.Repository
             }
         }
 
-        public virtual TEntity GetByID(Guid id)
+        public virtual async Task<TEntity> GetByID(Guid id)
         {
-            return _dbSet.Find(id);
+            return await _dbSet.FindAsync(id);
         }
 
         public virtual void Insert(TEntity entity)
@@ -61,9 +61,10 @@ namespace LightNote.Dal.Repository
         public virtual void Delete(Guid id)
         {
             TEntity entityToDelete = _dbSet.Find(id);
-            if (entityToDelete != null) {
+            if (entityToDelete != null)
+            {
                 Delete(entityToDelete);
-            } 
+            }
         }
 
         public virtual void Delete(TEntity entityToDelete)
