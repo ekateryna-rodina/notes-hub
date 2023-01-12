@@ -10,8 +10,8 @@ using LightNote.IntegrationTests.Setup;
 namespace LightNote.IntegrationTests.Features.Identity
 {
     using static TestBase;
-	public class LoginIdentityTest
-	{
+    public class LoginIdentityTest
+    {
         private HttpClient _client;
 
         [SetUp]
@@ -48,7 +48,7 @@ namespace LightNote.IntegrationTests.Features.Identity
             var authResult = JsonConvert.DeserializeObject<AuthenticationResult>(await response.Content.ReadAsStringAsync());
 
             // Assert that the token property is not null or empty
-            Assert.NotNull(authResult.Token);
+            Assert.NotNull(authResult.AccessToken);
         }
     }
 }

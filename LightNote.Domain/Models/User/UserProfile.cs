@@ -1,27 +1,25 @@
 ﻿using System;
 namespace LightNote.Domain.Models.User
 {
-	public class UserProfile
-	{
+    public class UserProfile
+    {
         private readonly List<Note.Note> _notes = new List<Note.Note>();
-        private readonly List<Note.Comment> _comments = new List<Note.Comment>();
         private UserProfile()
         {
 
         }
         public Guid Id { get; private set; }
-		public string IdentityId { get; private set; }
-		public BasicUserInfo BasicUserInfo { get; private set; }
-		public DateTime CreatedAt { get; private set; }
-		public DateTime UpdatedAt { get; private set; }
+        public string IdentityId { get; private set; }
+        public BasicUserInfo BasicUserInfo { get; private set; }
+        public DateTime CreatedAt { get; private set; }
+        public DateTime UpdatedAt { get; private set; }
         public IEnumerable<Note.Note> Notes { get { return _notes; } }
-       public Subscription Subscription { get; private set; }
-        public IEnumerable<Note.Note> Interactions { get { return _notes; } }
-        public IEnumerable<Note.Comment> Comments { get { return _comments; } }
+        public Subscription Subscription { get; private set; }
 
-
-        public static UserProfile CreateUserProfile(string identityId, BasicUserInfo basicInfo) {
-            return new UserProfile {
+        public static UserProfile CreateUserProfile(string identityId, BasicUserInfo basicInfo)
+        {
+            return new UserProfile
+            {
                 IdentityId = identityId,
                 BasicUserInfo = basicInfo,
                 CreatedAt = DateTime.UtcNow
@@ -43,7 +41,8 @@ namespace LightNote.Domain.Models.User
         {
             BasicUserInfo.Updatelocation(country, city);
         }
-        public void AddFollowing(UserProfile userProfile) {
+        public void AddFollowing(UserProfile userProfile)
+        {
             Subscription.AddFollowing(userProfile);
         }
         public void RemoveFollowing(UserProfile userProfile)

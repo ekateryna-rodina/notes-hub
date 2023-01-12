@@ -13,24 +13,24 @@ using LightNote.Dal.Contracts;
 using LightNote.Application.Helpers;
 using LightNote.Application.Exceptions;
 using System.Collections.Generic;
-using LightNote.Application.Contracts;
 using Microsoft.EntityFrameworkCore.Storage;
+using LightNote.Application.Services.TokenGenerators;
 
 namespace LightNote.Application.BusinessLogic.Identity.CommandHandlers
 {
     public class RegisterIdentityHandler : IRequestHandler<RegisterIdentity, OperationResult<string>>
     {
-        private readonly IToken _tokenService;
+        private readonly AccessTokenGenerator _accessTokenGenerator;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IUnitOfWork _unitOfWork;
         private List<Exception> _exceptions = new();
         private IdentityUser _newIdentity = new();
         private Guid _userProfileId = default!;
-        public RegisterIdentityHandler(UserManager<IdentityUser> userManager, IUnitOfWork unitOfWork, IToken tokenService)
+        public RegisterIdentityHandler(UserManager<IdentityUser> userManager, IUnitOfWork unitOfWork, AccessTokenGenerator accessTokenGenerator)
         {
             _userManager = userManager;
             _unitOfWork = unitOfWork;
-            _tokenService = tokenService;
+            _accessTokenGenerator = accessTokenGenerator;
         }
         private async Task ValidateIfUserExists(RegisterIdentity request)
         {
@@ -81,8 +81,8 @@ namespace LightNote.Application.BusinessLogic.Identity.CommandHandlers
                 return OperationResult<string>.CreateFailure(_exceptions);
             }
             // generate token
-            var token = _tokenService.GenerateClaimsAndJwtToken(_newIdentity.Id, _userProfileId, _newIdentity.Email!);
-            return OperationResult<string>.CreateSuccess(_tokenService.WriteToken(token));
+            var token = _accessTokenGenerator.Generate(_newIdentity.Id, _userProfileId, _newIdentity.Email!);
+            return OperationResult<string>.CreateSuccess(token);
         }
 
         private async Task<Guid> CreateUserProfileAsync(IdentityUser identity, RegisterIdentity request, IDbContextTransaction transaction, CancellationToken cancellationToken)

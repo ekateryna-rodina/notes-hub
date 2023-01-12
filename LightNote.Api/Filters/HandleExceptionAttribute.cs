@@ -5,18 +5,14 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace LightNote.Api.Filters
 {
-	public class HandleExceptionAttribute : ExceptionFilterAttribute
-	{
+    public class HandleExceptionAttribute : ExceptionFilterAttribute
+    {
         public override void OnException(ExceptionContext context)
         {
-            var apiError = new ErrorResponse
-            {
-                Code = 500,
-                Phrase = "Internal Server Error",
-                Timestamp = DateTime.Now
-            };
+            var apiError = new ErrorResponse(500, "Internal server error");
             apiError.Errors.Add(context.Exception.Message);
-            context.Result = new JsonResult(apiError) {
+            context.Result = new JsonResult(apiError)
+            {
                 StatusCode = 500
             };
         }

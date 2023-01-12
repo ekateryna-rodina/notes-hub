@@ -1,8 +1,8 @@
 ﻿using System;
 using LightNote.Application.BusinessLogic.Users.Queries;
-using LightNote.Application.Contracts;
 using LightNote.Application.Options;
 using LightNote.Application.Services;
+using LightNote.Application.Services.TokenGenerators;
 using LightNote.Dal;
 using LightNote.Dal.Contracts;
 using LightNote.IntegrationTests.Utils;
@@ -68,7 +68,7 @@ namespace LightNote.IntegrationTests.Setup
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(_dockerConnectionString));
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.Configure<JwtSettings>(_configuration.GetSection("JwtSettings"));
-            services.AddTransient<IToken, JwtService>();
+            services.AddSingleton<AccessTokenGenerator>();
             services.AddIdentityCore<IdentityUser>().AddEntityFrameworkStores<AppDbContext>();
             return services;
         }

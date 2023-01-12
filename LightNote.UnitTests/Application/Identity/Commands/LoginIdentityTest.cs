@@ -1,8 +1,8 @@
 ﻿using System.Linq.Expressions;
 using LightNote.Application.BusinessLogic.Identity.CommandHandlers;
 using LightNote.Application.BusinessLogic.Identity.Commands;
-using LightNote.Application.Contracts;
 using LightNote.Application.Exceptions;
+using LightNote.Application.Services.TokenGenerators;
 using LightNote.Dal.Contracts;
 using LightNote.Dal.Repository;
 using LightNote.Domain.Models.User;
@@ -17,7 +17,8 @@ namespace LightNote.UnitTests.Application.Identity.Commands
     public class LoginIdentityTest
     {
         private Mock<IUnitOfWork> _unitOfWorkMock;
-        private Mock<IToken> _tokenServiceMock;
+        private Mock<AccessTokenGenerator> _accessTokenGeneratorMock;
+        private Mock<RefreshTokenGenerator> _refreshTokenGeneratorMock;
         private Mock<UserManager<IdentityUser>> _userManagerMock;
         private LoginIdentityHandler _handler;
         private readonly List<IdentityUser> _users = new List<IdentityUser>
@@ -31,10 +32,12 @@ namespace LightNote.UnitTests.Application.Identity.Commands
         public void SetUp()
         {
             _unitOfWorkMock = new Mock<IUnitOfWork>();
-            _tokenServiceMock = new Mock<IToken>();
-            _tokenServiceMock.Setup(x => x.GenerateJwtToken(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<string>())).Returns("mock token");
+            _accessTokenGeneratorMock = new Mock<AccessTokenGenerator>();
+            _refreshTokenGeneratorMock = new Mock<RefreshTokenGenerator>();
+            // TODO: fix this test
+            // _tokenServiceMock.Setup(x => x.GenerateClaimsAndJwtToken(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<string>())).Returns(new JwtSecurityToken());
             _userManagerMock = UserManagerMock.Create<IdentityUser>(_users);
-            _handler = new LoginIdentityHandler(_tokenServiceMock.Object, _userManagerMock.Object, _unitOfWorkMock.Object);
+            _handler = new LoginIdentityHandler(_accessTokenGeneratorMock.Object, _refreshTokenGeneratorMock.Object, _userManagerMock.Object, _unitOfWorkMock.Object);
         }
 
         [Test]

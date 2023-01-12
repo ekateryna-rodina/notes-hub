@@ -5,7 +5,7 @@ using MediatR;
 
 namespace LightNote.Application.BusinessLogic.Notes.CommandHandlers
 {
-	public class AddTagToNoteHandler : IRequestHandler<AddOrRemoveTag>
+    public class AddTagToNoteHandler : IRequestHandler<AddOrRemoveTag>
     {
         private readonly AppDbContext _context;
         public AddTagToNoteHandler(AppDbContext context)

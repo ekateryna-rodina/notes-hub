@@ -1,40 +1,46 @@
 ﻿using System;
 using LightNote.Application.BusinessLogic.Identity.Commands;
-using LightNote.Application.BusinessLogic.Users.Queries;
-using LightNote.Application.Contracts;
 using LightNote.Application.Exceptions;
 using LightNote.Application.Helpers;
+using LightNote.Application.Services.TokenGenerators;
 using LightNote.Dal.Contracts;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 
 namespace LightNote.Application.BusinessLogic.Identity.CommandHandlers
 {
-    public class LoginIdentityHandler : IRequestHandler<LoginIdentity, OperationResult<string>>
+    public class LoginIdentityHandler : IRequestHandler<LoginIdentity, OperationResult<(string, string)>>
     {
-        private readonly IToken _tokenService;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IUnitOfWork _unitOfWork;
         private List<Exception> _exceptions = new();
         private IdentityUser _currentIdentity = new();
         private Guid _userProfileId = default!;
-        public LoginIdentityHandler(IToken tokenService, UserManager<IdentityUser> userManager, IUnitOfWork unitOfWork)
+        private readonly AccessTokenGenerator _accessTokenGenerator = default!;
+        private readonly RefreshTokenGenerator _refreshTokenGenerator = default!;
+        public LoginIdentityHandler(
+                AccessTokenGenerator accessTokenGenerator,
+                RefreshTokenGenerator refreshTokenGenerator,
+                UserManager<IdentityUser> userManager,
+                IUnitOfWork unitOfWork)
         {
-            _tokenService = tokenService;
+            _accessTokenGenerator = accessTokenGenerator;
+            _refreshTokenGenerator = refreshTokenGenerator;
             _userManager = userManager;
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<OperationResult<string>> Handle(LoginIdentity request, CancellationToken cancellationToken)
+        public async Task<OperationResult<(string, string)>> Handle(LoginIdentity request, CancellationToken cancellationToken)
         {
             (_currentIdentity, _userProfileId) = await ValidateUserAndReturnInfo(request);
             if (_exceptions.Any())
             {
-                return OperationResult<string>.CreateFailure(_exceptions);
+                return OperationResult<(string, string)>.CreateFailure(_exceptions);
             }
             // generate token
-            var token = _tokenService.GenerateClaimsAndJwtToken(_currentIdentity.Id, _userProfileId, request.Email);
-            return OperationResult<string>.CreateSuccess(_tokenService.WriteToken(token));
+            var accessToken = _accessTokenGenerator.Generate(_currentIdentity.Id, _userProfileId, request.Email);
+            var refreshToken = _refreshTokenGenerator.Generate();
+            return OperationResult<(string, string)>.CreateSuccess((accessToken, refreshToken));
         }
 
         private async Task<(IdentityUser, Guid)> ValidateUserAndReturnInfo(LoginIdentity request)

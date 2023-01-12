@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LightNote.Api.Contracts.Common;
 using LightNote.Api.Contracts.Identity.Request;
 using LightNote.Api.Contracts.Identity.Response;
 using LightNote.Api.Filters;
@@ -29,7 +30,7 @@ namespace LightNote.Api.Controllers
         {
             var command = _mapper.Map<RegisterIdentity>(registerRequest);
             var operationResult = await _mediator.Send(command);
-            var authResult = new AuthenticationResult { Token = operationResult.Value };
+            var authResult = new AuthenticationResult { AccessToken = operationResult.Value };
             return Ok(authResult);
         }
         [HttpPost]
@@ -39,8 +40,34 @@ namespace LightNote.Api.Controllers
         {
             var command = _mapper.Map<LoginIdentity>(loginRequest);
             var operationResult = await _mediator.Send(command);
-            var authResult = new AuthenticationResult { Token = operationResult.Value };
+            var authResult = new AuthenticationResult
+            {
+                AccessToken = operationResult.Value.ToTuple<string, string>().Item1,
+                RefreshToken = operationResult.Value.ToTuple<string, string>().Item2
+            };
             return Ok(authResult);
+        }
+        [HttpPost]
+        [Route(ApiRoutes.Identity.Refresh)]
+        [ValidateModel]
+        public async Task<IActionResult> RefreshAsync([FromBody] Refresh refreshRequest)
+        {
+            var command = _mapper.Map<LogoutIdentity>(refreshRequest);
+            var result = await _mediator.Send(command);
+            if (result.Value == false)
+            {
+                return Ok();
+            }
+            return BadRequest(new ErrorResponse(403, "Invalid token"));
+        }
+        [HttpDelete]
+        [Route(ApiRoutes.Identity.Logout)]
+        public async Task<IActionResult> LogoutAsync()
+        {
+            var authorizationHeader = HttpContext.Request.Headers["authorization"];
+            var command = _mapper.Map<LogoutIdentity>(authorizationHeader);
+            await _mediator.Send(command);
+            return Ok();
         }
     }
 }

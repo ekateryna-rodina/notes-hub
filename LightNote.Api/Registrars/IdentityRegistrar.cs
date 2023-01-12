@@ -1,16 +1,14 @@
-﻿using System;
-using LightNote.Application.Contracts;
+﻿using LightNote.Application.Contracts;
 using LightNote.Application.Options;
-using LightNote.Application.Services;
+using LightNote.Application.Services.TokenGenerators;
+using LightNote.Application.Services.TokenValidators;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 namespace LightNote.Api.Registrars
 {
-	public class IdentityRegistrar : IWebAppBuilderRegistrar
-	{
+    public class IdentityRegistrar : IWebAppBuilderRegistrar
+    {
         public void RegisterServices(WebApplicationBuilder builder)
         {
             var jwtSettings = new JwtSettings();
@@ -19,28 +17,34 @@ namespace LightNote.Api.Registrars
             var jwtConfig = builder.Configuration.GetSection(nameof(JwtSettings));
             builder.Services.Configure<JwtSettings>(jwtConfig);
 
-            builder.Services.AddAuthentication(a => {
+            builder.Services.AddAuthentication(a =>
+            {
                 a.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 a.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 a.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-                .AddJwtBearer(jwt => {
+                .AddJwtBearer(jwt =>
+                {
                     jwt.SaveToken = true;
                     jwt.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.ASCII.GetBytes(jwtSettings.SigningKey)),
+                        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.ASCII.GetBytes(jwtSettings.AccessSigningKey)),
                         ValidateIssuer = true,
                         ValidIssuer = jwtSettings.Issuer,
                         ValidateAudience = true,
                         ValidAudiences = jwtSettings.Audiences,
                         RequireExpirationTime = false,
-                        ValidateLifetime = true
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.Zero
                     };
                     jwt.Audience = jwtSettings.Audiences[0];
                     jwt.ClaimsIssuer = jwtSettings.Issuer;
                 });
-            builder.Services.AddTransient<IToken, JwtService>();
+            builder.Services.AddTransient<ITokenGenerator, TokenGenerator>();
+            builder.Services.AddTransient<ITokenValidator, RefreshTokenValidator>();
+            builder.Services.AddSingleton<AccessTokenGenerator>();
+            builder.Services.AddSingleton<RefreshTokenGenerator>();
         }
     }
 }

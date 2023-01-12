@@ -39,16 +39,12 @@ namespace LightNote.Dal
         public DbSet<Note> Notes { get; set; } = default!;
         public DbSet<Tag> Tags { get; set; } = default!;
         public DbSet<Reference> References { get; set; } = default!;
-        public DbSet<Comment> Comments { get; set; } = default!;
-        public DbSet<Interaction> Interactions { get; set; } = default!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfiguration(new UserProfileConfig());
             modelBuilder.ApplyConfiguration(new NoteConfig());
-            modelBuilder.ApplyConfiguration(new CommentConfig());
-            modelBuilder.ApplyConfiguration(new InteractionConfig());
         }
     }
 }
