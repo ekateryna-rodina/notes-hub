@@ -16,7 +16,7 @@ namespace LightNote.Api.Registrars
             var cs = string.Empty;
             if (builder.Environment.IsDevelopment())
             {
-                cs = "Server=localhost, 1433;Initial Catalog=master;User ID=sa;Password=Qwerty12345!;TrustServerCertificate=True;";
+                cs = builder.Configuration.GetConnectionString("Default");
             }
             else
             {
