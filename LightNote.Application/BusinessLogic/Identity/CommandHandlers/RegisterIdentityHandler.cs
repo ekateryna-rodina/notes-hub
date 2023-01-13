@@ -1,36 +1,31 @@
-﻿using System.Security.Claims;
-using System.Text;
-using LightNote.Application.BusinessLogic.Identity.Commands;
-using LightNote.Dal;
+﻿using LightNote.Application.BusinessLogic.Identity.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
 using LightNote.Domain.Models.User;
-using LightNote.Application.Options;
-using Microsoft.Extensions.Options;
 using LightNote.Dal.Contracts;
 using LightNote.Application.Helpers;
 using LightNote.Application.Exceptions;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Storage;
-using LightNote.Application.Services.TokenGenerators;
+using LightNote.Application.Contracts;
+using LightNote.Application.Models;
 
 namespace LightNote.Application.BusinessLogic.Identity.CommandHandlers
 {
-    public class RegisterIdentityHandler : IRequestHandler<RegisterIdentity, OperationResult<string>>
+    public class RegisterIdentityHandler : IRequestHandler<RegisterIdentity, OperationResult<AuthenticatedResponse>>
     {
-        private readonly AccessTokenGenerator _accessTokenGenerator;
+        private readonly IAuthenticator _autenticator;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IUnitOfWork _unitOfWork;
         private List<Exception> _exceptions = new();
         private IdentityUser _newIdentity = new();
         private Guid _userProfileId = default!;
-        public RegisterIdentityHandler(UserManager<IdentityUser> userManager, IUnitOfWork unitOfWork, AccessTokenGenerator accessTokenGenerator)
+        public RegisterIdentityHandler(UserManager<IdentityUser> userManager,
+        IUnitOfWork unitOfWork,
+        IAuthenticator autenticator)
         {
             _userManager = userManager;
             _unitOfWork = unitOfWork;
-            _accessTokenGenerator = accessTokenGenerator;
+            _autenticator = autenticator;
         }
         private async Task ValidateIfUserExists(RegisterIdentity request)
         {
@@ -72,17 +67,17 @@ namespace LightNote.Application.BusinessLogic.Identity.CommandHandlers
                 return (newIdentity, _userProfileId);
             }
         }
-        public async Task<OperationResult<string>> Handle(RegisterIdentity request, CancellationToken cancellationToken)
+        public async Task<OperationResult<AuthenticatedResponse>> Handle(RegisterIdentity request, CancellationToken cancellationToken)
         {
             await ValidateIfUserExists(request);
             (_newIdentity, _userProfileId) = await CreateIdentityAndUserProfile(request, cancellationToken);
             if (_exceptions.Any())
             {
-                return OperationResult<string>.CreateFailure(_exceptions);
+                return OperationResult<AuthenticatedResponse>.CreateFailure(_exceptions);
             }
             // generate token
-            var token = _accessTokenGenerator.Generate(_newIdentity.Id, _userProfileId, _newIdentity.Email!);
-            return OperationResult<string>.CreateSuccess(token);
+            var tokens = await _autenticator.Authenticate(_newIdentity.Id, _userProfileId, _newIdentity.Email!);
+            return OperationResult<AuthenticatedResponse>.CreateSuccess(tokens);
         }
 
         private async Task<Guid> CreateUserProfileAsync(IdentityUser identity, RegisterIdentity request, IDbContextTransaction transaction, CancellationToken cancellationToken)

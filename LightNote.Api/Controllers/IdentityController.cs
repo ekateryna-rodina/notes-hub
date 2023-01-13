@@ -5,6 +5,7 @@ using LightNote.Api.Contracts.Identity.Response;
 using LightNote.Api.Filters;
 using LightNote.Application.BusinessLogic.Identity.Commands;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LightNote.Api.Controllers
@@ -30,7 +31,7 @@ namespace LightNote.Api.Controllers
         {
             var command = _mapper.Map<RegisterIdentity>(registerRequest);
             var operationResult = await _mediator.Send(command);
-            var authResult = new AuthenticationResult { AccessToken = operationResult.Value };
+            var authResult = new AuthenticationResult { AccessToken = operationResult.Value.AccessToken, RefreshToken = operationResult.Value.RefreshToken };
             return Ok(authResult);
         }
         [HttpPost]
