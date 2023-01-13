@@ -16,6 +16,8 @@
     <None Remove="Repository\" />
     <None Remove="Contracts\" />
     <None Remove="FluentMigrator" />
+    <None Remove="Microsoft.Extensions.Caching.StackExchangeRedis" />
+    <None Remove="Hazelcast.Net" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.1" />

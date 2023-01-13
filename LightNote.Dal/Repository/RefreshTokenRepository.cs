@@ -1,14 +1,16 @@
 using System.Collections.Concurrent;
 using LightNote.Dal.Contracts;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace LightNote.Dal.Repository
 {
     public class RefreshTokenRepository : IRefreshTokenRepository
     {
-        Dictionary<string, Guid> _refreshTokens = new Dictionary<string, Guid>();
+        // TODO: Change to another storage provider
+        ConcurrentDictionary<string, Guid> _refreshTokens = new ConcurrentDictionary<string, Guid>();
         public Task AddRefreshTokenAsync(string token, Guid userId)
         {
-            _refreshTokens.Add(token, userId);
+            _refreshTokens.TryAdd(token, userId);
             return Task.CompletedTask;
         }
 
@@ -19,9 +21,14 @@ namespace LightNote.Dal.Repository
             return Task.FromResult(userId);
         }
 
-        public Task RemoveRefreshTokenAsync(string token)
+        public Task RemoveRefreshTokensByUserIdAsync(Guid userId)
         {
-            throw new NotImplementedException();
+            foreach (var item in _refreshTokens.Where(kvp => kvp.Value == userId).ToList())
+            {
+                _refreshTokens.TryRemove(item.Key, out Guid removed);
+            }
+
+            return Task.CompletedTask;
         }
     }
 }

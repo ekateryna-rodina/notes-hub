@@ -9,6 +9,6 @@ namespace LightNote.Application.BusinessLogic.Identity.Commands
 {
     public class LogoutIdentity : IRequest<OperationResult<bool>>
     {
-        public string AuthorizationToken { get; set; } = default!;
+        public Guid UserId { get; set; } = default!;
     }
 }

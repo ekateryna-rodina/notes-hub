@@ -16,9 +16,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightNote.IntegrationTests", "LightNote.IntegrationTests\LightNote.IntegrationTests.csproj", "{ED901EA2-15FD-42DE-A49C-7E5B6B5D4799}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9026C136-7DEB-4B3B-A9DC-37462B9CB77E}"
-	ProjectSection(SolutionItems) = preProject
-		Dockerfile.txt = Dockerfile.txt
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

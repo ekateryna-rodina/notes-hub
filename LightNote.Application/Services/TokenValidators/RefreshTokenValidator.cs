@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using LightNote.Application.Contracts;
 using LightNote.Application.Options;
@@ -27,15 +28,13 @@ namespace LightNote.Application.Services.TokenValidators
                 ValidIssuer = _jwtConfiguration.Value.Issuer,
                 ValidateAudience = true,
                 ValidAudiences = _jwtConfiguration.Value.Audiences,
-                RequireExpirationTime = false,
-                ValidateLifetime = true,
-                ClockSkew = TimeSpan.Zero
+                ClockSkew = TimeSpan.Zero,
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
             try
             {
-                tokenHandler.ValidateToken(token, null, out SecurityToken validatedToken);
+                tokenHandler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
                 return true;
             }
             catch (Exception ex)
