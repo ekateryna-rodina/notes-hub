@@ -36,8 +36,6 @@ namespace LightNote.Api.Registrars
                         ValidIssuer = jwtSettings.Issuer,
                         ValidateAudience = true,
                         ValidAudiences = jwtSettings.Audiences,
-                        RequireExpirationTime = false,
-                        ValidateLifetime = true,
                         ClockSkew = TimeSpan.Zero
                     };
                     jwt.Audience = jwtSettings.Audiences[0];
@@ -45,7 +43,7 @@ namespace LightNote.Api.Registrars
                 });
             builder.Services.AddTransient<ITokenGenerator, TokenGenerator>();
             builder.Services.AddTransient<ITokenValidator, RefreshTokenValidator>();
-            builder.Services.AddTransient<IRefreshTokenRepository, RefreshTokenRepository>();
+            builder.Services.AddSingleton<IRefreshTokenRepository, RefreshTokenRepository>();
             builder.Services.AddTransient<IAuthenticator, Authenticator>();
             builder.Services.AddSingleton<AccessTokenGenerator>();
             builder.Services.AddSingleton<RefreshTokenGenerator>();

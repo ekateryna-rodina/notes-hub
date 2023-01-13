@@ -1,9 +1,9 @@
-﻿using AutoMapper;
-using LightNote.Api.Contracts.Common;
+﻿using LightNote.Api.Contracts.Common;
 using LightNote.Api.Contracts.Identity.Request;
 using LightNote.Api.Contracts.Identity.Response;
 using LightNote.Api.Filters;
 using LightNote.Application.BusinessLogic.Identity.Commands;
+using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,11 +17,9 @@ namespace LightNote.Api.Controllers
     public class IdentityController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly IMapper _mapper;
-        public IdentityController(IMediator mediator, IMapper mapper)
+        public IdentityController(IMediator mediator)
         {
             _mediator = mediator;
-            _mapper = mapper;
         }
 
         [HttpPost]
@@ -29,7 +27,7 @@ namespace LightNote.Api.Controllers
         [ValidateModel]
         public async Task<IActionResult> RegisterAsync(Registration registerRequest)
         {
-            var command = _mapper.Map<RegisterIdentity>(registerRequest);
+            var command = registerRequest.Adapt<RegisterIdentity>();
             var operationResult = await _mediator.Send(command);
             var authResult = new AuthenticationResult { AccessToken = operationResult.Value.AccessToken, RefreshToken = operationResult.Value.RefreshToken };
             return Ok(authResult);
@@ -39,7 +37,7 @@ namespace LightNote.Api.Controllers
         [ValidateModel]
         public async Task<IActionResult> LoginAsync(Login loginRequest)
         {
-            var command = _mapper.Map<LoginIdentity>(loginRequest);
+            var command = loginRequest.Adapt<LoginIdentity>();
             var operationResult = await _mediator.Send(command);
             var authResult = new AuthenticationResult
             {
@@ -53,21 +51,21 @@ namespace LightNote.Api.Controllers
         [ValidateModel]
         public async Task<IActionResult> RefreshAsync([FromBody] Refresh refreshRequest)
         {
-            var command = _mapper.Map<LogoutIdentity>(refreshRequest);
+            var command = refreshRequest.Adapt<RefreshIdentity>();
             var result = await _mediator.Send(command);
-            if (result.Value == false)
+            if (result.IsSuccess == false)
             {
-                return Ok();
+                return BadRequest(new ErrorResponse(403, "Invalid token"));
             }
-            return BadRequest(new ErrorResponse(403, "Invalid token"));
+            return Ok(result.Value);
         }
         [HttpDelete]
         [Route(ApiRoutes.Identity.Logout)]
         public async Task<IActionResult> LogoutAsync()
         {
-            var authorizationHeader = HttpContext.Request.Headers["authorization"];
-            var command = _mapper.Map<LogoutIdentity>(authorizationHeader);
-            await _mediator.Send(command);
+            //var authorizationHeader = HttpContext.Request.Headers["authorization"];
+            //var command = _mapper.Map<LogoutIdentity>(authorizationHeader);
+            //await _mediator.Send(command);
             return Ok();
         }
     }
