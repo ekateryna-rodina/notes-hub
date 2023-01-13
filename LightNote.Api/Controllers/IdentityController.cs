@@ -1,6 +1,7 @@
 ﻿using LightNote.Api.Contracts.Common;
 using LightNote.Api.Contracts.Identity.Request;
 using LightNote.Api.Contracts.Identity.Response;
+using LightNote.Api.Extensions;
 using LightNote.Api.Filters;
 using LightNote.Application.BusinessLogic.Identity.Commands;
 using Mapster;
@@ -61,12 +62,17 @@ namespace LightNote.Api.Controllers
         }
         [HttpDelete]
         [Route(ApiRoutes.Identity.Logout)]
+        [Authorize]
         public async Task<IActionResult> LogoutAsync()
         {
-            //var authorizationHeader = HttpContext.Request.Headers["authorization"];
-            //var command = _mapper.Map<LogoutIdentity>(authorizationHeader);
-            //await _mediator.Send(command);
-            return Ok();
+            var logoutRequest = new
+            {
+                UserId = HttpContext.GetCurrentUserId()
+            };
+            
+            var command = logoutRequest.Adapt<LogoutIdentity>();
+            await _mediator.Send(command);
+            return NoContent();
         }
     }
 }
