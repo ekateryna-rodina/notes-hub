@@ -10,9 +10,9 @@ namespace LightNote.Domain.Models.NotebookAggregate.ValueObjects
         {
             Value = value;
         }
-        public static NotebookId Create()
+        public static NotebookId Create(Guid? id = null)
         {
-            return new NotebookId(Guid.NewGuid());
+            return new NotebookId(id ?? Guid.NewGuid());
         }
         public override IEnumerable<object> GetValues()
         {

@@ -1,5 +1,4 @@
-﻿using System;
-using LightNote.Application.BusinessLogic.Users.Queries;
+﻿using LightNote.Application.BusinessLogic.UserProfiles.Queries;
 using LightNote.Application.Options;
 using LightNote.Application.Services.TokenGenerators;
 using LightNote.Dal;

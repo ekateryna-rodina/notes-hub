@@ -12,6 +12,7 @@ namespace LightNote.Domain.Models.NotebookAggregate
     {
         private readonly List<PermanentNote> _permanentNotes = new();
         private readonly List<Insight> _insights = new();
+        private readonly List<Reference> _references = new();
         private Notebook(NotebookId id, Title title, UserProfileId userProfileId) : base(id)
         {
             Title = title;
@@ -24,6 +25,7 @@ namespace LightNote.Domain.Models.NotebookAggregate
         public DateTimeOffset? UpdatedAt { get; private set; }
         public IReadOnlyCollection<PermanentNote> PermanentNotes { get { return _permanentNotes.AsReadOnly(); } }
         public IReadOnlyCollection<Insight> Insights { get { return _insights.AsReadOnly(); } }
+        public IReadOnlyCollection<Reference> References { get { return _references.AsReadOnly(); } }
         public static Notebook Create(string title, Guid userProfileId)
         {
             return new(NotebookId.Create(),
@@ -65,6 +67,14 @@ namespace LightNote.Domain.Models.NotebookAggregate
             {
                 _insights[index] = newInsight;
             }
+        }
+        public void AddReference(Reference reference)
+        {
+            _references.Add(reference);
+        }
+        public void RemoveReference(Reference reference)
+        {
+            _references.Remove(reference);
         }
     }
 }

@@ -1,24 +1,49 @@
 ﻿using System;
 using LightNote.Application.BusinessLogic.References.Commands;
+using LightNote.Application.Exceptions;
+using LightNote.Application.Helpers;
 using LightNote.Dal;
-using LightNote.Domain.Models.Note;
+using LightNote.Dal.Contracts;
+using LightNote.Domain.Models.NotebookAggregate.Entities;
 using MediatR;
 
 namespace LightNote.Application.BusinessLogic.References.CommandHandlers
 {
-	public class CreateReferenceHandler : IRequestHandler<CreateReference, Reference>
-	{
-        private readonly AppDbContext _context;
-        public CreateReferenceHandler(AppDbContext context)
-		{
-            _context = context;
-		}
+    public class CreateReferenceHandler : IRequestHandler<CreateReference, OperationResult<Reference>>
+    {
+        private readonly IUnitOfWork _unitOfWork;
 
-        public async  Task<Reference> Handle(CreateReference request, CancellationToken cancellationToken)
+        public CreateReferenceHandler(IUnitOfWork unitOfWork)
         {
-            var reference = Reference.CreateReference(request.Name);
-            await _context.SaveChangesAsync();
-            return reference;
+            _unitOfWork = unitOfWork;
+        }
+
+        public async Task<OperationResult<Reference>> Handle(CreateReference request, CancellationToken cancellationToken)
+        {
+            var notebook = await _unitOfWork.NotebookRepository.GetByID(request.NotebookId);
+            if (notebook == null)
+            {
+                return OperationResult<Reference>.CreateFailure(new[] { new ResourceNotFoundException("Noteboook is not found") });
+            }
+            var tags = await _unitOfWork.TagRepository.Get(t => request.TagIds.Contains(t.Id.Value));
+            if (!tags.Any())
+            {
+                return OperationResult<Reference>.CreateFailure(new[] { new EntityIsRequiredException(nameof(Tag)) });
+            }
+
+            var reference = Reference.Create(request.Name, request.IsLink, request.UserProfileId, request.NotebookId, tags);
+            notebook.AddReference(reference);
+            try
+            {
+                _unitOfWork.ReferenceRepository.Insert(reference);
+                _unitOfWork.NotebookRepository.Update(notebook);
+                await _unitOfWork.SaveAsync();
+                return OperationResult<Reference>.CreateSuccess(reference);
+            }
+            catch (Exception ex)
+            {
+                return OperationResult<Reference>.CreateFailure(new[] { ex });
+            }
         }
     }
 }

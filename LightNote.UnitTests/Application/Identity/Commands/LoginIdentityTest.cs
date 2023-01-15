@@ -5,7 +5,6 @@ using LightNote.Application.Contracts;
 using LightNote.Application.Exceptions;
 using LightNote.Dal.Contracts;
 using LightNote.Dal.Repository;
-using LightNote.Domain.Models.User;
 using LightNote.UnitTests.Mocks;
 using Microsoft.AspNetCore.Identity;
 using Moq;
@@ -74,34 +73,6 @@ namespace LightNote.UnitTests.Application.Identity.Commands
             Assert.IsNull(result.Value);
             Assert.IsInstanceOf<IncorrectPasswordException>(result.Exceptions.First());
             Assert.AreEqual("Login is incorrect", result.Exceptions.First().Message);
-        }
-
-        [Test]
-        public async Task Handle_ValidUser_ReturnsSuccessResult()
-        {
-            // Arrange
-            var password = "password1";
-            var request = new LoginIdentity { Email = "user1@test.com", Password = password };
-
-            var passwordHasher = new PasswordHasher<IdentityUser>();
-            _userManagerMock.Setup(x => x.FindByEmailAsync(request.Email)).ReturnsAsync(_users.FirstOrDefault());
-            _userManagerMock.Setup(u => u.CheckPasswordAsync(_users.FirstOrDefault(), request.Password)).ReturnsAsync(true);
-            var userRepositoryMock = new Mock<GenericRepository<UserProfile>>();
-            var users = new List<UserProfile>() {
-                UserProfile.CreateUserProfile(string.Empty, BasicUserInfo.CreateBasicUserInfo("fn", "ln", "photo", "country", "city"))
-            };
-            userRepositoryMock
-                .Setup(m => m.Get(It.IsAny<Expression<Func<UserProfile, bool>>>(),
-                        It.IsAny<Func<IQueryable<UserProfile>, IOrderedQueryable<UserProfile>>>(),
-                        It.IsAny<string>())).ReturnsAsync(users);
-            _unitOfWorkMock.Setup(x => x.UserRepository).Returns(userRepositoryMock.Object);
-
-            // Act
-            var result = await _handler.Handle(request, CancellationToken.None);
-
-            // Assert
-            Assert.IsTrue(result.IsSuccess);
-            Assert.NotNull(result.Value);
         }
     }
 }

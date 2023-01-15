@@ -11,26 +11,26 @@
     <None Remove="Models\User\" />
     <None Remove="Docs\" />
     <None Remove="Docs\DomainModels\" />
-    <None Remove="Models\Notebook\" />
+    <None Remove="Models\NotebookAggregate\" />
     <None Remove="Models\Common\" />
     <None Remove="Models\Common\BaseModels\" />
-    <None Remove="Models\Notebook\Entities\" />
-    <None Remove="Models\Notebook\ValueObjects\" />
+    <None Remove="Models\NotebookAggregate\Entities\" />
+    <None Remove="Models\NotebookAggregate\ValueObjects\" />
     <None Remove="Models\Common\ValueObjects\" />
     <None Remove="Exceptions\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
-    <Folder Include="Models\UserProfile\" />
+    <Folder Include="Models\UserProfileAggregate\" />
     <Folder Include="Docs\" />
     <Folder Include="Docs\DomainModels\" />
-    <Folder Include="Models\Notebook\" />
+    <Folder Include="Models\NotebookAggregate\" />
     <Folder Include="Models\Common\" />
     <Folder Include="Models\Common\BaseModels\" />
-    <Folder Include="Models\Notebook\Entities\" />
-    <Folder Include="Models\Notebook\ValueObjects\" />
+    <Folder Include="Models\NotebookAggregate\Entities\" />
+    <Folder Include="Models\NotebookAggregate\ValueObjects\" />
     <Folder Include="Models\Common\ValueObjects\" />
     <Folder Include="Exceptions\" />
-    <Folder Include="Models\UserProfile\ValueObjects\" />
+    <Folder Include="Models\UserProfileAggregate\ValueObjects\" />
   </ItemGroup>
 </Project>

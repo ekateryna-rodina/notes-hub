@@ -1,18 +1,23 @@
 ﻿using System;
+using LightNote.Domain.Models.Common.BaseModels;
 using LightNote.Domain.Models.NotebookAggregate.ValueObjects;
-using LightNote.Domain.Models.UserProfileAggregate;
-using LightNote.Domain.Models.UserProfileAggregate.ValueObjects;
 
 namespace LightNote.Domain.Models.NotebookAggregate.Entities
 {
-    public class Tag
+    public sealed class Tag : Entity<TagId>
     {
-        public TagId Id { get; private set; }
+        private Tag(TagId id, string name) : base(id)
+        {
+            Name = name;
+        }
+
         public string Name { get; private set; }
-        public UserProfileId UserProfileId { get; private set; }
-        public UserProfile UserProfiled { get; private set; }
         public DateTimeOffset CreatedAt { get; private set; }
         public DateTimeOffset UpdatedAt { get; private set; }
+        public static Tag Create(string name)
+        {
+            return new(TagId.Create(), name);
+        }
     }
 }
 

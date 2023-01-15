@@ -10,25 +10,32 @@ namespace LightNote.Domain.Models.NotebookAggregate.Entities
     {
         private readonly List<Tag> _tags = new();
         private readonly List<Question> _questions = new();
-        public Reference(ReferenceId id, string name, bool isLink, UserProfileId userProfileId) : base(id)
+        private Reference(ReferenceId id, string name, bool isLink, UserProfileId userProfileId, NotebookId notebookId, IEnumerable<Tag> tags) : base(id)
         {
             Name = name;
             IsLink = isLink;
             UserProfileId = userProfileId;
+            NotebookId = notebookId;
+
+            SetTags(tags);
         }
         public string Name { get; private set; }
         public bool IsLink { get; private set; }
         public UserProfileId UserProfileId { get; private set; }
         public UserProfile UserProfile { get; private set; }
+        public NotebookId NotebookId { get; private set; }
+        public Notebook Notebook { get; private set; }
         public DateTimeOffset CreatedAt { get; private set; }
         public DateTimeOffset UpdatedAt { get; private set; }
-        public static Reference Create(string name, bool isLink, Guid userProfileId)
+        public static Reference Create(string name, bool isLink, Guid userProfileId, Guid notebookId, IEnumerable<Tag> tags)
         {
-            return new(ReferenceId.Create(), name, isLink, UserProfileId.Create(userProfileId));
+            return new(ReferenceId.Create(), name, isLink, UserProfileId.Create(userProfileId),
+                NotebookId.Create(notebookId), tags);
         }
-        public void AddTag(Tag tag)
+        public void SetTags(IEnumerable<Tag> tags)
         {
-            _tags.Add(tag);
+            _tags.Clear();
+            _tags.AddRange(tags);
         }
         public void RemoveTag(Tag tag)
         {

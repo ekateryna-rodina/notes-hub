@@ -48,7 +48,7 @@ namespace LightNote.Application.BusinessLogic.Identity.CommandHandlers
                 return OperationResult<AuthenticatedResponse>.CreateFailure(new[] { new IdentityDoesNotExistException("Identity does not exist") });
             }
 
-            var authenticatedResponse = await _authenticator.Authenticate(user.IdentityId, user.Id, identity.Email!);
+            var authenticatedResponse = await _authenticator.Authenticate(user.IdentityId, user.Id.Value, identity.Email!);
             return OperationResult<AuthenticatedResponse>.CreateSuccess(authenticatedResponse);
         }
     }

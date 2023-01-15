@@ -1,25 +1,35 @@
 ﻿using System;
 using LightNote.Application.BusinessLogic.Tags.Commands;
+using LightNote.Application.Helpers;
 using LightNote.Dal;
-using LightNote.Domain.Models.Note;
+using LightNote.Dal.Contracts;
+using LightNote.Domain.Models.NotebookAggregate.Entities;
 using MediatR;
 
 namespace LightNote.Application.BusinessLogic.Tags.CommandHandlers
 {
-	public class CreateTagHandler : IRequestHandler<CreateTag, Tag>
-	{
-        private readonly AppDbContext _context;
-        public CreateTagHandler(AppDbContext context)
-		{
-			_context = context;
-		}
+    public class CreateTagHandler : IRequestHandler<CreateTag, OperationResult<Tag>>
+    {
+        private readonly IUnitOfWork _unitOfWork;
 
-        public async Task<Tag> Handle(CreateTag request, CancellationToken cancellationToken)
+        public CreateTagHandler(IUnitOfWork unitOfWork)
         {
-            var tag = Tag.CreateTag(request.Name);
-            _context.Tags.Add(tag);
-            await _context.SaveChangesAsync();
-            return tag;
+            _unitOfWork = unitOfWork;
+        }
+
+        public async Task<OperationResult<Tag>> Handle(CreateTag request, CancellationToken cancellationToken)
+        {
+            var tag = Tag.Create(request.Name);
+            try
+            {
+                _unitOfWork.TagRepository.Insert(tag);
+                await _unitOfWork.SaveAsync();
+                return OperationResult<Tag>.CreateSuccess(tag);
+            }
+            catch (Exception ex)
+            {
+                return OperationResult<Tag>.CreateFailure(new[] { ex });
+            }
         }
     }
 }

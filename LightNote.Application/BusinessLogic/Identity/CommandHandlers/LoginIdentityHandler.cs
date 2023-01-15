@@ -66,7 +66,7 @@ namespace LightNote.Application.BusinessLogic.Identity.CommandHandlers
                 return (_currentIdentity, _userProfileId);
             }
 
-            return (existingIdentity, currentUserProfile!.Id);
+            return (existingIdentity, currentUserProfile!.Id.Value);
         }
     }
 }

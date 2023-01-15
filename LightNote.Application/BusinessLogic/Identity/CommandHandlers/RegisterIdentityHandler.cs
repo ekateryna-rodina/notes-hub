@@ -1,13 +1,13 @@
 ﻿using LightNote.Application.BusinessLogic.Identity.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using LightNote.Domain.Models.User;
 using LightNote.Dal.Contracts;
 using LightNote.Application.Helpers;
 using LightNote.Application.Exceptions;
 using Microsoft.EntityFrameworkCore.Storage;
 using LightNote.Application.Contracts;
 using LightNote.Application.Models;
+using LightNote.Domain.Models.UserProfileAggregate;
 
 namespace LightNote.Application.BusinessLogic.Identity.CommandHandlers
 {
@@ -84,12 +84,11 @@ namespace LightNote.Application.BusinessLogic.Identity.CommandHandlers
         {
             try
             {
-                var basicInfo = BasicUserInfo.CreateBasicUserInfo(request.FirstName, request.LastName, request.PhotoUrl, request.Country, request.City);
-                var userProfile = UserProfile.CreateUserProfile(identity.Id, basicInfo);
+                var userProfile = UserProfile.CreateUserProfile(identity.Id, request.FirstName, request.LastName, request.PhotoUrl, request.Country, request.City);
                 _unitOfWork.UserRepository.Insert(userProfile);
                 transaction.Commit();
                 await _unitOfWork.SaveAsync();
-                return userProfile.Id;
+                return userProfile.Id.Value;
             }
             catch
             {

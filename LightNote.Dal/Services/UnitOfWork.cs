@@ -1,8 +1,9 @@
 ﻿using System;
 using LightNote.Dal.Contracts;
 using LightNote.Dal.Repository;
-using LightNote.Domain.Models.Note;
-using LightNote.Domain.Models.User;
+using LightNote.Domain.Models.NotebookAggregate;
+using LightNote.Domain.Models.NotebookAggregate.Entities;
+using LightNote.Domain.Models.UserProfileAggregate;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace LightNote.Dal.Services
@@ -11,7 +12,13 @@ namespace LightNote.Dal.Services
     {
         private readonly AppDbContext _context;
         private GenericRepository<UserProfile>? _userRepository;
-        private GenericRepository<Note>? _noteRepository;
+        private GenericRepository<Notebook>? _notebookRepository;
+        private GenericRepository<Tag>? _tagRepository;
+        private GenericRepository<Reference>? _referenceRepository;
+        private GenericRepository<PermanentNote>? _permanentNoteRepository;
+        private GenericRepository<SlipNote>? _slipNoteRepository;
+        private GenericRepository<Insight>? _insightRepository;
+        private GenericRepository<Question>? _questionRepository;
         private IDbContextTransaction? _transaction;
         public UnitOfWork(AppDbContext context)
         {
@@ -29,16 +36,92 @@ namespace LightNote.Dal.Services
             }
         }
 
-        public GenericRepository<Note> NoteRepository
+        public GenericRepository<Notebook> NotebookRepository
         {
             get
             {
 
-                if (_noteRepository == null)
+                if (_notebookRepository == null)
                 {
-                    _noteRepository = new GenericRepository<Note>(_context);
+                    _notebookRepository = new GenericRepository<Notebook>(_context);
                 }
-                return _noteRepository;
+                return _notebookRepository;
+            }
+        }
+
+        public GenericRepository<Reference> ReferenceRepository
+        {
+            get
+            {
+                if (_referenceRepository == null)
+                {
+                    _referenceRepository = new GenericRepository<Reference>(_context);
+                }
+                return _referenceRepository;
+            }
+        }
+
+        public GenericRepository<Tag> TagRepository
+        {
+            get
+            {
+                if (_tagRepository == null)
+                {
+                    _tagRepository = new GenericRepository<Tag>(_context);
+                }
+                return _tagRepository;
+            }
+        }
+
+        public GenericRepository<PermanentNote> PermanentNoteRepository
+        {
+            get
+            {
+
+                if (_permanentNoteRepository == null)
+                {
+                    _permanentNoteRepository = new GenericRepository<PermanentNote>(_context);
+                }
+                return _permanentNoteRepository;
+            }
+        }
+
+        public GenericRepository<SlipNote> SlipNoteRepository
+        {
+            get
+            {
+
+                if (_slipNoteRepository == null)
+                {
+                    _slipNoteRepository = new GenericRepository<SlipNote>(_context);
+                }
+                return _slipNoteRepository;
+            }
+        }
+
+        public GenericRepository<Insight> InsightRepository
+        {
+            get
+            {
+
+                if (_insightRepository == null)
+                {
+                    _insightRepository = new GenericRepository<Insight>(_context);
+                }
+                return _insightRepository;
+            }
+        }
+
+        public GenericRepository<Question> QuestionRepository
+        {
+            get
+            {
+
+                if (_questionRepository == null)
+                {
+                    _questionRepository = new GenericRepository<Question>(_context);
+                }
+                return _questionRepository;
             }
         }
 

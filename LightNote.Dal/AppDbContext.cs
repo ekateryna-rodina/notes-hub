@@ -1,8 +1,6 @@
-﻿
-using System;
-using LightNote.Dal.Config;
-using LightNote.Domain.Models.Note;
-using LightNote.Domain.Models.User;
+﻿using LightNote.Dal.Config;
+using LightNote.Domain.Models.NotebookAggregate;
+using LightNote.Domain.Models.UserProfileAggregate;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -36,15 +34,12 @@ namespace LightNote.Dal
         }
 
         public DbSet<UserProfile> UserProfiles { get; set; } = default!;
-        public DbSet<Note> Notes { get; set; } = default!;
-        public DbSet<Tag> Tags { get; set; } = default!;
-        public DbSet<Reference> References { get; set; } = default!;
-
+        public DbSet<Notebook> Notebooks { get; set; } = default!;
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfiguration(new UserProfileConfig());
-            modelBuilder.ApplyConfiguration(new NoteConfig());
+            modelBuilder.ApplyConfiguration(new NotebookConfig());
         }
     }
 }
