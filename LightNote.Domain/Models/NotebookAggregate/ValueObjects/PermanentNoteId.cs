@@ -1,8 +1,8 @@
 ﻿using System;
 using LightNote.Domain.Models.Common.BaseModels;
-using LightNote.Domain.Models.Notebook.Entities;
+using LightNote.Domain.Models.NotebookAggregate.Entities;
 
-namespace LightNote.Domain.Models.Notebook.ValueObjects
+namespace LightNote.Domain.Models.NotebookAggregate.ValueObjects
 {
     public sealed class PermanentNoteId : ValueObject
     {

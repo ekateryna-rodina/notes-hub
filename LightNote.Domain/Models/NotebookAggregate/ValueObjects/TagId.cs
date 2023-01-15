@@ -1,18 +1,18 @@
 ﻿using System;
 using LightNote.Domain.Models.Common.BaseModels;
 
-namespace LightNote.Domain.Models.Notebook.ValueObjects
+namespace LightNote.Domain.Models.NotebookAggregate.ValueObjects
 {
-    public sealed class ReferenceId : ValueObject
+    public sealed class TagId : ValueObject
     {
         public Guid Value { get; init; }
-        private ReferenceId(Guid value)
+        private TagId(Guid value)
         {
             Value = value;
         }
-        public static ReferenceId Create()
+        public static TagId Create()
         {
-            return new ReferenceId(Guid.NewGuid());
+            return new TagId(Guid.NewGuid());
         }
 
         public override IEnumerable<object> GetValues()

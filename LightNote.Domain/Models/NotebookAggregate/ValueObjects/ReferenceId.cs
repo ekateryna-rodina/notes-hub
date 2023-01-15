@@ -1,18 +1,18 @@
 ﻿using System;
 using LightNote.Domain.Models.Common.BaseModels;
 
-namespace LightNote.Domain.Models.Notebook.ValueObjects
+namespace LightNote.Domain.Models.NotebookAggregate.ValueObjects
 {
-    public sealed class SlipNoteId : ValueObject
+    public sealed class ReferenceId : ValueObject
     {
         public Guid Value { get; init; }
-        private SlipNoteId(Guid value)
+        private ReferenceId(Guid value)
         {
             Value = value;
         }
-        public static SlipNoteId Create()
+        public static ReferenceId Create()
         {
-            return new SlipNoteId(Guid.NewGuid());
+            return new ReferenceId(Guid.NewGuid());
         }
 
         public override IEnumerable<object> GetValues()

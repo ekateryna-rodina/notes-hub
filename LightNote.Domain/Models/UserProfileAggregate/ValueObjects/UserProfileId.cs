@@ -1,6 +1,6 @@
 ﻿using LightNote.Domain.Models.Common.BaseModels;
 
-namespace LightNote.Domain.Models.UserProfile.ValueObjects
+namespace LightNote.Domain.Models.UserProfileAggregate.ValueObjects
 {
     public sealed class UserProfileId : ValueObject
     {

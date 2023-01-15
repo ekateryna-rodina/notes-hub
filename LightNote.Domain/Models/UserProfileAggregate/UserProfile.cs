@@ -1,7 +1,7 @@
 ﻿using System;
-using LightNote.Domain.Models.UserProfile.ValueObjects;
+using LightNote.Domain.Models.UserProfileAggregate.ValueObjects;
 
-namespace LightNote.Domain.Models.UserProfile
+namespace LightNote.Domain.Models.UserProfileAggregate
 {
     public class UserProfile
     {

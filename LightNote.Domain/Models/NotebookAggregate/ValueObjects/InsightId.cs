@@ -1,7 +1,7 @@
 ﻿using System;
 using LightNote.Domain.Models.Common.BaseModels;
 
-namespace LightNote.Domain.Models.Notebook.ValueObjects
+namespace LightNote.Domain.Models.NotebookAggregate.ValueObjects
 {
     public sealed class InsightId : ValueObject
     {

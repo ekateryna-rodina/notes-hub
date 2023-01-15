@@ -1,7 +1,6 @@
 ﻿using System;
 using LightNote.Domain.Exceptions;
 using LightNote.Domain.Models.Common.BaseModels;
-using LightNote.Domain.Models.Notebook.ValueObjects;
 
 namespace LightNote.Domain.Models.Common.ValueObjects
 {
