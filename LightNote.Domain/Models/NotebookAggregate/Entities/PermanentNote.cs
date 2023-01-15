@@ -11,23 +11,28 @@ namespace LightNote.Domain.Models.NotebookAggregate.Entities
     {
         private readonly List<SlipNote> _slipNotes = new();
         public PermanentNote(PermanentNoteId id, Title title,
-            Content content, UserProfileId userProfileId) : base(id)
+            Content content, UserProfileId userProfileId, NotebookId notebookId, IEnumerable<SlipNote> slipNotes) : base(id)
         {
             Title = title;
             Content = content;
             UserProfileId = userProfileId;
+            NotebookId = notebookId;
+            SetSlipNotes(slipNotes);
         }
         public Title Title { get; private set; }
         public Content Content { get; private set; }
         public UserProfileId UserProfileId { get; private set; }
         public UserProfile UserProfile { get; private set; }
+        public NotebookId NotebookId { get; private set; }
+        public Notebook Notebook { get; private set; }
         public DateTimeOffset CreatedAt { get; private set; }
         public DateTimeOffset UpdatedAt { get; private set; }
         public IReadOnlyCollection<SlipNote> SlipNotes { get { return _slipNotes.AsReadOnly(); } }
 
-        public static PermanentNote Create(string title, string content, Guid userProfileId)
+        public static PermanentNote Create(string title, string content, Guid userProfileId, Guid notebookId, IEnumerable<SlipNote> slipNotes)
         {
-            return new(PermanentNoteId.Create(), Title.Create(title), Content.Create(content), UserProfileId.Create(userProfileId));
+            return new(PermanentNoteId.Create(), Title.Create(title), Content.Create(content),
+            UserProfileId.Create(userProfileId), NotebookId.Create(notebookId), slipNotes);
         }
         public void UpdateTitle(string title)
         {
@@ -37,21 +42,10 @@ namespace LightNote.Domain.Models.NotebookAggregate.Entities
         {
             Content = Content.Create(content);
         }
-        public void AddSlipNote(SlipNote slipNote)
+        public void SetSlipNotes(IEnumerable<SlipNote> slipNotes)
         {
-            _slipNotes.Add(slipNote);
-        }
-        public void RemoveSlipNote(SlipNote slipNote)
-        {
-            _slipNotes.Remove(slipNote);
-        }
-        public void UpdateSlipNote(SlipNote oldSlipNote, SlipNote newSlipNote)
-        {
-            var index = _slipNotes.IndexOf(oldSlipNote);
-            if (index != -1)
-            {
-                _slipNotes[index] = newSlipNote;
-            }
+            _slipNotes.Clear();
+            _slipNotes.AddRange(slipNotes);
         }
     }
 }

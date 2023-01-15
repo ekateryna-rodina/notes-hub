@@ -6,11 +6,11 @@ using MediatR;
 
 namespace LightNote.Application.BusinessLogic.SlipNote.CommandHandlers
 {
-    public class UpdateSlipNoteHandler : IRequestHandler<UpdateSlipNoteContent, OperationResult<bool>>
+    public class UpdateSlipNoteContentHandler : IRequestHandler<UpdateSlipNoteContent, OperationResult<bool>>
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public UpdateSlipNoteHandler(IUnitOfWork unitOfWork)
+        public UpdateSlipNoteContentHandler(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
