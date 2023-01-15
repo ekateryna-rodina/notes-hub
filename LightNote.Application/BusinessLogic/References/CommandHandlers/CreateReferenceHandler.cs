@@ -25,6 +25,10 @@ namespace LightNote.Application.BusinessLogic.References.CommandHandlers
             {
                 return OperationResult<Reference>.CreateFailure(new[] { new ResourceNotFoundException("Noteboook is not found") });
             }
+            if (notebook.UserProfileId.Value != request.UserProfileId)
+            {
+                return OperationResult<Reference>.CreateFailure(new[] { new AccessIsNotAuthorizedException() });
+            }
             var tags = await _unitOfWork.TagRepository.Get(t => request.TagIds.Contains(t.Id.Value));
             if (!tags.Any())
             {

@@ -13,6 +13,7 @@ namespace LightNote.Domain.Models.NotebookAggregate
         private readonly List<PermanentNote> _permanentNotes = new();
         private readonly List<Insight> _insights = new();
         private readonly List<Reference> _references = new();
+        private readonly List<SlipNote> _slipNotes = new();
         private Notebook(NotebookId id, Title title, UserProfileId userProfileId) : base(id)
         {
             Title = title;
@@ -26,6 +27,7 @@ namespace LightNote.Domain.Models.NotebookAggregate
         public IReadOnlyCollection<PermanentNote> PermanentNotes { get { return _permanentNotes.AsReadOnly(); } }
         public IReadOnlyCollection<Insight> Insights { get { return _insights.AsReadOnly(); } }
         public IReadOnlyCollection<Reference> References { get { return _references.AsReadOnly(); } }
+        public IReadOnlyCollection<SlipNote> SlipNotes { get { return _slipNotes.AsReadOnly(); } }
         public static Notebook Create(string title, Guid userProfileId)
         {
             return new(NotebookId.Create(),
@@ -75,6 +77,14 @@ namespace LightNote.Domain.Models.NotebookAggregate
         public void RemoveReference(Reference reference)
         {
             _references.Remove(reference);
+        }
+        public void AddSlipNote(SlipNote slipNote)
+        {
+            _slipNotes.Add(slipNote);
+        }
+        public void RemoveSlipNote(SlipNote slipNote)
+        {
+            _slipNotes.Remove(slipNote);
         }
     }
 }

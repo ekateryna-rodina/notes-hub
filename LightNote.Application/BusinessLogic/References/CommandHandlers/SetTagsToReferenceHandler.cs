@@ -2,6 +2,7 @@ using LightNote.Application.BusinessLogic.References.Commands;
 using LightNote.Application.Exceptions;
 using LightNote.Application.Helpers;
 using LightNote.Dal.Contracts;
+using LightNote.Domain.Models.NotebookAggregate.Entities;
 using MediatR;
 
 namespace LightNote.Application.BusinessLogic.References.CommandHandlers
@@ -21,7 +22,7 @@ namespace LightNote.Application.BusinessLogic.References.CommandHandlers
             var reference = await _unitOfWork.ReferenceRepository.GetByID(request.ReferenceId);
             if (reference == null)
             {
-                return OperationResult<bool>.CreateFailure(new[] { new ResourceNotFoundException("Reference not found") });
+                return OperationResult<bool>.CreateFailure(new[] { new ResourceNotFoundException(nameof(Reference)) });
             }
             if (reference.UserProfileId.Value != request.UserProfileId)
             {
