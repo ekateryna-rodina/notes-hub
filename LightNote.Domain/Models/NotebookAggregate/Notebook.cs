@@ -14,6 +14,7 @@ namespace LightNote.Domain.Models.NotebookAggregate
         private readonly List<Insight> _insights = new();
         private readonly List<Reference> _references = new();
         private readonly List<SlipNote> _slipNotes = new();
+        private readonly List<Question> _questions = new();
         private Notebook(NotebookId id, Title title, UserProfileId userProfileId) : base(id)
         {
             Title = title;
@@ -28,6 +29,7 @@ namespace LightNote.Domain.Models.NotebookAggregate
         public IReadOnlyCollection<Insight> Insights { get { return _insights.AsReadOnly(); } }
         public IReadOnlyCollection<Reference> References { get { return _references.AsReadOnly(); } }
         public IReadOnlyCollection<SlipNote> SlipNotes { get { return _slipNotes.AsReadOnly(); } }
+        public IReadOnlyCollection<Question> Questions { get { return _questions.AsReadOnly(); } }
         public static Notebook Create(string title, Guid userProfileId)
         {
             return new(NotebookId.Create(),
@@ -46,14 +48,6 @@ namespace LightNote.Domain.Models.NotebookAggregate
         {
             _permanentNotes.Remove(permanentNote);
         }
-        public void UpdatePermanentNote(PermanentNote oldPermanentNote, PermanentNote newPermanentNote)
-        {
-            var index = _permanentNotes.IndexOf(oldPermanentNote);
-            if (index != -1)
-            {
-                _permanentNotes[index] = newPermanentNote;
-            }
-        }
         public void AddInsight(Insight insight)
         {
             _insights.Add(insight);
@@ -61,14 +55,6 @@ namespace LightNote.Domain.Models.NotebookAggregate
         public void RemoveInsight(Insight insight)
         {
             _insights.Remove(insight);
-        }
-        public void UpdateInsight(Insight oldInsight, Insight newInsight)
-        {
-            var index = _insights.IndexOf(oldInsight);
-            if (index != -1)
-            {
-                _insights[index] = newInsight;
-            }
         }
         public void AddReference(Reference reference)
         {
@@ -85,6 +71,14 @@ namespace LightNote.Domain.Models.NotebookAggregate
         public void RemoveSlipNote(SlipNote slipNote)
         {
             _slipNotes.Remove(slipNote);
+        }
+        public void AddQuestion(Question question)
+        {
+            _questions.Add(question);
+        }
+        public void RemoveQuestion(Question question)
+        {
+            _questions.Remove(question);
         }
     }
 }

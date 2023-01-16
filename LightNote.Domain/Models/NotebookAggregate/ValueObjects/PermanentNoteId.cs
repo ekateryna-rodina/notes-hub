@@ -11,9 +11,9 @@ namespace LightNote.Domain.Models.NotebookAggregate.ValueObjects
         {
             Value = value;
         }
-        public static PermanentNoteId Create()
+        public static PermanentNoteId Create(Guid? id = null)
         {
-            return new PermanentNoteId(Guid.NewGuid());
+            return new PermanentNoteId(id ?? Guid.NewGuid());
         }
 
         public override IEnumerable<object> GetValues()
