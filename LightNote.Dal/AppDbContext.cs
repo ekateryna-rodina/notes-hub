@@ -16,25 +16,6 @@ namespace LightNote.Dal
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
-            try
-            {
-                var databaseCreator = Database.GetService<IDatabaseCreator>() as RelationalDatabaseCreator;
-                if (databaseCreator != null)
-                {
-                    if (!databaseCreator.CanConnect())
-                    {
-                        databaseCreator.Create();
-                    }
-                    if (!databaseCreator.HasTables())
-                    {
-                        databaseCreator.CreateTables();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
         }
 
         public DbSet<UserProfile> UserProfiles { get; set; } = default!;
@@ -49,7 +30,7 @@ namespace LightNote.Dal
         public DbSet<ReferenceTag> ReferenceTags { get; set; } = default!;
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            SetValueObjectsAsKeyless(modelBuilder);
+            SetValueObjectsAsNonGenerated(modelBuilder);
             ApplyAllConfigurations(modelBuilder);
          
             base.OnModelCreating(modelBuilder);
@@ -72,18 +53,13 @@ namespace LightNote.Dal
 
         }
 
-        private void SetValueObjectsAsKeyless(ModelBuilder modelBuilder)
+        private void SetValueObjectsAsNonGenerated(ModelBuilder modelBuilder)
         {
             var assembly = typeof(ValueObject).Assembly;
             var valueTypes = assembly.GetTypes().Where(x => x.IsSubclassOf(typeof(ValueObject)));
             modelBuilder.Model.GetEntityTypes().SelectMany(t => t.GetProperties())
                 .Where(p => valueTypes.Contains(p.ClrType))
                 .ToList().ForEach(p => p.ValueGenerated = Microsoft.EntityFrameworkCore.Metadata.ValueGenerated.Never);
-            
-            //foreach (var valueType in valueTypes)
-            //{
-            //    modelBuilder.Entity(valueType).HasNoKey();
-            //}
         }
     }
 }

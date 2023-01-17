@@ -51,6 +51,7 @@
     <None Remove="Contracts\Tag\" />
     <None Remove="Contracts\Tag\Request\" />
     <None Remove="Contracts\Tag\Response\" />
+    <None Remove="Utils\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\" />
@@ -67,6 +68,7 @@
     <Folder Include="Contracts\Tag\" />
     <Folder Include="Contracts\Tag\Request\" />
     <Folder Include="Contracts\Tag\Response\" />
+    <Folder Include="Utils\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LightNote.Dal\LightNote.Dal.csproj">
