@@ -10,6 +10,7 @@ namespace LightNote.Domain.Models.NotebookAggregate.ValueObjects
         {
             Value = value;
         }
+        private NotebookId() { }
         public static NotebookId Create(Guid? id = null)
         {
             return new NotebookId(id ?? Guid.NewGuid());

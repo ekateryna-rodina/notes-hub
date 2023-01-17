@@ -3,11 +3,18 @@ namespace LightNote.Domain.Models.Common.BaseModels
 {
     public abstract class Entity<TId> : IEquatable<Entity<TId>> where TId : notnull
     {
+        private Guid id;
+
         public TId Id { get; protected set; }
         protected Entity(TId id)
         {
             Id = id;
         }
+
+        protected Entity()
+        {
+        }
+
         public override bool Equals(object obj)
         {
             return obj is Entity<TId> entity && Id.Equals(entity.Id);

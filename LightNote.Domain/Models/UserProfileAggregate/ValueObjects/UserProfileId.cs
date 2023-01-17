@@ -9,6 +9,7 @@ namespace LightNote.Domain.Models.UserProfileAggregate.ValueObjects
         {
             Value = value;
         }
+        private UserProfileId() { }
         public static UserProfileId Create(Guid? userProfileId = null)
         {
             return new UserProfileId(userProfileId ?? Guid.NewGuid());

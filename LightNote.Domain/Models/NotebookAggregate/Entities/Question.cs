@@ -9,6 +9,7 @@ namespace LightNote.Domain.Models.NotebookAggregate.Entities
 {
     public class Question : Entity<QuestionId>
     {
+        private readonly List<QuestionReference> _referencesFound = new();
         private Question(QuestionId id, Content content,
                 NotebookId notebookId, UserProfileId userProfileId,
                 InsightId insightId = null, PermanentNoteId permanentNoteId = null) : base(id)
@@ -19,6 +20,7 @@ namespace LightNote.Domain.Models.NotebookAggregate.Entities
             NotebookId = notebookId;
             UserProfileId = userProfileId;
         }
+        private Question() { }
         public Content Content { get; private set; }
         public InsightId InsightId { get; private set; } = default!;
         public Insight Insight { get; private set; } = default!;
@@ -30,6 +32,7 @@ namespace LightNote.Domain.Models.NotebookAggregate.Entities
         public UserProfile UserProfile { get; private set; }
         public DateTimeOffset CreatedAt { get; private set; }
         public DateTimeOffset UpdatedAt { get; private set; }
+        public IReadOnlyCollection<QuestionReference> ReferencesFound { get { return _referencesFound.AsReadOnly(); } }
 
         public static Question Create(string content, Guid notebookId, Guid userId, Guid? insightId = null, Guid? permanentNoteId = null)
         {

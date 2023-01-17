@@ -8,6 +8,6 @@ namespace LightNote.Application.BusinessLogic.SlipNote.Commands
         public string Content { get; set; } = default!;
         public Guid UserProfileId { get; set; }
         public Guid NotebookId { get; set; }
-        public IEnumerable<Guid> ReferenceIds { get; set; } = default!;
+        public Guid ReferenceId { get; set; } = default!;
     }
 }

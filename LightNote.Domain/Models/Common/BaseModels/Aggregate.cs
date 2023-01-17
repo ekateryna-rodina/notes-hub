@@ -6,6 +6,9 @@ namespace LightNote.Domain.Models.Common.BaseModels
 		protected Aggregate(TId id) : base(id)
 		{
 		}
-	}
+        protected Aggregate()
+        {
+        }
+    }
 }
 

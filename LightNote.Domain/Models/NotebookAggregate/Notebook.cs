@@ -20,6 +20,7 @@ namespace LightNote.Domain.Models.NotebookAggregate
             Title = title;
             UserProfileId = userProfileId;
         }
+        private Notebook() { }
         public Title Title { get; private set; }
         public UserProfileId UserProfileId { get; private set; }
         public UserProfile UserProfile { get; private set; }

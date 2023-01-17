@@ -39,7 +39,6 @@
     <None Remove="AutoMapper.Extensions.Microsoft.DependencyInjection" />
     <None Remove="Contracts\" />
     <None Remove="Contracts\User\" />
-    <None Remove="Contracts\User\Request\" />
     <None Remove="Contracts\User\Response\" />
     <None Remove="AutoMapper" />
     <None Remove="Microsoft.AspNetCore.Authentication.JwtBearer" />
@@ -49,20 +48,25 @@
     <None Remove="Contracts\Identity\Response\" />
     <None Remove="Filters\" />
     <None Remove="Contracts\Common\" />
+    <None Remove="Contracts\Tag\" />
+    <None Remove="Contracts\Tag\Request\" />
+    <None Remove="Contracts\Tag\Response\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\" />
     <Folder Include="Extensions\" />
     <Folder Include="Contracts\" />
-    <Folder Include="Contracts\User\" />
-    <Folder Include="Contracts\User\Request\" />
-    <Folder Include="Contracts\User\Response\" />
+    <Folder Include="Contracts\UserProfile\" />
+    <Folder Include="Contracts\UserProfile\Response\" />
     <Folder Include="Options\" />
     <Folder Include="Contracts\Identity\" />
     <Folder Include="Contracts\Identity\Request\" />
     <Folder Include="Contracts\Identity\Response\" />
     <Folder Include="Filters\" />
     <Folder Include="Contracts\Common\" />
+    <Folder Include="Contracts\Tag\" />
+    <Folder Include="Contracts\Tag\Request\" />
+    <Folder Include="Contracts\Tag\Response\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LightNote.Dal\LightNote.Dal.csproj">

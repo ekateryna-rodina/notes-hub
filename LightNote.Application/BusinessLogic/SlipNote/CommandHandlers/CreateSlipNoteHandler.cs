@@ -27,13 +27,13 @@ namespace LightNote.Application.BusinessLogic.SlipNote.CommandHandlers
             {
                 return OperationResult<Domain.Models.NotebookAggregate.Entities.SlipNote>.CreateFailure(new[] { new AccessIsNotAuthorizedException() });
             }
-            var references = await _unitOfWork.ReferenceRepository.Get(r => request.ReferenceIds.Contains(r.Id.Value));
-            if (!references.Any())
+            var reference = await _unitOfWork.ReferenceRepository.GetByID(request.ReferenceId);
+            if (reference == null)
             {
                 return OperationResult<Domain.Models.NotebookAggregate.Entities.SlipNote>.CreateFailure(new[] { new EntityIsRequiredException(nameof(Reference)) });
             }
             var slipNote = Domain.Models.NotebookAggregate.Entities.SlipNote
-                    .Create(request.Content, request.UserProfileId, request.NotebookId, references);
+                    .Create(request.Content, request.UserProfileId, request.NotebookId, reference);
             notebook.AddSlipNote(slipNote);
             try
             {

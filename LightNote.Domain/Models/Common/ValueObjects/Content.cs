@@ -1,8 +1,10 @@
 ﻿using System;
 using LightNote.Domain.Exceptions;
+using LightNote.Domain.Models.Common.BaseModels;
+
 namespace LightNote.Domain.Models.Common.ValueObjects
 {
-    public record Content
+    public sealed class Content : ValueObject
     {
         public string Value { get; set; }
         private Content(string value)
@@ -19,6 +21,11 @@ namespace LightNote.Domain.Models.Common.ValueObjects
         public static Content Create(string value)
         {
             return new Content(value);
+        }
+
+        public override IEnumerable<object> GetValues()
+        {
+            yield return Value;
         }
     }
 }

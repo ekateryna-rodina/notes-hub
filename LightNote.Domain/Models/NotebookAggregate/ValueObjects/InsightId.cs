@@ -10,6 +10,7 @@ namespace LightNote.Domain.Models.NotebookAggregate.ValueObjects
         {
             Value = value;
         }
+        private InsightId() { }
         public static InsightId Create(Guid? id = null)
         {
             return new InsightId(id ?? Guid.NewGuid());

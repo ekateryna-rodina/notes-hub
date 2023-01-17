@@ -10,9 +10,10 @@ namespace LightNote.Domain.Models.NotebookAggregate.ValueObjects
         {
             Value = value;
         }
-        public static SlipNoteId Create()
+        private SlipNoteId() { }
+        public static SlipNoteId Create(Guid? id = null)
         {
-            return new SlipNoteId(Guid.NewGuid());
+            return new SlipNoteId(id ?? Guid.NewGuid());
         }
 
         public override IEnumerable<object> GetValues()

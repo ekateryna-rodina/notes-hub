@@ -30,6 +30,11 @@ namespace LightNote.Api.Controllers
         {
             var command = registerRequest.Adapt<RegisterIdentity>();
             var operationResult = await _mediator.Send(command);
+            if (!operationResult.IsSuccess) {
+                var apiError = new ErrorResponse(400, "Bad request");
+                apiError.Errors.AddRange(operationResult.Exceptions.Select(e => e.Message));
+                return BadRequest(apiError);
+            }
             var authResult = new AuthenticationResult { AccessToken = operationResult.Value.AccessToken, RefreshToken = operationResult.Value.RefreshToken };
             return Ok(authResult);
         }
@@ -40,6 +45,12 @@ namespace LightNote.Api.Controllers
         {
             var command = loginRequest.Adapt<LoginIdentity>();
             var operationResult = await _mediator.Send(command);
+            if (!operationResult.IsSuccess)
+            {
+                var apiError = new ErrorResponse(400, "Bad request");
+                apiError.Errors.AddRange(operationResult.Exceptions.Select(e => e.Message));
+                return BadRequest(apiError);
+            }
             var authResult = new AuthenticationResult
             {
                 AccessToken = operationResult.Value.AccessToken,

@@ -12,6 +12,9 @@ namespace LightNote.Api
             public const string Refresh = "refresh";
             public const string Logout = "logout";
         }
+        public static class Tag {
+          
+        }
     }
 }
 

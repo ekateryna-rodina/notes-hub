@@ -10,7 +10,9 @@ namespace LightNote.Domain.Models.NotebookAggregate.Entities
     public class PermanentNote : Entity<PermanentNoteId>
     {
         private readonly List<SlipNote> _slipNotes = new();
-        public PermanentNote(PermanentNoteId id, Title title,
+        private readonly List<InsightPermanentNote> _createdInsights = new();
+        private readonly List<Question> _questions = new();
+        private PermanentNote(PermanentNoteId id, Title title,
             Content content, UserProfileId userProfileId, NotebookId notebookId, IEnumerable<SlipNote> slipNotes) : base(id)
         {
             Title = title;
@@ -19,6 +21,7 @@ namespace LightNote.Domain.Models.NotebookAggregate.Entities
             NotebookId = notebookId;
             SetSlipNotes(slipNotes);
         }
+        private PermanentNote() { }
         public Title Title { get; private set; }
         public Content Content { get; private set; }
         public UserProfileId UserProfileId { get; private set; }
@@ -28,6 +31,8 @@ namespace LightNote.Domain.Models.NotebookAggregate.Entities
         public DateTimeOffset CreatedAt { get; private set; }
         public DateTimeOffset UpdatedAt { get; private set; }
         public IReadOnlyCollection<SlipNote> SlipNotes { get { return _slipNotes.AsReadOnly(); } }
+        public IReadOnlyCollection<InsightPermanentNote> Insights { get { return _createdInsights.AsReadOnly(); } }
+        public IReadOnlyCollection<Question> Questions { get { return _questions.AsReadOnly(); } }
 
         public static PermanentNote Create(string title, string content, Guid userProfileId, Guid notebookId, IEnumerable<SlipNote> slipNotes)
         {
