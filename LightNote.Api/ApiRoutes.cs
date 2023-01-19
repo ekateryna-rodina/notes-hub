@@ -19,6 +19,14 @@ namespace LightNote.Api
             public const string CreateMany = "";
             public const string GetByIds = "{ids}";
         }
+        public static class Reference
+        {
+            public const string Create = "";
+            public const string GetAllByNotebookId = "{notebookId}";
+            public const string GetById = "{id}";
+            public const string Update = "{id}";
+            public const string Delete = "{id}";
+        }
     }
 }
 

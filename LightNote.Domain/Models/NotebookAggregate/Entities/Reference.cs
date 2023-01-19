@@ -46,6 +46,10 @@ namespace LightNote.Domain.Models.NotebookAggregate.Entities
                .AddRange(questions
                    .Select(t => new QuestionReference { QuestionId = t.Id, ReferenceId = Id }));
         }
+        public void Update(string name,bool isLink ) {
+            Name = name;
+            IsLink = isLink;
+        }
     }
 }
 

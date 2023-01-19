@@ -1,4 +1,5 @@
 ﻿using System;
+using LightNote.Api.Contracts.Reference.Response;
 using LightNote.Api.Contracts.Tag.Response;
 using LightNote.Application.BusinessLogic.Tags.Queries;
 using LightNote.Domain.Models.NotebookAggregate.Entities;
@@ -12,7 +13,11 @@ namespace LightNote.Api.Utils
             TypeAdapterConfig<Tag, TagResponse>
                .NewConfig()
                .Map(dest => dest.Id, src => src.Id.Value);
+            TypeAdapterConfig<Reference, ReferenceResponse>
+               .NewConfig()
+               .Map(dest => dest.Id, src => src.Id.Value);
         }
+
     }
 }
 

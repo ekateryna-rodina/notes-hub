@@ -7,19 +7,19 @@ using MediatR;
 
 namespace LightNote.Application.BusinessLogic.References.CommandHandlers
 {
-    public class SetTagsToReferenceHandler : IRequestHandler<SetTagsToReference, OperationResult<bool>>
+    public class UpdateReferenceHandler : IRequestHandler<UpdateReference, OperationResult<bool>>
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public SetTagsToReferenceHandler(IUnitOfWork unitOfWork)
+        public UpdateReferenceHandler(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<OperationResult<bool>> Handle(SetTagsToReference request, CancellationToken cancellationToken)
+        public async Task<OperationResult<bool>> Handle(UpdateReference request, CancellationToken cancellationToken)
         {
             var tags = await _unitOfWork.TagRepository.Get(t => request.TagIds.Contains(t.Id.Value));
-            var reference = await _unitOfWork.ReferenceRepository.GetByID(request.ReferenceId);
+            var reference = await _unitOfWork.ReferenceRepository.GetByID(request.Id);
             if (reference == null)
             {
                 return OperationResult<bool>.CreateFailure(new[] { new ResourceNotFoundException(nameof(Reference)) });
@@ -28,6 +28,8 @@ namespace LightNote.Application.BusinessLogic.References.CommandHandlers
             {
                 return OperationResult<bool>.CreateFailure(new[] { new AccessIsNotAuthorizedException() });
             }
+            reference.Update(request.Name, request.IsLink);
+            // TODO: Connect to question, notebookId?
             reference.SetTags(tags);
             try
             {

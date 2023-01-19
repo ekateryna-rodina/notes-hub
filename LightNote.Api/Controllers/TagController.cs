@@ -40,6 +40,10 @@ namespace LightNote.Api.Controllers
         {
             var command = createTagRequest.Adapt<CreateTags>();
             var operationResult = await _mediator.Send(command);
+            if (!operationResult.IsSuccess)
+            {
+                return this.BadRequestWithErrors(operationResult.Exceptions);
+            }
             var tags = operationResult.Value.Select(v => new TagResponse {Id = v.Id.Value, Name = v.Name });
             return CreatedAtAction(nameof(GetByIdsAsync), new { ids = String.Join("|", tags.Select(t => t.Id).ToList()) }, null);
         }
@@ -50,21 +54,30 @@ namespace LightNote.Api.Controllers
         {
             var command = new GetAllTags();
             var operationResult = await _mediator.Send(command);
+            if (!operationResult.IsSuccess)
+            {
+                return this.BadRequestWithErrors(operationResult.Exceptions);
+            }
             var tags = operationResult.Value.Select(s => s.Adapt<TagResponse>());
             return Ok(tags);
         }
-
+         
         [HttpGet]
         [Route(ApiRoutes.Tag.GetByIds)]
         public async Task<IActionResult> GetByIdsAsync(string ids)
         {
             if (string.IsNullOrWhiteSpace(ids))
             {
-                return BadRequest("ids parameter should not be null, empty or whitespace");
+                return this.BadRequestWithErrors(new List<Exception>() { new Exception("Ids cannot be empy") });
             }
             var _ids = new List<string>(ids.Split("|")).Select(i => Guid.Parse(i));
             var command = new LightNote.Application.BusinessLogic.Tags.Queries.GetTagsByIds { TagIds = _ids };
             var operationResult = await _mediator.Send(command);
+            // TODO: Test
+            if (!operationResult.IsSuccess)
+            {
+                return this.BadRequestWithErrors(operationResult.Exceptions);
+            }
             var tags = operationResult.Value.Select(s => s.Adapt<TagResponse>());
             return Ok(tags);
         }
