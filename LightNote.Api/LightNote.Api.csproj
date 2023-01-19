@@ -63,6 +63,9 @@
     <None Remove="Contracts\Notebook\" />
     <None Remove="Contracts\Notebook\Request\" />
     <None Remove="Contracts\Notebook\Response\" />
+    <None Remove="Contracts\Slipnote\" />
+    <None Remove="Contracts\Slipnote\Request\" />
+    <None Remove="Contracts\Slipnote\Response\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\" />
@@ -87,6 +90,9 @@
     <Folder Include="Contracts\Notebook\" />
     <Folder Include="Contracts\Notebook\Request\" />
     <Folder Include="Contracts\Notebook\Response\" />
+    <Folder Include="Contracts\Slipnote\" />
+    <Folder Include="Contracts\Slipnote\Request\" />
+    <Folder Include="Contracts\Slipnote\Response\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LightNote.Dal\LightNote.Dal.csproj">

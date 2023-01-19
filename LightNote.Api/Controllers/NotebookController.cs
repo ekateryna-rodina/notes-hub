@@ -1,24 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using LightNote.Api.Contracts.Notebook.Response;
-using LightNote.Api.Contracts.Reference.Request;
-using LightNote.Api.Contracts.Reference.Response;
-using LightNote.Api.Contracts.Tag.Request;
-using LightNote.Api.Contracts.Tag.Response;
 using LightNote.Api.Extensions;
 using LightNote.Api.Filters;
 using LightNote.Application.BusinessLogic.Notebook.Commands;
 using LightNote.Application.BusinessLogic.Notebook.Queries;
-using LightNote.Application.BusinessLogic.References.Commands;
-using LightNote.Application.BusinessLogic.References.Queries;
-using LightNote.Application.BusinessLogic.Tags.Commands;
-using LightNote.Application.BusinessLogic.Tags.Queries;
 using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LightNote.Api.Controllers
@@ -116,7 +103,5 @@ namespace LightNote.Api.Controllers
             }
             return NoContent();
         }
-
-
     }
 }

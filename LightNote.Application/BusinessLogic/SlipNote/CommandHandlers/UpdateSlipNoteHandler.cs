@@ -6,16 +6,16 @@ using MediatR;
 
 namespace LightNote.Application.BusinessLogic.SlipNote.CommandHandlers
 {
-    public class UpdateSlipNoteContentHandler : IRequestHandler<UpdateSlipNoteContent, OperationResult<bool>>
+    public class UpdateSlipNoteHandler : IRequestHandler<UpdateSlipNote, OperationResult<bool>>
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public UpdateSlipNoteContentHandler(IUnitOfWork unitOfWork)
+        public UpdateSlipNoteHandler(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<OperationResult<bool>> Handle(UpdateSlipNoteContent request, CancellationToken cancellationToken)
+        public async Task<OperationResult<bool>> Handle(UpdateSlipNote request, CancellationToken cancellationToken)
         {
             var slipNote = await _unitOfWork.SlipNoteRepository.GetByID(request.Id);
             if (slipNote == null)

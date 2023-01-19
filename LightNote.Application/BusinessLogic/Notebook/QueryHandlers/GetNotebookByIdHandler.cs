@@ -19,7 +19,7 @@ namespace LightNote.Application.BusinessLogic.Notebook.QueryHandlers
         {
             var notebook = await _unitOfWork.NotebookRepository
                    .GetByID(request.Id);
-            if (notebook != null && request.UserId != notebook!.UserProfileId.Value)
+            if (notebook != null && request.UserProfileId != notebook!.UserProfileId.Value)
             {
                 return OperationResult<LightNote.Domain.Models.NotebookAggregate.Notebook?>.CreateFailure(new[] { new AccessIsNotAuthorizedException() });
             }

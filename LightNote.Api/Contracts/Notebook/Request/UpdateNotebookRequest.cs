@@ -1,10 +1,14 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
+
 namespace LightNote.Api.Contracts.Notebook.Request
 {
-	public class UpdateNotebookRequest
-	{
-		public Guid Id { get; set; }
-		public string Title { get; set; } = default!;
-	}
+    public class UpdateNotebookRequest
+    {
+        [Required]
+        public Guid Id { get; set; }
+        [Required]
+        public string Content { get; set; } = default!;
+    }
 }
 
