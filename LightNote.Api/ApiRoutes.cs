@@ -27,6 +27,13 @@ namespace LightNote.Api
             public const string Update = "{id}";
             public const string Delete = "{id}";
         }
+        public static class Notebook {
+            public const string Create = "";
+            public const string GetAll = "";
+            public const string GetById = "{id}";
+            public const string Update = "{id}";
+            public const string Delete = "{id}";
+        }
     }
 }
 

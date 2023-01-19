@@ -60,6 +60,9 @@
     <None Remove="Contracts\Reference\" />
     <None Remove="Contracts\Reference\Request\" />
     <None Remove="Contracts\Reference\Response\" />
+    <None Remove="Contracts\Notebook\" />
+    <None Remove="Contracts\Notebook\Request\" />
+    <None Remove="Contracts\Notebook\Response\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\" />
@@ -81,6 +84,9 @@
     <Folder Include="Contracts\Reference\" />
     <Folder Include="Contracts\Reference\Request\" />
     <Folder Include="Contracts\Reference\Response\" />
+    <Folder Include="Contracts\Notebook\" />
+    <Folder Include="Contracts\Notebook\Request\" />
+    <Folder Include="Contracts\Notebook\Response\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LightNote.Dal\LightNote.Dal.csproj">
