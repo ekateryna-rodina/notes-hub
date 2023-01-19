@@ -1,3 +1,4 @@
+using System.Reflection.Emit;
 using LightNote.Domain.Models.NotebookAggregate.Entities;
 using LightNote.Domain.Models.NotebookAggregate.ValueObjects;
 using Microsoft.EntityFrameworkCore;
@@ -12,13 +13,18 @@ namespace LightNote.Dal.Config
             builder.ToTable("Tags");
             builder.HasKey(t => t.Id);
             builder.Property(t => t.Id)
-            .ValueGeneratedNever()
-            .HasConversion(
+            .ValueGeneratedNever();
+            builder.Property(t => t.Id)
+                .HasConversion(
                 id => id.Value,
                 id => TagId.Create(id)
             );
             builder.Property(t => t.Name)
                 .HasMaxLength(20);
+            builder.Property(x => x.CreatedAt)
+                .HasDefaultValueSql("getutcdate()");
+            builder.Property(x => x.UpdatedAt)
+                .HasComputedColumnSql("getutcdate()");
         }
     }
 }

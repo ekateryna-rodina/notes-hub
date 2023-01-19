@@ -2,7 +2,7 @@
 
 namespace LightNote.Api.Contracts.Identity.Request
 {
-	public class Registration
+	public class RegisterRequest
 	{
         [Required]
         public string FirstName { get; set; } = default!;

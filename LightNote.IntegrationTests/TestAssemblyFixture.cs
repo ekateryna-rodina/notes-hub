@@ -1,7 +1,9 @@
 ﻿using System;
-namespace LightNote.IntegrationTests.Setup
+using LightNote.IntegrationTests.Setup;
+
+namespace LightNote.IntegrationTests
 {
-    using static TestBase;
+    using static TestUtils;
     [SetUpFixture]
     public class TestAssemblyFixture
     {

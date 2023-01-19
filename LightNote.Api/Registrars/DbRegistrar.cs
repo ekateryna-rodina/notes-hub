@@ -5,36 +5,40 @@ using LightNote.Dal.Contracts;
 using LightNote.Dal.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace LightNote.Api.Registrars
 {
     public class DbRegistrar : IWebAppBuilderRegistrar
     {
-        public static string DockerHostMachineIpAddress => Dns.GetHostAddresses(new Uri("http://host.docker.internal").Host)[0].ToString();
         public void RegisterServices(WebApplicationBuilder builder)
         {
-            var cs = string.Empty;
-            if (builder.Environment.IsDevelopment())
+            var connectionString = GetConnectionString(builder);
+            builder.Services.AddDbContext<AppDbContext>(options => options
+           .UseSqlServer(connectionString)
+           .LogTo(s => System.Diagnostics.Debug.WriteLine(s)));
+
+            builder.Services.AddIdentityCore<IdentityUser>().AddEntityFrameworkStores<AppDbContext>();
+            builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
+        }
+
+        private string GetConnectionString(WebApplicationBuilder builder)
+        {
+            if (builder.Environment.EnvironmentName == "Staging")
             {
-                cs = builder.Configuration.GetConnectionString("Default");
-            }
-            else
-            {
+                var dockerHostMachineIpAddress = Dns.GetHostAddresses(new Uri("http://host.docker.internal").Host)[0].ToString();
                 var config = builder.Configuration;
                 var user = config["DbUser"];
                 var password = config["DbPassword"];
                 var port = config["DbPort"];
                 var name = config["DbName"];
 
-                cs = $"Server={DockerHostMachineIpAddress}, {port};Initial Catalog={name};User ID={user};Password={password};TrustServerCertificate=True;";
+                return $"Server={dockerHostMachineIpAddress}, {port};Initial Catalog={name};User ID={user};Password={password};TrustServerCertificate=True;";
+            } else if (builder.Environment.EnvironmentName == "IntegrationTesting") {
+                return builder.Configuration.GetConnectionString("Integration")!;
             }
 
-            builder.Services.AddDbContext<AppDbContext>(options => options
-            .UseSqlServer(cs)
-            .LogTo(s => System.Diagnostics.Debug.WriteLine(s)));
-
-            builder.Services.AddIdentityCore<IdentityUser>().AddEntityFrameworkStores<AppDbContext>();
-            builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
+            return builder.Configuration.GetConnectionString("Default")!;
         }
     }
 }

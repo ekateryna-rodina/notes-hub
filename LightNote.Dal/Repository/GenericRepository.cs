@@ -9,11 +9,6 @@ namespace LightNote.Dal.Repository
     {
         internal AppDbContext _context;
         internal DbSet<TEntity> _dbSet;
-
-        public GenericRepository()
-        {
-        }
-
         public GenericRepository(AppDbContext context)
         {
             _context = context;
@@ -48,14 +43,18 @@ namespace LightNote.Dal.Repository
             }
         }
 
-        public virtual async Task<TEntity> GetByID(Guid id)
+        public virtual async Task<TEntity?> GetByID(Guid id)
         {
             return await _dbSet.FindAsync(id);
         }
 
         public virtual void Insert(TEntity entity)
         {
-            _dbSet.Add(entity);
+             _dbSet.Add(entity);
+        }
+        public virtual void InsertMany(IEnumerable<TEntity> entities)
+        {
+             _dbSet.AddRange(entities);
         }
 
         public virtual void Delete(Guid id)

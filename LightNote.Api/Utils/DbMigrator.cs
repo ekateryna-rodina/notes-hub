@@ -13,21 +13,18 @@ namespace LightNote.Api.Utils
             {
                 using (var scope = builder.Services.CreateScope())
                 {
-                    var databaseCreator = scope.ServiceProvider.GetService<IDatabaseCreator>() as RelationalDatabaseCreator;
                     var context = scope.ServiceProvider.GetService<AppDbContext>();
-                    if (databaseCreator != null)
-                    {
-                        if (!databaseCreator.CanConnect())
-                        {
-                            databaseCreator.Create();
-                        }
-                    }
                     if (context != null)
                     {
-                        context.Database.Migrate();
+                        if (!context.Database.CanConnect())
+                        {
+                            context.Database.EnsureCreated();
+                        }
+                        else {
+                            context.Database.Migrate();
+                        }
                     }
                 }
-
             }
             catch (Exception ex)
             {

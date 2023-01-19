@@ -1,7 +1,7 @@
 ﻿using System;
 namespace LightNote.Api.Contracts.Tag.Response
 {
-	public class CreateTagResponse
+	public class TagResponse
 	{
 		public Guid Id { get; set; }
 		public string Name { get; set; } = default!;

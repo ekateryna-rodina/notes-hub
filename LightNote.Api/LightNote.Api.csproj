@@ -24,6 +24,7 @@
     </PackageReference>
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.0" />
+    <PackageReference Include="Mapster.Immutable" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -52,6 +53,8 @@
     <None Remove="Contracts\Tag\Request\" />
     <None Remove="Contracts\Tag\Response\" />
     <None Remove="Utils\" />
+    <None Remove="Mapster.Immutable" />
+    <None Remove="CustomValidators\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\" />
@@ -69,6 +72,7 @@
     <Folder Include="Contracts\Tag\Request\" />
     <Folder Include="Contracts\Tag\Response\" />
     <Folder Include="Utils\" />
+    <Folder Include="CustomValidators\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LightNote.Dal\LightNote.Dal.csproj">

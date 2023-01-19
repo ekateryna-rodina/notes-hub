@@ -13,6 +13,10 @@ using Microsoft.AspNetCore.Mvc;
 using LightNote.Api.Contracts.Common;
 using LightNote.Api.Contracts.Identity.Response;
 using LightNote.Api.Extensions;
+using System.Linq;
+using LightNote.Domain.Models.NotebookAggregate.Entities;
+using GetTagsByIds = LightNote.Api.Contracts.Tag.Request.GetTagsByIds;
+using System.ComponentModel.DataAnnotations;
 
 namespace LightNote.Api.Controllers
 {
@@ -30,22 +34,38 @@ namespace LightNote.Api.Controllers
         }
 
         [HttpPost]
+        [Route(ApiRoutes.Tag.CreateMany)]
         [ValidateModel]
-        public async Task<IActionResult> CreateAsync(CreateTagRequest createTagRequest)
+        public async Task<IActionResult> CreateAsync([FromBody]CreateTagRequest createTagRequest)
         {
-            var command = createTagRequest.Adapt<CreateTag>();
+            var command = createTagRequest.Adapt<CreateTags>();
             var operationResult = await _mediator.Send(command);
-                var tag = new CreateTagResponse {Id = operationResult.Value.Id.Value, Name = operationResult.Value.Name };
-            
-            return CreatedAtAction(nameof(CreateAsync), new { id = tag.Id }, tag);
+            var tags = operationResult.Value.Select(v => new TagResponse {Id = v.Id.Value, Name = v.Name });
+            return CreatedAtAction(nameof(GetByIdsAsync), new { ids = String.Join("|", tags.Select(t => t.Id).ToList()) }, null);
         }
+
         [HttpGet]
+        [Route(ApiRoutes.Tag.GetAll)]
         public async Task<IActionResult> GetAllAsync()
         {
             var command = new GetAllTags();
             var operationResult = await _mediator.Send(command);
-            var tags = operationResult.Value.Adapt<IEnumerable<CreateTagResponse>>();
+            var tags = operationResult.Value.Select(s => s.Adapt<TagResponse>());
+            return Ok(tags);
+        }
 
+        [HttpGet]
+        [Route(ApiRoutes.Tag.GetByIds)]
+        public async Task<IActionResult> GetByIdsAsync(string ids)
+        {
+            if (string.IsNullOrWhiteSpace(ids))
+            {
+                return BadRequest("ids parameter should not be null, empty or whitespace");
+            }
+            var _ids = new List<string>(ids.Split("|")).Select(i => Guid.Parse(i));
+            var command = new LightNote.Application.BusinessLogic.Tags.Queries.GetTagsByIds { TagIds = _ids };
+            var operationResult = await _mediator.Send(command);
+            var tags = operationResult.Value.Select(s => s.Adapt<TagResponse>());
             return Ok(tags);
         }
     }

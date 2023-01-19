@@ -12,8 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace LightNote.Api.Controllers
 {
     [ApiVersion("1.0")]
-    [Route(ApiRoutes.BaseRoute)]
     [ApiController]
+    [Route(ApiRoutes.BaseRoute)]
     [HandleException]
     public class IdentityController : ControllerBase
     {
@@ -26,7 +26,7 @@ namespace LightNote.Api.Controllers
         [HttpPost]
         [Route(ApiRoutes.Identity.Register)]
         [ValidateModel]
-        public async Task<IActionResult> RegisterAsync(Registration registerRequest)
+        public async Task<IActionResult> RegisterAsync(RegisterRequest registerRequest)
         {
             var command = registerRequest.Adapt<RegisterIdentity>();
             var operationResult = await _mediator.Send(command);
@@ -35,7 +35,7 @@ namespace LightNote.Api.Controllers
                 apiError.Errors.AddRange(operationResult.Exceptions.Select(e => e.Message));
                 return BadRequest(apiError);
             }
-            var authResult = new AuthenticationResult { AccessToken = operationResult.Value.AccessToken, RefreshToken = operationResult.Value.RefreshToken };
+            var authResult = new AuthenticationResponse { AccessToken = operationResult.Value.AccessToken, RefreshToken = operationResult.Value.RefreshToken };
             return Ok(authResult);
         }
         [HttpPost]
@@ -51,7 +51,7 @@ namespace LightNote.Api.Controllers
                 apiError.Errors.AddRange(operationResult.Exceptions.Select(e => e.Message));
                 return BadRequest(apiError);
             }
-            var authResult = new AuthenticationResult
+            var authResult = new AuthenticationResponse
             {
                 AccessToken = operationResult.Value.AccessToken,
                 RefreshToken = operationResult.Value.RefreshToken

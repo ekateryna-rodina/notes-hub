@@ -13,8 +13,8 @@ namespace LightNote.Domain.Models.NotebookAggregate.Entities
         }
         private Tag() { }
         public string Name { get; private set; }
-        public DateTimeOffset CreatedAt { get; private set; }
-        public DateTimeOffset UpdatedAt { get; private set; }
+        public DateTime CreatedAt { get; private set; }
+        public DateTime UpdatedAt { get; private set; }
         public IReadOnlyCollection<ReferenceTag> ReferencesAttached { get { return _referencesAttached; } }
         public static Tag Create(string name)
         {

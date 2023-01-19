@@ -17,30 +17,36 @@
     <PackageReference Include="coverlet.collector" Version="3.1.2" />
     <PackageReference Include="Respawn" Version="6.0.0" />
     <PackageReference Include="Docker.DotNet" Version="3.125.12" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.1" />
-    <PackageReference Include="FluentAssertions" Version="6.8.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.2" />
+    <PackageReference Include="FluentAssertions" Version="6.9.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Features\" />
-    <None Remove="Features\Identity\" />
     <None Remove="Setup\" />
     <None Remove="Respawn" />
-    <None Remove="Utils\" />
     <None Remove="Docker.DotNet" />
     <None Remove="Microsoft.AspNetCore.Mvc.Testing" />
     <None Remove="FluentAssertions" />
+    <None Remove="Controllers\" />
+    <None Remove="Microsoft.EntityFrameworkCore.InMemory" />
+    <None Remove="appsettings.json" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Features\" />
-    <Folder Include="Features\Identity\" />
     <Folder Include="Setup\" />
-    <Folder Include="Utils\" />
+    <Folder Include="Controllers\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LightNote.Dal\LightNote.Dal.csproj" />
     <ProjectReference Include="..\LightNote.Application\LightNote.Application.csproj" />
     <ProjectReference Include="..\LightNote.Api\LightNote.Api.csproj" />
     <ProjectReference Include="..\LightNote.Domain\LightNote.Domain.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="appsettings.json" Condition="'$(ExcludeConfigFilesFromBuildOutput)'!='true'">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 </Project>

@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.Extensions.Options;
 
 namespace LightNote.Api.Registrars
 {
@@ -7,7 +8,10 @@ namespace LightNote.Api.Registrars
     {
         public void RegisterServices(WebApplicationBuilder builder)
         {
-            builder.Services.AddControllers();
+            builder.Services.AddControllers(
+            config => {
+                config.SuppressAsyncSuffixInActionNames = false;
+                });
             builder.Services.AddSwaggerGen();
             builder.Services.AddApiVersioning(config =>
             {

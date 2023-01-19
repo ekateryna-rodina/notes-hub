@@ -2,27 +2,20 @@
 using System.Net.Sockets;
 using Docker.DotNet;
 using Docker.DotNet.Models;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using Npgsql;
 
 namespace LightNote.IntegrationTests.Utils
 {
-    public static class DockerPostgresqlDatabaseUtilities
+    public static class DockerMssqlDatabaseUtilities
     {
-        private static IConfiguration _configuration;
-        public static string DB_PASSWORD { get { return _configuration["Database:Password"]; } }
-        public const string DB_IMAGE = "postgres";
+        public static string DB_PASSWORD = "Qwerty12345!";
+        public const string DB_IMAGE = "mcr.microsoft.com/mssql/server";
         public const string DB_IMAGE_TAG = "latest";
-        public static string DB_USER { get { return _configuration["Database:User"]; } }
-        public static string DB_NAME { get { return _configuration["Database:Name"]; } }
-        public const string CONTAINER_NAME = "LightNoteUnitTestsPostgres";
-        public const string VOLUME_NAME = "LightNoteUnitTestsPostgresVolume";
-
-        static DockerPostgresqlDatabaseUtilities()
-        {
-            _configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json")
-                 .Build();
-        }
+        public static string DB_USER = "sa";
+        public static string DB_NAME = "notehubtestdb";
+        public const string CONTAINER_NAME = "LightNoteIntegrationsSQL";
+        public const string VOLUME_NAME = "LightNoteUnitTestsSQLVolume";
 
         public static async Task CleanupContainerAndVolumes()
         {
@@ -70,18 +63,19 @@ namespace LightNote.IntegrationTests.Utils
                         Image = $"{DB_IMAGE}:{DB_IMAGE_TAG}",
                         Env = new List<string>
                         {
-                            $"POSTGRES_PASSWORD={DB_PASSWORD}"
+                            "ACCEPT_EULA=Y",
+                            $"SA_PASSWORD={DB_PASSWORD}"
                         },
                         HostConfig = new HostConfig
                         {
                             PortBindings = new Dictionary<string, IList<PortBinding>>
                             {
-                                { "5432/tcp", new List<PortBinding> { new PortBinding { HostPort = "5432" } } }
+                                { "1433/tcp", new List<PortBinding> { new PortBinding { HostPort = "1433" } } }
                             },
                         },
                         ExposedPorts = new Dictionary<string, EmptyStruct>
                             {
-                                {"5432/tcp", new EmptyStruct() }
+                                {"1433/tcp", new EmptyStruct() }
                             },
                     });
 
@@ -91,7 +85,7 @@ namespace LightNote.IntegrationTests.Utils
 
                     var containerInfo = await dockerClient.Containers.InspectContainerAsync(container.ID);
                     await CreateDatabase(freePort, containerInfo.NetworkSettings.Networks["bridge"].IPAddress);
-                    return (container.ID, "5432", containerInfo.NetworkSettings.Networks["bridge"].IPAddress);
+                    return (container.ID, "1433", containerInfo.NetworkSettings.Networks["bridge"].IPAddress);
                 }
                 catch (Exception ex)
                 {
@@ -99,17 +93,17 @@ namespace LightNote.IntegrationTests.Utils
                 }
             }
 
-            return (existingCont.ID, "5432", existingCont.NetworkSettings.Networks["bridge"].IPAddress);
+            return (existingCont.ID, "1433", existingCont.NetworkSettings.Networks["bridge"].IPAddress);
         }
 
         private static async Task CreateDatabase(string databasePort, string ip)
         {
             try
             {
-                var connectionString = GetPostgresConnectionString("5432", ip, "postgres");
-                using var postgresConnection = new NpgsqlConnection(connectionString);
+                var connectionString = GetTestConnectionString("1433");
+                using var postgresConnection = new SqlConnection(connectionString);
                 await postgresConnection.OpenAsync();
-                using var command = new NpgsqlCommand($"CREATE DATABASE {DB_NAME}", postgresConnection);
+                using var command = new SqlCommand($"CREATE DATABASE {DB_NAME}", postgresConnection);
                 await command.ExecuteNonQueryAsync();
             }
             catch (Exception ex)
@@ -118,10 +112,9 @@ namespace LightNote.IntegrationTests.Utils
             }
         }
 
-        public static string GetPostgresConnectionString(string port, string ip, string? name = "")
+        public static string GetTestConnectionString(string port)
         {
-            var dbName = string.IsNullOrEmpty(name) ? DB_NAME : name;
-            return $"Server=localhost,{port};Database={dbName};Uid={DB_USER};Pwd={DB_PASSWORD};";
+            return $"Server=localhost,{port};Initial Catalog={DB_NAME};User ID={DB_USER};Password={DB_PASSWORD};TrustServerCertificate=True;";
         }
 
         private static DockerClient GetDockerClient()
