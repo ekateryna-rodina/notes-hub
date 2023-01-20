@@ -32,7 +32,7 @@ namespace LightNote.Dal
         {
             SetValueObjectsAsNonGenerated(modelBuilder);
             ApplyAllConfigurations(modelBuilder);
-         
+
             base.OnModelCreating(modelBuilder);
         }
 

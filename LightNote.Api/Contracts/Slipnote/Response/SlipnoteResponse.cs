@@ -1,11 +1,11 @@
 ﻿using System;
-namespace LightNote.Api.Contracts.Slipnote.Response
+namespace LightNote.Api.Contracts.SlipNote.Response
 {
-	public class SlipnoteResponse
-	{
+    public class SlipNoteResponse
+    {
         public Guid Id { get; set; }
         public string Content { get; set; } = default!;
-        public Guid NotebookId { get; set; }  
+        public Guid NotebookId { get; set; }
         public Guid? PermanentNoteId { get; set; }
         public Guid ReferenceId { get; set; }
         public DateTime CreatedAt { get; set; }

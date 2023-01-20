@@ -1,10 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace LightNote.Api.Contracts.Slipnote.Request
+namespace LightNote.Api.Contracts.SlipNote.Request
 {
-	public class UpdateSlipnoteRequest
-	{
+    public class UpdateSlipNoteRequest
+    {
         [Required]
         public Guid Id { get; set; }
         [Required]

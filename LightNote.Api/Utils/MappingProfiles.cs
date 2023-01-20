@@ -1,7 +1,7 @@
 ﻿using System;
 using LightNote.Api.Contracts.Notebook.Response;
 using LightNote.Api.Contracts.Reference.Response;
-using LightNote.Api.Contracts.Slipnote.Response;
+using LightNote.Api.Contracts.SlipNote.Response;
 using LightNote.Api.Contracts.Tag.Response;
 using LightNote.Application.BusinessLogic.Tags.Queries;
 using LightNote.Domain.Models.NotebookAggregate;
@@ -23,7 +23,7 @@ namespace LightNote.Api.Utils
             TypeAdapterConfig<Notebook, NotebookResponse>
                .NewConfig()
                .Map(dest => dest.Id, src => src.Id.Value);
-            TypeAdapterConfig<SlipNote, SlipnoteResponse>
+            TypeAdapterConfig<SlipNote, SlipNoteResponse>
                .NewConfig()
                .Map(dest => dest.Id, src => src.Id.Value);
         }

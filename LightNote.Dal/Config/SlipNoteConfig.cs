@@ -1,6 +1,4 @@
-﻿using System;
-using System.Reflection.Emit;
-using LightNote.Domain.Models.Common.ValueObjects;
+﻿using LightNote.Domain.Models.Common.ValueObjects;
 using LightNote.Domain.Models.NotebookAggregate;
 using LightNote.Domain.Models.NotebookAggregate.Entities;
 using LightNote.Domain.Models.NotebookAggregate.ValueObjects;
@@ -11,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace LightNote.Dal.Config
 {
-	public class SlipNoteConfig : IEntityTypeConfiguration<SlipNote>
+    public class SlipNoteConfig : IEntityTypeConfiguration<SlipNote>
     {
         public void Configure(EntityTypeBuilder<SlipNote> builder)
         {

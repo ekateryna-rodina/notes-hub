@@ -29,7 +29,7 @@ namespace LightNote.Domain.Models.NotebookAggregate.Entities
         public Reference Reference { get; private set; }
         public DateTimeOffset CreatedAt { get; private set; }
         public DateTimeOffset UpdatedAt { get; private set; }
-        
+
         public static SlipNote Create(string content, Guid userProfileId, Guid notebookId, Reference reference)
         {
             return new(SlipNoteId.Create(), Content.Create(content),

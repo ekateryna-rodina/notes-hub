@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using LightNote.Application.BusinessLogic.SlipNote.Queries;
 using LightNote.Application.Helpers;
 using LightNote.Dal.Contracts;

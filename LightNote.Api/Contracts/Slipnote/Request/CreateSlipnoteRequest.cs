@@ -1,10 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace LightNote.Api.Contracts.Slipnote.Request
+namespace LightNote.Api.Contracts.SlipNote.Request
 {
-	public class CreateSlipnoteRequest
-	{
+    public class CreateSlipNoteRequest
+    {
         [Required]
         public string Content { get; set; } = default!;
         [Required]

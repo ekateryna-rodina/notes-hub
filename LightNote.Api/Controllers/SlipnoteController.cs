@@ -1,5 +1,5 @@
-using LightNote.Api.Contracts.Slipnote.Request;
-using LightNote.Api.Contracts.Slipnote.Response;
+using LightNote.Api.Contracts.SlipNote.Request;
+using LightNote.Api.Contracts.SlipNote.Response;
 using LightNote.Api.Extensions;
 using LightNote.Api.Filters;
 using LightNote.Application.BusinessLogic.SlipNote.Commands;
@@ -28,7 +28,7 @@ namespace LightNote.Api.Controllers
         [HttpPost]
         [Route(ApiRoutes.SlipNote.Create)]
         [ValidateModel]
-        public async Task<IActionResult> CreateAsync([FromBody] CreateSlipnoteRequest createSlipnoteRequest)
+        public async Task<IActionResult> CreateAsync([FromBody] CreateSlipNoteRequest createSlipnoteRequest)
         {
             var command = createSlipnoteRequest.Adapt<CreateSlipNote>();
             command.UserProfileId = HttpContext.GetCurrentUserId(); ;
@@ -37,7 +37,7 @@ namespace LightNote.Api.Controllers
             {
                 return this.BadRequestWithErrors(operationResult.Exceptions);
             }
-            var slipNote = operationResult.Value.Adapt<SlipnoteResponse>();
+            var slipNote = operationResult.Value.Adapt<SlipNoteResponse>();
             return CreatedAtAction(nameof(GetByIdAsync), new { id = slipNote.Id }, slipNote);
         }
 
@@ -50,14 +50,14 @@ namespace LightNote.Api.Controllers
                 return this.BadRequestWithErrors(new List<Exception>() { new Exception("Id cannot be empty string") });
             }
             var userProfileId = HttpContext.GetCurrentUserId();
-            var command = new GetSlipnoteById
+            var command = new GetSlipNoteById
             { Id = id, UserProfileId = userProfileId };
             var operationResult = await _mediator.Send(command);
             if (!operationResult.IsSuccess)
             {
                 return this.BadRequestWithErrors(operationResult.Exceptions);
             }
-            var notebook = operationResult.Value!.Adapt<SlipnoteResponse>();
+            var notebook = operationResult.Value!.Adapt<SlipNoteResponse>();
             return Ok(notebook);
         }
 
@@ -76,7 +76,7 @@ namespace LightNote.Api.Controllers
             {
                 return this.BadRequestWithErrors(operationResult.Exceptions);
             }
-            var slipnotes = operationResult.Value.Select(s => s.Adapt<SlipnoteResponse>());
+            var slipnotes = operationResult.Value.Select(s => s.Adapt<SlipNoteResponse>());
             return Ok(slipnotes);
         }
 

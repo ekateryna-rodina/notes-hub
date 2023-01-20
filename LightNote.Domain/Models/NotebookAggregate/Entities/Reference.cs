@@ -38,7 +38,7 @@ namespace LightNote.Domain.Models.NotebookAggregate.Entities
         }
         public void SetTags(IEnumerable<Tag> tags)
         {
-            _tagsAttached.AddRange(tags.Select(t => new ReferenceTag {ReferenceId = Id, TagId = t.Id }));
+            _tagsAttached.AddRange(tags.Select(t => new ReferenceTag { ReferenceId = Id, TagId = t.Id }));
         }
         public void SetQuestions(IEnumerable<Question> questions)
         {
@@ -46,7 +46,8 @@ namespace LightNote.Domain.Models.NotebookAggregate.Entities
                .AddRange(questions
                    .Select(t => new QuestionReference { QuestionId = t.Id, ReferenceId = Id }));
         }
-        public void Update(string name,bool isLink ) {
+        public void Update(string name, bool isLink)
+        {
             Name = name;
             IsLink = isLink;
         }
