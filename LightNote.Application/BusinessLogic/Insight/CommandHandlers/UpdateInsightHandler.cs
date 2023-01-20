@@ -10,7 +10,7 @@ using MediatR;
 
 namespace LightNote.Application.BusinessLogic.Insight.CommandHandlers
 {
-    public class UpdateInsightContentHandler : IRequestHandler<UpdateInsightContent, OperationResult<bool>>
+    public class UpdateInsightContentHandler : IRequestHandler<UpdateInsight, OperationResult<bool>>
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -19,7 +19,7 @@ namespace LightNote.Application.BusinessLogic.Insight.CommandHandlers
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<OperationResult<bool>> Handle(UpdateInsightContent request, CancellationToken cancellationToken)
+        public async Task<OperationResult<bool>> Handle(UpdateInsight request, CancellationToken cancellationToken)
         {
             var insight = await _unitOfWork.InsightRepository.GetByID(request.Id);
             if (insight == null)
@@ -30,6 +30,7 @@ namespace LightNote.Application.BusinessLogic.Insight.CommandHandlers
             {
                 return OperationResult<bool>.CreateFailure(new[] { new AccessIsNotAuthorizedException() });
             }
+            insight.UpdateTitle(request.Title);
             insight.UpdateContent(request.Content);
             try
             {

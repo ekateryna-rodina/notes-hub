@@ -6,11 +6,11 @@ using MediatR;
 
 namespace LightNote.Application.BusinessLogic.SlipNote.QueryHandlers
 {
-    public class GetSlipnoteByIdHandler : IRequestHandler<GetSlipNoteById, OperationResult<LightNote.Domain.Models.NotebookAggregate.Entities.SlipNote?>>
+    public class GetSlipNoteByIdHandler : IRequestHandler<GetSlipNoteById, OperationResult<LightNote.Domain.Models.NotebookAggregate.Entities.SlipNote?>>
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public GetSlipnoteByIdHandler(IUnitOfWork unitOfWork)
+        public GetSlipNoteByIdHandler(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }

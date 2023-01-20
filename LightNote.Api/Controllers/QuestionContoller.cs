@@ -1,9 +1,11 @@
-using LightNote.Api.Contracts.Reference.Request;
-using LightNote.Api.Contracts.Reference.Response;
+using LightNote.Api.Contracts.PermanentNote.Request;
+using LightNote.Api.Contracts.Question.Request;
+using LightNote.Api.Contracts.Question.Response;
 using LightNote.Api.Extensions;
 using LightNote.Api.Filters;
-using LightNote.Application.BusinessLogic.References.Commands;
-using LightNote.Application.BusinessLogic.References.Queries;
+using LightNote.Application.BusinessLogic.PermanentNote.Commands;
+using LightNote.Application.BusinessLogic.Question.Commands;
+using LightNote.Application.BusinessLogic.Question.Queries;
 using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -16,28 +18,32 @@ namespace LightNote.Api.Controllers
     [ApiController]
     [HandleException]
     [Authorize]
-    public class ReferenceController : ControllerBase
+    public class QuestionContoller : ControllerBase
     {
         private readonly IMediator _mediator;
-        public ReferenceController(IMediator mediator)
+        public QuestionContoller(IMediator mediator)
         {
             _mediator = mediator;
         }
 
         [HttpPost]
-        [Route(ApiRoutes.Reference.Create)]
+        [Route(ApiRoutes.Question.Create)]
         [ValidateModel]
-        public async Task<IActionResult> CreateAsync([FromBody] CreateReferenceRequest createRequest)
+        public async Task<IActionResult> CreateAsync([FromBody] CreateQuestionRequest createRequest)
         {
-            var command = createRequest.Adapt<CreateReference>();
+            var command = createRequest.Adapt<CreateQuestion>();
             command.UserProfileId = HttpContext.GetCurrentUserId();
             var operationResult = await _mediator.Send(command);
-            var reference = operationResult.Value.Adapt<ReferenceResponse>();
-            return CreatedAtAction(nameof(GetByIdAsync), new { id = reference.Id }, reference);
+            if (!operationResult.IsSuccess)
+            {
+                return this.BadRequestWithErrors(operationResult.Exceptions);
+            }
+            var question = operationResult.Value.Adapt<QuestionResponse>();
+            return CreatedAtAction(nameof(GetByIdAsync), new { id = question.Id }, question);
         }
 
         [HttpGet]
-        [Route(ApiRoutes.Reference.GetById)]
+        [Route(ApiRoutes.Question.GetById)]
         public async Task<IActionResult> GetByIdAsync(Guid id)
         {
             if (id == Guid.Empty)
@@ -45,24 +51,22 @@ namespace LightNote.Api.Controllers
                 return this.BadRequestWithErrors(new List<Exception>() { new Exception("Id cannot be empty string") });
             }
             var userProfileId = HttpContext.GetCurrentUserId();
-            var command = new LightNote.Application.BusinessLogic.References.Queries
-                .GetReferenceById
-            { Id = id, UserProfileId = userProfileId };
+            var command = new GetQuestionById { Id = id, UserProfileId = userProfileId };
             var operationResult = await _mediator.Send(command);
             if (!operationResult.IsSuccess)
             {
                 return this.BadRequestWithErrors(operationResult.Exceptions);
             }
-            var reference = operationResult.Value!.Adapt<ReferenceResponse>();
-            return Ok(reference);
+            var question = operationResult.Value!.Adapt<QuestionResponse>();
+            return Ok(question);
         }
 
         [HttpGet]
-        [Route(ApiRoutes.Reference.GetAllByNotebookId)]
+        [Route(ApiRoutes.Question.GetAllByNotebookId)]
         public async Task<IActionResult> GetAllByNotebookIdAsync(Guid notebookId)
         {
             var userProfileId = HttpContext.GetCurrentUserId();
-            var command = new GetReferencesByNotebookId()
+            var command = new GetQuestionsByNotebookId()
             {
                 NotebookId = notebookId,
                 UserProfileId = userProfileId
@@ -72,15 +76,16 @@ namespace LightNote.Api.Controllers
             {
                 return this.BadRequestWithErrors(operationResult.Exceptions);
             }
-            var references = operationResult.Value.Select(s => s.Adapt<ReferenceResponse>());
-            return Ok(references);
+            var questions = operationResult.Value.Select(s => s.Adapt<QuestionResponse>());
+            return Ok(questions);
         }
+
         [HttpPut]
-        [Route(ApiRoutes.Reference.Update)]
-        public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] UpdateReferenceRequest updateRequest)
+        [Route(ApiRoutes.Question.Update)]
+        public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] UpdateQuestionRequest updateRequest)
         {
             var userProfileId = HttpContext.GetCurrentUserId();
-            var command = updateRequest.Adapt<UpdateReference>();
+            var command = updateRequest.Adapt<UpdateQuestion>();
             command.UserProfileId = userProfileId;
             var operationResult = await _mediator.Send(command);
             if (!operationResult.IsSuccess)
@@ -90,11 +95,11 @@ namespace LightNote.Api.Controllers
             return NoContent();
         }
         [HttpDelete]
-        [Route(ApiRoutes.Reference.Delete)]
+        [Route(ApiRoutes.Question.Delete)]
         public async Task<IActionResult> DeleteAsync(Guid id)
         {
             var userProfileId = HttpContext.GetCurrentUserId();
-            var command = new DeleteReference() { Id = id, UserProfileId = userProfileId };
+            var command = new DeleteQuestion() { Id = id, UserProfileId = userProfileId };
             var operationResult = await _mediator.Send(command);
             if (!operationResult.IsSuccess)
             {
@@ -104,5 +109,3 @@ namespace LightNote.Api.Controllers
         }
     }
 }
-
-

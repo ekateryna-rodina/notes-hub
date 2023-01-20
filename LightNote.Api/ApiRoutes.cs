@@ -38,7 +38,31 @@ namespace LightNote.Api
         public static class SlipNote
         {
             public const string Create = "";
-            public const string GetAllByNotebookId = "";
+            public const string GetAllByNotebookId = "{id}";
+            public const string GetById = "{id}";
+            public const string Update = "{id}";
+            public const string Delete = "{id}";
+        }
+        public static class PermanentNote
+        {
+            public const string Create = "";
+            public const string GetAllByNotebookId = "{id}";
+            public const string GetById = "{id}";
+            public const string Update = "{id}";
+            public const string Delete = "{id}";
+        }
+        public static class Insight
+        {
+            public const string Create = "";
+            public const string GetAllByNotebookId = "{id}";
+            public const string GetById = "{id}";
+            public const string Update = "{id}";
+            public const string Delete = "{id}";
+        }
+        public static class Question
+        {
+            public const string Create = "";
+            public const string GetAllByNotebookId = "{id}";
             public const string GetById = "{id}";
             public const string Update = "{id}";
             public const string Delete = "{id}";

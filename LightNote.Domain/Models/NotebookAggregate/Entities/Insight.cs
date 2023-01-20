@@ -11,8 +11,9 @@ namespace LightNote.Domain.Models.NotebookAggregate.Entities
     {
         private readonly List<Question> _questions = new();
         private readonly List<InsightPermanentNote> _basedOnPeranentNotes = new();
-        private Insight(InsightId id, Content content, UserProfileId userProfileId, NotebookId notebookId, IEnumerable<PermanentNote> permanentNotes) : base(id)
+        private Insight(InsightId id, Title title, Content content, UserProfileId userProfileId, NotebookId notebookId, IEnumerable<PermanentNote> permanentNotes) : base(id)
         {
+            Title = title;
             Content = content;
             UserProfileId = userProfileId;
             NotebookId = notebookId;
@@ -21,6 +22,7 @@ namespace LightNote.Domain.Models.NotebookAggregate.Entities
         private Insight()
         {
         }
+        public Title Title { get; private set; }
         public Content Content { get; private set; }
         public UserProfileId UserProfileId { get; private set; }
         public UserProfile UserProfile { get; private set; }
@@ -30,19 +32,23 @@ namespace LightNote.Domain.Models.NotebookAggregate.Entities
         public DateTimeOffset UpdatedAt { get; private set; }
         public IReadOnlyCollection<InsightPermanentNote> BasedOnPermanentNotes { get { return _basedOnPeranentNotes.AsReadOnly(); } }
         public IReadOnlyCollection<Question> Questions { get { return _questions.AsReadOnly(); } }
-        public static Insight Create(string content, Guid userProfileId, Guid notebookId, IEnumerable<PermanentNote> permanentNotes)
+        public static Insight Create(string title, string content, Guid userProfileId, Guid notebookId, IEnumerable<PermanentNote> permanentNotes)
         {
-            return new(InsightId.Create(), Content.Create(content), UserProfileId.Create(userProfileId), NotebookId.Create(notebookId), permanentNotes);
+            return new(InsightId.Create(), Title.Create(title), Content.Create(content), UserProfileId.Create(userProfileId), NotebookId.Create(notebookId), permanentNotes);
         }
         public void UpdateContent(string content)
         {
             Content = Content.Create(content);
         }
+        public void UpdateTitle(string content)
+        {
+            Title = Title.Create(content);
+        }
         public void SetPermanentNotes(IEnumerable<PermanentNote> permanentNotes)
         {
             _basedOnPeranentNotes
                 .AddRange(permanentNotes
-                    .Select(pn => new InsightPermanentNote {InsightId = Id, PermanentNoteId = pn.Id}));
+                    .Select(pn => new InsightPermanentNote { InsightId = Id, PermanentNoteId = pn.Id }));
         }
     }
 }

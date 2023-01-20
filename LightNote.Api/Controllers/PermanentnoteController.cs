@@ -1,9 +1,9 @@
-using LightNote.Api.Contracts.Reference.Request;
-using LightNote.Api.Contracts.Reference.Response;
+using LightNote.Api.Contracts.PermanentNote.Request;
+using LightNote.Api.Contracts.PermanentNote.Response;
 using LightNote.Api.Extensions;
 using LightNote.Api.Filters;
-using LightNote.Application.BusinessLogic.References.Commands;
-using LightNote.Application.BusinessLogic.References.Queries;
+using LightNote.Application.BusinessLogic.PermanentNote.Commands;
+using LightNote.Application.BusinessLogic.PermanentNote.Queries;
 using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -16,28 +16,32 @@ namespace LightNote.Api.Controllers
     [ApiController]
     [HandleException]
     [Authorize]
-    public class ReferenceController : ControllerBase
+    public class PermanentnoteController : ControllerBase
     {
         private readonly IMediator _mediator;
-        public ReferenceController(IMediator mediator)
+        public PermanentnoteController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
         [HttpPost]
-        [Route(ApiRoutes.Reference.Create)]
+        [Route(ApiRoutes.PermanentNote.Create)]
         [ValidateModel]
-        public async Task<IActionResult> CreateAsync([FromBody] CreateReferenceRequest createRequest)
+        public async Task<IActionResult> CreateAsync([FromBody] CreatePermanentNoteRequest createRequest)
         {
-            var command = createRequest.Adapt<CreateReference>();
-            command.UserProfileId = HttpContext.GetCurrentUserId();
+            var command = createRequest.Adapt<CreatePermanentNote>();
+            command.UserProfileId = HttpContext.GetCurrentUserId(); ;
             var operationResult = await _mediator.Send(command);
-            var reference = operationResult.Value.Adapt<ReferenceResponse>();
-            return CreatedAtAction(nameof(GetByIdAsync), new { id = reference.Id }, reference);
+            if (!operationResult.IsSuccess)
+            {
+                return this.BadRequestWithErrors(operationResult.Exceptions);
+            }
+            var permanentNote = operationResult.Value.Adapt<PermanentNoteResponse>();
+            return CreatedAtAction(nameof(GetByIdAsync), new { id = permanentNote.Id }, permanentNote);
         }
 
         [HttpGet]
-        [Route(ApiRoutes.Reference.GetById)]
+        [Route(ApiRoutes.PermanentNote.GetById)]
         public async Task<IActionResult> GetByIdAsync(Guid id)
         {
             if (id == Guid.Empty)
@@ -45,24 +49,23 @@ namespace LightNote.Api.Controllers
                 return this.BadRequestWithErrors(new List<Exception>() { new Exception("Id cannot be empty string") });
             }
             var userProfileId = HttpContext.GetCurrentUserId();
-            var command = new LightNote.Application.BusinessLogic.References.Queries
-                .GetReferenceById
+            var command = new GetPermanentNoteById
             { Id = id, UserProfileId = userProfileId };
             var operationResult = await _mediator.Send(command);
             if (!operationResult.IsSuccess)
             {
                 return this.BadRequestWithErrors(operationResult.Exceptions);
             }
-            var reference = operationResult.Value!.Adapt<ReferenceResponse>();
-            return Ok(reference);
+            var permanentNote = operationResult.Value!.Adapt<PermanentNoteResponse>();
+            return Ok(permanentNote);
         }
 
         [HttpGet]
-        [Route(ApiRoutes.Reference.GetAllByNotebookId)]
+        [Route(ApiRoutes.PermanentNote.GetAllByNotebookId)]
         public async Task<IActionResult> GetAllByNotebookIdAsync(Guid notebookId)
         {
             var userProfileId = HttpContext.GetCurrentUserId();
-            var command = new GetReferencesByNotebookId()
+            var command = new GetPermanentNotesByNotebookId()
             {
                 NotebookId = notebookId,
                 UserProfileId = userProfileId
@@ -72,15 +75,16 @@ namespace LightNote.Api.Controllers
             {
                 return this.BadRequestWithErrors(operationResult.Exceptions);
             }
-            var references = operationResult.Value.Select(s => s.Adapt<ReferenceResponse>());
-            return Ok(references);
+            var permanentNotes = operationResult.Value.Select(s => s.Adapt<PermanentNoteResponse>());
+            return Ok(permanentNotes);
         }
+
         [HttpPut]
-        [Route(ApiRoutes.Reference.Update)]
-        public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] UpdateReferenceRequest updateRequest)
+        [Route(ApiRoutes.PermanentNote.Update)]
+        public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] UpdatePermanentNoteRequest updateRequest)
         {
             var userProfileId = HttpContext.GetCurrentUserId();
-            var command = updateRequest.Adapt<UpdateReference>();
+            var command = updateRequest.Adapt<UpdatePermanentNote>();
             command.UserProfileId = userProfileId;
             var operationResult = await _mediator.Send(command);
             if (!operationResult.IsSuccess)
@@ -90,11 +94,11 @@ namespace LightNote.Api.Controllers
             return NoContent();
         }
         [HttpDelete]
-        [Route(ApiRoutes.Reference.Delete)]
+        [Route(ApiRoutes.PermanentNote.Delete)]
         public async Task<IActionResult> DeleteAsync(Guid id)
         {
             var userProfileId = HttpContext.GetCurrentUserId();
-            var command = new DeleteReference() { Id = id, UserProfileId = userProfileId };
+            var command = new DeletePermanentNote() { Id = id, UserProfileId = userProfileId };
             var operationResult = await _mediator.Send(command);
             if (!operationResult.IsSuccess)
             {
@@ -104,5 +108,3 @@ namespace LightNote.Api.Controllers
         }
     }
 }
-
-

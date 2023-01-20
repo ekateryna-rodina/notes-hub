@@ -26,9 +26,9 @@ namespace LightNote.Api.Controllers
         [HttpPost]
         [Route(ApiRoutes.Notebook.Create)]
         [ValidateModel]
-        public async Task<IActionResult> CreateAsync([FromBody] Contracts.Notebook.Request.CreateNotebookRequest createNotebookRequest)
+        public async Task<IActionResult> CreateAsync([FromBody] Contracts.Notebook.Request.CreateNotebookRequest createRequest)
         {
-            var command = createNotebookRequest.Adapt<CreateNotebook>();
+            var command = createRequest.Adapt<CreateNotebook>();
             command.UserProfileId = HttpContext.GetCurrentUserId(); ;
             var operationResult = await _mediator.Send(command);
             if (!operationResult.IsSuccess)

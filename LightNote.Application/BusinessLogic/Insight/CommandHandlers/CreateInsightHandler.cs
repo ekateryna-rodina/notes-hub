@@ -32,7 +32,7 @@ namespace LightNote.Application.BusinessLogic.Insight.CommandHandlers
                 return OperationResult<LightNote.Domain.Models.NotebookAggregate.Entities.Insight>.CreateFailure(new[] { new EntityIsRequiredException(nameof(LightNote.Domain.Models.NotebookAggregate.Entities.PermanentNote)) });
             }
             var insight = Domain.Models.NotebookAggregate.Entities.Insight
-                    .Create(request.Content, request.UserProfileId, request.NotebookId, permanentNotes);
+                    .Create(request.Title, request.Content, request.UserProfileId, request.NotebookId, permanentNotes);
             notebook.AddInsight(insight);
             try
             {

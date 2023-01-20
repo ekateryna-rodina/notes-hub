@@ -10,7 +10,7 @@ using MediatR;
 
 namespace LightNote.Application.BusinessLogic.PermanentNote.CommandHandlers
 {
-    public class UpdatePermanentNoteContentHandler : IRequestHandler<UpdatePermanentNoteContent, OperationResult<bool>>
+    public class UpdatePermanentNoteContentHandler : IRequestHandler<UpdatePermanentNote, OperationResult<bool>>
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -19,7 +19,7 @@ namespace LightNote.Application.BusinessLogic.PermanentNote.CommandHandlers
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<OperationResult<bool>> Handle(UpdatePermanentNoteContent request, CancellationToken cancellationToken)
+        public async Task<OperationResult<bool>> Handle(UpdatePermanentNote request, CancellationToken cancellationToken)
         {
             var permanentNote = await _unitOfWork.PermanentNoteRepository.GetByID(request.Id);
             if (permanentNote == null)
@@ -30,6 +30,7 @@ namespace LightNote.Application.BusinessLogic.PermanentNote.CommandHandlers
             {
                 return OperationResult<bool>.CreateFailure(new[] { new AccessIsNotAuthorizedException() });
             }
+            permanentNote.UpdateTitle(request.Content);
             permanentNote.UpdateContent(request.Content);
             try
             {

@@ -4,7 +4,6 @@ using LightNote.Api.Extensions;
 using LightNote.Api.Filters;
 using LightNote.Application.BusinessLogic.SlipNote.Commands;
 using LightNote.Application.BusinessLogic.SlipNote.Queries;
-using LightNote.Application.BusinessLogic.SlipNote.QueryHandlers;
 using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -28,9 +27,9 @@ namespace LightNote.Api.Controllers
         [HttpPost]
         [Route(ApiRoutes.SlipNote.Create)]
         [ValidateModel]
-        public async Task<IActionResult> CreateAsync([FromBody] CreateSlipNoteRequest createSlipnoteRequest)
+        public async Task<IActionResult> CreateAsync([FromBody] CreateSlipNoteRequest createRequest)
         {
-            var command = createSlipnoteRequest.Adapt<CreateSlipNote>();
+            var command = createRequest.Adapt<CreateSlipNote>();
             command.UserProfileId = HttpContext.GetCurrentUserId(); ;
             var operationResult = await _mediator.Send(command);
             if (!operationResult.IsSuccess)
@@ -57,8 +56,8 @@ namespace LightNote.Api.Controllers
             {
                 return this.BadRequestWithErrors(operationResult.Exceptions);
             }
-            var notebook = operationResult.Value!.Adapt<SlipNoteResponse>();
-            return Ok(notebook);
+            var slipNote = operationResult.Value!.Adapt<SlipNoteResponse>();
+            return Ok(slipNote);
         }
 
         [HttpGet]
@@ -76,13 +75,13 @@ namespace LightNote.Api.Controllers
             {
                 return this.BadRequestWithErrors(operationResult.Exceptions);
             }
-            var slipnotes = operationResult.Value.Select(s => s.Adapt<SlipNoteResponse>());
-            return Ok(slipnotes);
+            var slipNotes = operationResult.Value.Select(s => s.Adapt<SlipNoteResponse>());
+            return Ok(slipNotes);
         }
 
         [HttpPut]
         [Route(ApiRoutes.SlipNote.Update)]
-        public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] Contracts.Notebook.Request.UpdateNotebookRequest updateRequest)
+        public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] UpdateSlipNoteRequest updateRequest)
         {
             var userProfileId = HttpContext.GetCurrentUserId();
             var command = updateRequest.Adapt<UpdateSlipNote>();

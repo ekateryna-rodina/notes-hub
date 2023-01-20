@@ -1,16 +1,13 @@
-﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace LightNote.Api.Contracts.SlipNote.Request
+namespace LightNote.Api.Contracts.Question.Request
 {
-    public class UpdateSlipNoteRequest
+    public class UpdateQuestionRequest
     {
-        [Required]
         public Guid Id { get; set; }
         [Required]
         public string Content { get; set; } = default!;
         [Required]
-        public Guid ReferenceId { get; set; } = default!;
+        public IEnumerable<Guid> ReferencesIds { get; set; } = default!;
     }
 }
-
