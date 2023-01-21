@@ -16,7 +16,6 @@
     <None Remove="Tag\CommandHandlers\" />
     <None Remove="Options\" />
     <None Remove="BusinessLogic\" />
-    <None Remove="BusinessLogic\Notes\" />
     <None Remove="BusinessLogic\Identity\" />
     <None Remove="BusinessLogic\References\" />
     <None Remove="BusinessLogic\Tags\" />
@@ -35,7 +34,6 @@
   <ItemGroup>
     <Folder Include="Options\" />
     <Folder Include="BusinessLogic\" />
-    <Folder Include="BusinessLogic\Notes\" />
     <Folder Include="BusinessLogic\Identity\" />
     <Folder Include="BusinessLogic\References\" />
     <Folder Include="BusinessLogic\Tags\" />

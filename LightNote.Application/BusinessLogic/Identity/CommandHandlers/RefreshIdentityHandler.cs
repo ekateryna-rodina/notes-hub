@@ -8,6 +8,8 @@ using LightNote.Application.Exceptions;
 using LightNote.Application.Helpers;
 using LightNote.Application.Models;
 using LightNote.Dal.Contracts;
+using LightNote.Domain.Models.UserProfileAggregate;
+using LightNote.Domain.Models.UserProfileAggregate.ValueObjects;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 
@@ -41,7 +43,11 @@ namespace LightNote.Application.BusinessLogic.Identity.CommandHandlers
                 return OperationResult<AuthenticatedResponse>.CreateFailure(new[] { new InvalidTokenException() });
             }
             // get the user 
-            var user = await _unitOfWork.UserRepository.GetByID(userId);
+            var user = await _unitOfWork.UserRepository.GetById(UserProfileId.Create(userId));
+            if (user == null)
+            {
+                return OperationResult<AuthenticatedResponse>.CreateFailure(new[] { new IdentityDoesNotExistException("User profile does not exist") });
+            }
             var identity = await _userManager.FindByIdAsync(user.IdentityId);
             if (identity == null)
             {

@@ -45,7 +45,7 @@ namespace LightNote.Api.Controllers
         {
             if (id == Guid.Empty)
             {
-                return this.BadRequestWithErrors(new List<Exception>() { new Exception("Id cannot be empty string") });
+                return this.BadRequestWithErrors(new List<Exception>() { new Exception("Id cannot be empty") });
             }
             var userProfileId = HttpContext.GetCurrentUserId();
             var command = new GetNotebookById
@@ -77,7 +77,7 @@ namespace LightNote.Api.Controllers
             return Ok(notebooks);
         }
         [HttpPut]
-        [Route(ApiRoutes.Reference.Update)]
+        [Route(ApiRoutes.Notebook.Update)]
         public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] Contracts.Notebook.Request.UpdateNotebookRequest updateRequest)
         {
             var userProfileId = HttpContext.GetCurrentUserId();

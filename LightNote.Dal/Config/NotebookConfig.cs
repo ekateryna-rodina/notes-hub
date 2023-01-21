@@ -34,6 +34,10 @@ namespace LightNote.Dal.Config
                 .HasForeignKey(t => t.UserProfileId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
+            builder.Property(x => x.CreatedAt)
+                .HasDefaultValueSql("getutcdate()");
+            builder.Property(x => x.UpdatedAt)
+                .HasComputedColumnSql("getutcdate()");
         }
     }
 }

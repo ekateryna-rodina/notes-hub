@@ -4,6 +4,7 @@ using LightNote.Dal.Repository;
 using LightNote.Domain.Models.NotebookAggregate;
 using LightNote.Domain.Models.NotebookAggregate.Entities;
 using LightNote.Domain.Models.UserProfileAggregate;
+using LightNote.Domain.Models.UserProfileAggregate.ValueObjects;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace LightNote.Dal.Services

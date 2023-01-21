@@ -56,7 +56,8 @@ namespace LightNote.Application.BusinessLogic.Identity.CommandHandlers
                 }
 
                 // create user profile
-                _userProfileId = await CreateUserProfileAsync(newIdentity, request, transaction, cancellationToken);
+                _userProfileId = await CreateUserProfileAsync(newIdentity, request, cancellationToken);
+                transaction.Commit();
                 return (newIdentity, _userProfileId);
 
             }
@@ -80,19 +81,17 @@ namespace LightNote.Application.BusinessLogic.Identity.CommandHandlers
             return OperationResult<AuthenticatedResponse>.CreateSuccess(tokens);
         }
 
-        private async Task<Guid> CreateUserProfileAsync(IdentityUser identity, RegisterIdentity request, IDbContextTransaction transaction, CancellationToken cancellationToken)
+        private async Task<Guid> CreateUserProfileAsync(IdentityUser identity, RegisterIdentity request, CancellationToken cancellationToken)
         {
             try
             {
                 var userProfile = UserProfile.CreateUserProfile(identity.Id, request.FirstName, request.LastName, request.PhotoUrl, request.Country, request.City);
                 _unitOfWork.UserRepository.Insert(userProfile);
-                transaction.Commit();
                 await _unitOfWork.SaveAsync();
                 return userProfile.Id.Value;
             }
-            catch
+            catch(Exception ex)
             {
-                await transaction.RollbackAsync(cancellationToken);
                 throw;
             }
         }

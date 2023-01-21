@@ -6,6 +6,7 @@ using LightNote.Application.BusinessLogic.Insight.Commands;
 using LightNote.Application.Exceptions;
 using LightNote.Application.Helpers;
 using LightNote.Dal.Contracts;
+using LightNote.Domain.Models.NotebookAggregate.ValueObjects;
 using MediatR;
 
 namespace LightNote.Application.BusinessLogic.Insight.CommandHandlers
@@ -21,7 +22,7 @@ namespace LightNote.Application.BusinessLogic.Insight.CommandHandlers
 
         public async Task<OperationResult<bool>> Handle(UpdateInsight request, CancellationToken cancellationToken)
         {
-            var insight = await _unitOfWork.InsightRepository.GetByID(request.Id);
+            var insight = await _unitOfWork.InsightRepository.GetById(InsightId.Create(request.Id));
             if (insight == null)
             {
                 return OperationResult<bool>.CreateFailure(new[] { new ResourceNotFoundException(nameof(Insight)) });

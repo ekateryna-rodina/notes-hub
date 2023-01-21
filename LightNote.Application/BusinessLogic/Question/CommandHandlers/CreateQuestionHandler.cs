@@ -6,6 +6,7 @@ using LightNote.Application.BusinessLogic.Question.Commands;
 using LightNote.Application.Exceptions;
 using LightNote.Application.Helpers;
 using LightNote.Dal.Contracts;
+using LightNote.Domain.Models.NotebookAggregate.ValueObjects;
 using MediatR;
 
 namespace LightNote.Application.BusinessLogic.Question.CommandHandlers
@@ -21,7 +22,7 @@ namespace LightNote.Application.BusinessLogic.Question.CommandHandlers
 
         public async Task<OperationResult<Domain.Models.NotebookAggregate.Entities.Question>> Handle(CreateQuestion request, CancellationToken cancellationToken)
         {
-            var notebook = await _unitOfWork.NotebookRepository.GetByID(request.NotebookId);
+            var notebook = await _unitOfWork.NotebookRepository.GetById(NotebookId.Create(request.NotebookId));
             if (notebook == null)
             {
                 return OperationResult<LightNote.Domain.Models.NotebookAggregate.Entities.Question>.CreateFailure(new[] { new ResourceNotFoundException(nameof(LightNote.Domain.Models.NotebookAggregate.Notebook)) });

@@ -24,8 +24,8 @@ namespace LightNote.Domain.Models.UserProfileAggregate
         public string PhotoUrl { get; private set; }
         public string Country { get; private set; }
         public string City { get; private set; }
-        public DateTimeOffset CreatedAt { get; private set; }
-        public DateTimeOffset? UpdatedAt { get; private set; }
+        public DateTime CreatedAt { get; private set; }
+        public DateTime UpdatedAt { get; private set; }
         public IReadOnlyCollection<Reference> References { get { return _references.AsReadOnly(); } }
         public IReadOnlyCollection<SlipNote> SlipNotes { get { return _slipNotes.AsReadOnly(); } }
         public IReadOnlyCollection<PermanentNote> PermanentNotes { get { return _permanentNotes.AsReadOnly(); } }

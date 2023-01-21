@@ -8,7 +8,7 @@ namespace LightNote.Api.Contracts.Notebook.Request
         [Required]
         public Guid Id { get; set; }
         [Required]
-        public string Content { get; set; } = default!;
+        public string Title { get; set; } = default!;
     }
 }
 

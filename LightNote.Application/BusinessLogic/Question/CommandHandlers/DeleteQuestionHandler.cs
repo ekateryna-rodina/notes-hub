@@ -3,6 +3,7 @@ using LightNote.Application.BusinessLogic.Question.Commands;
 using LightNote.Application.Exceptions;
 using LightNote.Application.Helpers;
 using LightNote.Dal.Contracts;
+using LightNote.Domain.Models.NotebookAggregate.ValueObjects;
 using MediatR;
 
 namespace LightNote.Application.BusinessLogic.Question.CommandHandlers
@@ -19,7 +20,7 @@ namespace LightNote.Application.BusinessLogic.Question.CommandHandlers
         public async Task<OperationResult<bool>> Handle(DeleteQuestion request, CancellationToken cancellationToken)
         {
 
-            var question = await _unitOfWork.QuestionRepository.GetByID(request.Id);
+            var question = await _unitOfWork.QuestionRepository.GetById(QuestionId.Create(request.Id));
             if (question == null)
             {
                 return OperationResult<bool>.CreateFailure(new[] { new ResourceNotFoundException(nameof(Question)) });
@@ -31,6 +32,7 @@ namespace LightNote.Application.BusinessLogic.Question.CommandHandlers
             try
             {
                 _unitOfWork.QuestionRepository.Delete(question);
+                await _unitOfWork.SaveAsync();
             }
             catch (Exception ex)
             {

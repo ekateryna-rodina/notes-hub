@@ -6,6 +6,7 @@ using LightNote.Application.BusinessLogic.PermanentNote.Commands;
 using LightNote.Application.Exceptions;
 using LightNote.Application.Helpers;
 using LightNote.Dal.Contracts;
+using LightNote.Domain.Models.NotebookAggregate.ValueObjects;
 using MediatR;
 
 namespace LightNote.Application.BusinessLogic.PermanentNote.CommandHandlers
@@ -21,7 +22,7 @@ namespace LightNote.Application.BusinessLogic.PermanentNote.CommandHandlers
 
         public async Task<OperationResult<bool>> Handle(UpdatePermanentNote request, CancellationToken cancellationToken)
         {
-            var permanentNote = await _unitOfWork.PermanentNoteRepository.GetByID(request.Id);
+            var permanentNote = await _unitOfWork.PermanentNoteRepository.GetById(PermanentNoteId.Create(request.Id));
             if (permanentNote == null)
             {
                 return OperationResult<bool>.CreateFailure(new[] { new ResourceNotFoundException(nameof(PermanentNote)) });

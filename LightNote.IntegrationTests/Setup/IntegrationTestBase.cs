@@ -25,13 +25,14 @@ namespace LightNote.IntegrationTests.Setup
 			HttpClient.DefaultRequestHeaders.Authorization = new  AuthenticationHeaderValue("bearer", await GetAccessToken());
 		}
 
+		
         private async Task<string> GetAccessToken()
         {
 			var registerRequest = new RegisterRequest
 			{
 				FirstName = "Test First Name",
 				LastName = "Test Last Name",
-				Email = "testuser@test.com",
+				Email = $"testuser{Guid.NewGuid()}@test.com",
 				Password = "Qwerty123!",
 				Country = "USA",
 				City = "Philadelphia",

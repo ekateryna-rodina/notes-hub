@@ -2,6 +2,7 @@ using LightNote.Application.BusinessLogic.SlipNote.Commands;
 using LightNote.Application.Exceptions;
 using LightNote.Application.Helpers;
 using LightNote.Dal.Contracts;
+using LightNote.Domain.Models.NotebookAggregate.ValueObjects;
 using MediatR;
 
 namespace LightNote.Application.BusinessLogic.SlipNote.CommandHandlers
@@ -17,7 +18,7 @@ namespace LightNote.Application.BusinessLogic.SlipNote.CommandHandlers
 
         public async Task<OperationResult<bool>> Handle(UpdateSlipNote request, CancellationToken cancellationToken)
         {
-            var slipNote = await _unitOfWork.SlipNoteRepository.GetByID(request.Id);
+            var slipNote = await _unitOfWork.SlipNoteRepository.GetById(SlipNoteId.Create(request.Id));
             if (slipNote == null)
             {
                 return OperationResult<bool>.CreateFailure(new[] { new ResourceNotFoundException(nameof(SlipNote)) });

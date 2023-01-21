@@ -23,7 +23,8 @@ namespace LightNote.Api.Utils
                .Map(dest => dest.Id, src => src.Id.Value);
             TypeAdapterConfig<Notebook, NotebookResponse>
                .NewConfig()
-               .Map(dest => dest.Id, src => src.Id.Value);
+               .Map(dest => dest.Id, src => src.Id.Value)
+               .Map(dest => dest.Title, src => src.Title.Value);
             TypeAdapterConfig<SlipNote, SlipNoteResponse>
                .NewConfig()
                .Map(dest => dest.Id, src => src.Id.Value);

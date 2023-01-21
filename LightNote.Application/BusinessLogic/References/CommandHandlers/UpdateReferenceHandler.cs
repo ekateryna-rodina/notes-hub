@@ -3,6 +3,7 @@ using LightNote.Application.Exceptions;
 using LightNote.Application.Helpers;
 using LightNote.Dal.Contracts;
 using LightNote.Domain.Models.NotebookAggregate.Entities;
+using LightNote.Domain.Models.NotebookAggregate.ValueObjects;
 using MediatR;
 
 namespace LightNote.Application.BusinessLogic.References.CommandHandlers
@@ -19,7 +20,7 @@ namespace LightNote.Application.BusinessLogic.References.CommandHandlers
         public async Task<OperationResult<bool>> Handle(UpdateReference request, CancellationToken cancellationToken)
         {
             var tags = await _unitOfWork.TagRepository.Get(t => request.TagIds.Contains(t.Id.Value));
-            var reference = await _unitOfWork.ReferenceRepository.GetByID(request.Id);
+            var reference = await _unitOfWork.ReferenceRepository.GetById(ReferenceId.Create(request.Id));
             if (reference == null)
             {
                 return OperationResult<bool>.CreateFailure(new[] { new ResourceNotFoundException(nameof(Reference)) });

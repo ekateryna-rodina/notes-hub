@@ -1,6 +1,5 @@
-﻿using System;
-using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
+﻿using System.Linq.Expressions;
+using LightNote.Domain.Models.Common.BaseModels;
 
 namespace LightNote.Dal.Contracts
 {
@@ -21,7 +20,7 @@ namespace LightNote.Dal.Contracts
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<TEntity?> GetByID(Guid id);
+        Task<TEntity?> GetById(ValueObject id);
         /// <summary>
         /// Creates new entity
         /// </summary>

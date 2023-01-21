@@ -7,6 +7,7 @@ using LightNote.Application.Exceptions;
 using LightNote.Application.Helpers;
 using LightNote.Dal.Contracts;
 using LightNote.Domain.Models.NotebookAggregate.Entities;
+using LightNote.Domain.Models.NotebookAggregate.ValueObjects;
 using MediatR;
 
 namespace LightNote.Application.BusinessLogic.References.QueryHandlers
@@ -22,7 +23,7 @@ namespace LightNote.Application.BusinessLogic.References.QueryHandlers
 
         public async Task<OperationResult<Reference?>> Handle(GetReferenceById request, CancellationToken cancellationToken)
         {
-            var reference = await _unitOfWork.ReferenceRepository.GetByID(request.Id);
+            var reference = await _unitOfWork.ReferenceRepository.GetById(ReferenceId.Create(request.Id));
             if (reference != null && reference.UserProfileId.Value != request.UserProfileId)
             {
                 return OperationResult<Reference?>.CreateFailure(new[] { new AccessIsNotAuthorizedException() });

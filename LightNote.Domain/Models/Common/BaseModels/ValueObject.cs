@@ -1,14 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace LightNote.Domain.Models.Common.BaseModels
 {
     public abstract class ValueObject : IEquatable<ValueObject>
     {
         public abstract IEnumerable<object> GetValues();
-        public override bool Equals(object obj)
+
+        public  override bool Equals(object obj)
         {
             if (obj is null || obj.GetType() != GetType())
             {

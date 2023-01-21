@@ -6,6 +6,7 @@ using LightNote.Application.BusinessLogic.Question.Queries;
 using LightNote.Application.Exceptions;
 using LightNote.Application.Helpers;
 using LightNote.Dal.Contracts;
+using LightNote.Domain.Models.NotebookAggregate.ValueObjects;
 using MediatR;
 
 namespace LightNote.Application.BusinessLogic.Question.QueryHandlers
@@ -20,14 +21,16 @@ namespace LightNote.Application.BusinessLogic.Question.QueryHandlers
         }
         public async Task<OperationResult<IEnumerable<Domain.Models.NotebookAggregate.Entities.Question>>> Handle(GetQuestionsByNotebookId request, CancellationToken cancellationToken)
         {
-            var notebook = await _unitOfWork.NotebookRepository.GetByID(request.NotebookId);
+            var notebook = await _unitOfWork.NotebookRepository.GetById(NotebookId.Create(request.NotebookId));
             if (notebook == null)
             {
-                return OperationResult<IEnumerable<Domain.Models.NotebookAggregate.Entities.Question>>.CreateFailure(new[] { new ResourceNotFoundException(nameof(Notebook)) });
+                return OperationResult<IEnumerable<Domain.Models.NotebookAggregate.Entities.Question>>
+                    .CreateFailure(new[] { new ResourceNotFoundException(nameof(Notebook)) });
             }
             if (notebook.UserProfileId.Value != request.UserProfileId)
             {
-                return OperationResult<IEnumerable<LightNote.Domain.Models.NotebookAggregate.Entities.Question>>.CreateFailure(new[] { new AccessIsNotAuthorizedException() });
+                return OperationResult<IEnumerable<LightNote.Domain.Models.NotebookAggregate.Entities.Question>>
+                    .CreateFailure(new[] { new AccessIsNotAuthorizedException() });
             }
             var questions = await _unitOfWork.QuestionRepository.Get(q => q.NotebookId == notebook.Id);
             return OperationResult<IEnumerable<LightNote.Domain.Models.NotebookAggregate.Entities.Question>>.CreateSuccess(questions);

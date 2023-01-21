@@ -1,6 +1,7 @@
 using LightNote.Application.BusinessLogic.Notebook.Queries;
 using LightNote.Application.Helpers;
 using LightNote.Dal.Contracts;
+using LightNote.Domain.Models.UserProfileAggregate.ValueObjects;
 using MediatR;
 
 namespace LightNote.Application.BusinessLogic.Notebook.QueryHandlers
@@ -18,7 +19,8 @@ namespace LightNote.Application.BusinessLogic.Notebook.QueryHandlers
         {
             try
             {
-                var notebooks = await _unitOfWork.NotebookRepository.Get(n => n.UserProfileId.Value == request.UserProfileId);
+                var requestUserProfileId = UserProfileId.Create(request.UserProfileId);
+                var notebooks = await _unitOfWork.NotebookRepository.Get(n => n.UserProfileId == requestUserProfileId);
                 return OperationResult<IEnumerable<LightNote.Domain.Models.NotebookAggregate.Notebook>>.CreateSuccess(notebooks);
             }
             catch (Exception ex)

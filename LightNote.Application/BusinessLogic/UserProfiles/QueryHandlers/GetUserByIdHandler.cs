@@ -2,6 +2,7 @@
 using LightNote.Dal;
 using LightNote.Dal.Contracts;
 using LightNote.Domain.Models.UserProfileAggregate;
+using LightNote.Domain.Models.UserProfileAggregate.ValueObjects;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,9 +17,9 @@ namespace LightNote.Application.BusinessLogic.UserProfiles.QueryHandlers
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<UserProfile> Handle(GetUserById request, CancellationToken cancellationToken)
+        public async Task<UserProfile?> Handle(GetUserById request, CancellationToken cancellationToken)
         {
-            return await _unitOfWork.UserRepository.GetByID(request.Id);
+            return await _unitOfWork.UserRepository.GetById(UserProfileId.Create(request.Id));
         }
     }
 }

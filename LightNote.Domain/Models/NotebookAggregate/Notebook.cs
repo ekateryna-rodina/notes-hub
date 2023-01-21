@@ -24,8 +24,8 @@ namespace LightNote.Domain.Models.NotebookAggregate
         public Title Title { get; private set; }
         public UserProfileId UserProfileId { get; private set; }
         public UserProfile UserProfile { get; private set; }
-        public DateTimeOffset CreatedAt { get; private set; }
-        public DateTimeOffset? UpdatedAt { get; private set; }
+        public DateTime CreatedAt { get; private set; }
+        public DateTime UpdatedAt { get; private set; }
         public IReadOnlyCollection<PermanentNote> PermanentNotes { get { return _permanentNotes.AsReadOnly(); } }
         public IReadOnlyCollection<Insight> Insights { get { return _insights.AsReadOnly(); } }
         public IReadOnlyCollection<Reference> References { get { return _references.AsReadOnly(); } }

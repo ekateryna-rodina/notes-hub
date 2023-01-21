@@ -1,11 +1,12 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using LightNote.Dal.Contracts;
+using LightNote.Domain.Models.Common.BaseModels;
 
 namespace LightNote.Dal.Repository
 {
-    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
+    public class GenericRepository<TEntity> : IGenericRepository<TEntity>
+        where TEntity : class
     {
         internal AppDbContext _context;
         internal DbSet<TEntity> _dbSet;
@@ -43,7 +44,7 @@ namespace LightNote.Dal.Repository
             }
         }
 
-        public virtual async Task<TEntity?> GetByID(Guid id)
+        public virtual async Task<TEntity?> GetById(ValueObject id)
         {
             return await _dbSet.FindAsync(id);
         }

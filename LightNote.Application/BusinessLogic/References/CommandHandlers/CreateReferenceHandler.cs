@@ -5,6 +5,7 @@ using LightNote.Application.Helpers;
 using LightNote.Dal;
 using LightNote.Dal.Contracts;
 using LightNote.Domain.Models.NotebookAggregate.Entities;
+using LightNote.Domain.Models.NotebookAggregate.ValueObjects;
 using MediatR;
 
 namespace LightNote.Application.BusinessLogic.References.CommandHandlers
@@ -20,7 +21,7 @@ namespace LightNote.Application.BusinessLogic.References.CommandHandlers
 
         public async Task<OperationResult<Reference>> Handle(CreateReference request, CancellationToken cancellationToken)
         {
-            var notebook = await _unitOfWork.NotebookRepository.GetByID(request.NotebookId);
+            var notebook = await _unitOfWork.NotebookRepository.GetById(NotebookId.Create(request.NotebookId));
             if (notebook == null)
             {
                 return OperationResult<Reference>.CreateFailure(new[] { new ResourceNotFoundException("Noteboook is not found") });

@@ -3,6 +3,7 @@ using LightNote.Application.BusinessLogic.SlipNote.Commands;
 using LightNote.Application.Exceptions;
 using LightNote.Application.Helpers;
 using LightNote.Dal.Contracts;
+using LightNote.Domain.Models.NotebookAggregate.ValueObjects;
 using MediatR;
 
 namespace LightNote.Application.BusinessLogic.SlipNote.CommandHandlers
@@ -19,7 +20,7 @@ namespace LightNote.Application.BusinessLogic.SlipNote.CommandHandlers
         public async Task<OperationResult<bool>> Handle(DeletePermanentNote request, CancellationToken cancellationToken)
         {
 
-            var permanentNote = await _unitOfWork.PermanentNoteRepository.GetByID(request.Id);
+            var permanentNote = await _unitOfWork.PermanentNoteRepository.GetById(PermanentNoteId.Create(request.Id));
             if (permanentNote == null)
             {
                 return OperationResult<bool>.CreateFailure(new[] { new ResourceNotFoundException(nameof(PermanentNote)) });
@@ -31,6 +32,7 @@ namespace LightNote.Application.BusinessLogic.SlipNote.CommandHandlers
             try
             {
                 _unitOfWork.PermanentNoteRepository.Delete(permanentNote);
+                await _unitOfWork.SaveAsync();
             }
             catch (Exception ex)
             {

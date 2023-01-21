@@ -1,30 +1,25 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http.Json;
 using System.Text.RegularExpressions;
 using FluentAssertions;
 using LightNote.Api;
-using LightNote.Api.Contracts.Identity.Request;
-using LightNote.Api.Contracts.Identity.Response;
 using LightNote.Api.Contracts.Tag.Request;
 using LightNote.Api.Contracts.Tag.Response;
 using LightNote.IntegrationTests.Setup;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
 using Newtonsoft.Json;
-using NUnit.Framework;
 
 namespace LightNote.IntegrationTests.Controllers
 {
     using static TestUtils;
-	public class TagController : IntegrationTestBase
-	{
+    public class TagController : IntegrationTestBase
+    {
         private const string version = "1";
         private const string controllerName = "Tag";
         private readonly string BaseRoute = $"api/v{version}/{controllerName}/";
 
         [Test]
-		public async Task GetAll_WithNotTags_ReturnsOkWithEmptyCollection() {
+        public async Task GetAll_WithNotTags_ReturnsOkWithEmptyCollection()
+        {
             // Arrange
             await AuthenticateAsync();
             // Act

@@ -12,6 +12,10 @@ namespace LightNote.Dal.Config
             builder.ToTable("UserProfiles");
             builder.HasKey(up => up.Id);
             builder.Property(p => p.Id).ValueGeneratedNever().HasConversion(p => p.Value, p => UserProfileId.Create(p));
+            builder.Property(x => x.CreatedAt)
+                .HasDefaultValueSql("GETUTCDATE()");
+            builder.Property(x => x.UpdatedAt)
+                .HasComputedColumnSql("GETUTCDATE()");
         }
     }
 }

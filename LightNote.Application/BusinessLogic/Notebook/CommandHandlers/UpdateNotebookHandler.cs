@@ -6,6 +6,7 @@ using LightNote.Application.BusinessLogic.Notebook.Commands;
 using LightNote.Application.Exceptions;
 using LightNote.Application.Helpers;
 using LightNote.Dal.Contracts;
+using LightNote.Domain.Models.NotebookAggregate.ValueObjects;
 using MediatR;
 
 namespace LightNote.Application.BusinessLogic.Notebook.CommandHandlers
@@ -21,7 +22,11 @@ namespace LightNote.Application.BusinessLogic.Notebook.CommandHandlers
 
         public async Task<OperationResult<bool>> Handle(UpdateNotebook request, CancellationToken cancellationToken)
         {
-            var notebook = await _unitOfWork.NotebookRepository.GetByID(request.Id);
+            var notebook = await _unitOfWork.NotebookRepository.GetById(NotebookId.Create(request.Id));
+            if(notebook == null)
+            {
+                return OperationResult<bool>.CreateFailure(new[] { new ResourceNotFoundException(nameof(Notebook)) });
+            }
             if (notebook.UserProfileId.Value != request.UserProfileId)
             {
                 return OperationResult<bool>.CreateFailure(new[] { new AccessIsNotAuthorizedException() });

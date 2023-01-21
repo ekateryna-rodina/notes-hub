@@ -37,6 +37,11 @@ namespace LightNote.Dal.Config
                 c => c.Value,
                 c => Content.Create(c));
             builder
+              .Property(t => t.Title)
+              .HasConversion(
+              c => c.Value,
+              c => Title.Create(c));
+            builder
                 .Property(t => t.NotebookId)
                 .HasConversion(
                     id => id.Value,
