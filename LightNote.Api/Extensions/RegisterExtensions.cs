@@ -3,9 +3,9 @@ using LightNote.Api.Registrars;
 
 namespace LightNote.Api.Extensions
 {
-	public static class RegistrarExtensions
-	{
-        public static void RegisterServices(this WebApplicationBuilder builder, Type scanningType)
+    public static class RegistrarExtensions
+    {
+        public static void RegisterServices(this WebApplicationBuilder builder, Type scanningType, IConfiguration configuration)
         {
             var registrars = GetRegistrars<IWebAppBuilderRegistrar>(scanningType);
 
@@ -24,7 +24,7 @@ namespace LightNote.Api.Extensions
             }
         }
 
-        private static IEnumerable<T> GetRegistrars<T>(Type scanningType) where T: IRegistrar
+        private static IEnumerable<T> GetRegistrars<T>(Type scanningType) where T : IRegistrar
         {
             return scanningType.Assembly.GetTypes()
                 .Where(t => t.IsAssignableTo(typeof(T)) && !t.IsAbstract && !t.IsInterface)

@@ -1,108 +1,98 @@
-﻿using System.Security.Claims;
-using System.Text;
-using LightNote.Application.BusinessLogic.Identity.Commands;
-using LightNote.Dal;
+﻿using LightNote.Application.BusinessLogic.Identity.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
-using LightNote.Domain.Models.User;
-using LightNote.Application.Options;
-using Microsoft.Extensions.Options;
 using LightNote.Dal.Contracts;
 using LightNote.Application.Helpers;
 using LightNote.Application.Exceptions;
-using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore.Storage;
+using LightNote.Application.Contracts;
+using LightNote.Application.Models;
+using LightNote.Domain.Models.UserProfileAggregate;
 
 namespace LightNote.Application.BusinessLogic.Identity.CommandHandlers
 {
-    public class RegisterIdentityHandler : IRequestHandler<RegisterIdentity, OperationResult<string>>
-	{  
-        private readonly IOptions<JwtSettings> _jwtOptions;
+    public class RegisterIdentityHandler : IRequestHandler<RegisterIdentity, OperationResult<AuthenticatedResponse>>
+    {
+        private readonly IAuthenticator _autenticator;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IUnitOfWork _unitOfWork;
-		public RegisterIdentityHandler(UserManager<IdentityUser> userManager, IOptions<JwtSettings> jwtOptions, IUnitOfWork unitOfWork)
-		{
+        private List<Exception> _exceptions = new();
+        private IdentityUser _newIdentity = new();
+        private Guid _userProfileId = default!;
+        public RegisterIdentityHandler(UserManager<IdentityUser> userManager,
+        IUnitOfWork unitOfWork,
+        IAuthenticator autenticator)
+        {
             _userManager = userManager;
-            _jwtOptions = jwtOptions;
             _unitOfWork = unitOfWork;
-		}
-        private string GenerateJwtToken(string userId, string email) {
-            var signingKey = _jwtOptions.Value.SigningKey;
-            var issuer = _jwtOptions.Value.Issuer;
-            var audience = _jwtOptions.Value.Audiences[0];
-            // Set JWT claims
-            var claims = new List<Claim>
-    {
-        new Claim(JwtRegisteredClaimNames.Sub, userId),
-        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-        new Claim(ClaimTypes.Email, email),
-        
-    };
-
-            // Set JWT security key
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey));
-
-            // Set JWT signing credentials
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            // Set JWT expiration
-            var expiration = DateTime.UtcNow.AddDays(7);
-
-            // Create JWT token
-            var token = new JwtSecurityToken(
-                issuer,
-                audience,
-                claims: claims,
-                expires: expiration,
-                signingCredentials: creds
-            );
-
-            // Return JWT as string
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            _autenticator = autenticator;
         }
-        public async Task<OperationResult<string>> Handle(RegisterIdentity request, CancellationToken cancellationToken)
+        private async Task ValidateIfUserExists(RegisterIdentity request)
         {
             var existingIdentity = await _userManager.FindByEmailAsync(request.Email);
-            if (existingIdentity != null) {
-                var operationResult = OperationResult<string>.CreateFailure(new []{ new ResourceAlreadyExistsException("User exists")});
-                return operationResult;
+            if (existingIdentity != null)
+            {
+                _exceptions.Add(new ResourceAlreadyExistsException("User exists"));
             }
-            var newIdentity = new IdentityUser {
+        }
+        private async Task<(IdentityUser, Guid)> CreateIdentityAndUserProfile(RegisterIdentity request, CancellationToken cancellationToken)
+        {
+            var newIdentity = new IdentityUser
+            {
                 Email = request.Email,
                 UserName = request.Email
             };
-
             // Create transaction
-            using (var transaction = _unitOfWork.BeginTransaction())
-            {                 
-                try
+            using var transaction = _unitOfWork.BeginTransaction();
+            try
+            {
+                // create identity
+                var result = await _userManager.CreateAsync(newIdentity, request.Password);
+                if (!result.Succeeded)
                 {
-                    // create identity
-                    var result = await _userManager.CreateAsync(newIdentity, request.Password);
-                    if (!result.Succeeded) {
-                        await transaction.RollbackAsync(cancellationToken);
-                        var operationResult = OperationResult<string>.CreateFailure(result.Errors.Select(e => new Exception(e.Description)).ToArray());
-                        return operationResult;
-                    }
-                    // create user profile
-                    var basicInfo = BasicUserInfo.CreateBasicUserInfo(request.FirstName, request.LastName, request.PhotoUrl, request.Country, request.City);
-                    var userProfile = UserProfile.CreateUserProfile(newIdentity.Id, basicInfo);
-                    // generate token
-                    var token = GenerateJwtToken(newIdentity.Id, newIdentity.Email);
-
-                    _unitOfWork.UserRepository.Insert(userProfile);
-                    _unitOfWork.Save();
-
-                    transaction.Commit();
-                    return OperationResult<string>.CreateSuccess(token);
+                    await transaction.RollbackAsync(cancellationToken);
+                    result.Errors.ToList().ForEach(e => _exceptions.Add(new Exception(e.Description)));
+                    return (newIdentity, _userProfileId);
                 }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    var operationResult = OperationResult<string>.CreateFailure(new[] { new ResourceAlreadyExistsException(ex.Message) });
-                    return operationResult;
-                }
+
+                // create user profile
+                _userProfileId = await CreateUserProfileAsync(newIdentity, request, cancellationToken);
+                transaction.Commit();
+                return (newIdentity, _userProfileId);
+
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                _exceptions.Add(ex);
+                return (newIdentity, _userProfileId);
+            }
+        }
+        public async Task<OperationResult<AuthenticatedResponse>> Handle(RegisterIdentity request, CancellationToken cancellationToken)
+        {
+            await ValidateIfUserExists(request);
+            (_newIdentity, _userProfileId) = await CreateIdentityAndUserProfile(request, cancellationToken);
+            if (_exceptions.Any())
+            {
+                return OperationResult<AuthenticatedResponse>.CreateFailure(_exceptions);
+            }
+            // generate token
+            var tokens = await _autenticator.Authenticate(_newIdentity.Id, _userProfileId, _newIdentity.Email!);
+            return OperationResult<AuthenticatedResponse>.CreateSuccess(tokens);
+        }
+
+        private async Task<Guid> CreateUserProfileAsync(IdentityUser identity, RegisterIdentity request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var userProfile = UserProfile.CreateUserProfile(identity.Id, request.FirstName, request.LastName, request.PhotoUrl, request.Country, request.City);
+                _unitOfWork.UserRepository.Insert(userProfile);
+                await _unitOfWork.SaveAsync();
+                return userProfile.Id.Value;
+            }
+            catch(Exception ex)
+            {
+                throw;
             }
         }
     }

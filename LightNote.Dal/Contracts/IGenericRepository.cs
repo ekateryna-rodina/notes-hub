@@ -1,11 +1,10 @@
-﻿using System;
-using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
+﻿using System.Linq.Expressions;
+using LightNote.Domain.Models.Common.BaseModels;
 
 namespace LightNote.Dal.Contracts
 {
-	public interface IGenericRepository<TEntity>
-	{
+    public interface IGenericRepository<TEntity>
+    {
         /// <summary>
         /// Returns entities
         /// </summary>
@@ -21,12 +20,17 @@ namespace LightNote.Dal.Contracts
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        TEntity GetByID(Guid id);
+        Task<TEntity?> GetById(ValueObject id);
         /// <summary>
         /// Creates new entity
         /// </summary>
         /// <param name="entity"></param>
         void Insert(TEntity entity);
+        /// <summary>
+        /// Creates a rangeof new entities
+        /// </summary>
+        /// <param name="entities"></param>
+        void InsertMany(IEnumerable<TEntity> entities);
         /// <summary>
         /// Removes an entity
         /// </summary>

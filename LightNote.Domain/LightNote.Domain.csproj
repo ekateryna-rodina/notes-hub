@@ -9,11 +9,28 @@
   <ItemGroup>
     <None Remove="Models\" />
     <None Remove="Models\User\" />
-    <None Remove="Models\Note\" />
+    <None Remove="Docs\" />
+    <None Remove="Docs\DomainModels\" />
+    <None Remove="Models\NotebookAggregate\" />
+    <None Remove="Models\Common\" />
+    <None Remove="Models\Common\BaseModels\" />
+    <None Remove="Models\NotebookAggregate\Entities\" />
+    <None Remove="Models\NotebookAggregate\ValueObjects\" />
+    <None Remove="Models\Common\ValueObjects\" />
+    <None Remove="Exceptions\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
-    <Folder Include="Models\User\" />
-    <Folder Include="Models\Note\" />
+    <Folder Include="Models\UserProfileAggregate\" />
+    <Folder Include="Docs\" />
+    <Folder Include="Docs\DomainModels\" />
+    <Folder Include="Models\NotebookAggregate\" />
+    <Folder Include="Models\Common\" />
+    <Folder Include="Models\Common\BaseModels\" />
+    <Folder Include="Models\NotebookAggregate\Entities\" />
+    <Folder Include="Models\NotebookAggregate\ValueObjects\" />
+    <Folder Include="Models\Common\ValueObjects\" />
+    <Folder Include="Exceptions\" />
+    <Folder Include="Models\UserProfileAggregate\ValueObjects\" />
   </ItemGroup>
 </Project>

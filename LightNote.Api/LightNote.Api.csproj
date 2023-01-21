@@ -9,7 +9,9 @@
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' " />
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'http' " />
   <ItemGroup>
+    <PackageReference Include="Mapster" Version="7.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0" />
@@ -21,9 +23,9 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
-    <PackageReference Include="AutoMapper" Version="12.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.0" />
+    <PackageReference Include="Mapster.Immutable" Version="1.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,28 +41,58 @@
     <None Remove="AutoMapper.Extensions.Microsoft.DependencyInjection" />
     <None Remove="Contracts\" />
     <None Remove="Contracts\User\" />
-    <None Remove="Contracts\User\Request\" />
     <None Remove="Contracts\User\Response\" />
     <None Remove="AutoMapper" />
     <None Remove="Microsoft.AspNetCore.Authentication.JwtBearer" />
     <None Remove="Options\" />
     <None Remove="Contracts\Identity\" />
-    <None Remove="MappingProfiles\" />
     <None Remove="Contracts\Identity\Request\" />
     <None Remove="Contracts\Identity\Response\" />
+    <None Remove="Filters\" />
+    <None Remove="Contracts\Common\" />
+    <None Remove="Contracts\Tag\" />
+    <None Remove="Contracts\Tag\Request\" />
+    <None Remove="Contracts\Tag\Response\" />
+    <None Remove="Utils\" />
+    <None Remove="Mapster.Immutable" />
+    <None Remove="CustomValidators\" />
+    <None Remove="Microsoft.VisualStudio.Web.CodeGeneration.Design" />
+    <None Remove="Contracts\Reference\" />
+    <None Remove="Contracts\Reference\Request\" />
+    <None Remove="Contracts\Reference\Response\" />
+    <None Remove="Contracts\Notebook\" />
+    <None Remove="Contracts\Notebook\Request\" />
+    <None Remove="Contracts\Notebook\Response\" />
+    <None Remove="Contracts\Slipnote\" />
+    <None Remove="Contracts\Slipnote\Request\" />
+    <None Remove="Contracts\Slipnote\Response\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\" />
     <Folder Include="Extensions\" />
     <Folder Include="Contracts\" />
-    <Folder Include="Contracts\User\" />
-    <Folder Include="Contracts\User\Request\" />
-    <Folder Include="Contracts\User\Response\" />
+    <Folder Include="Contracts\UserProfile\" />
+    <Folder Include="Contracts\UserProfile\Response\" />
     <Folder Include="Options\" />
     <Folder Include="Contracts\Identity\" />
-    <Folder Include="MappingProfiles\" />
     <Folder Include="Contracts\Identity\Request\" />
     <Folder Include="Contracts\Identity\Response\" />
+    <Folder Include="Filters\" />
+    <Folder Include="Contracts\Common\" />
+    <Folder Include="Contracts\Tag\" />
+    <Folder Include="Contracts\Tag\Request\" />
+    <Folder Include="Contracts\Tag\Response\" />
+    <Folder Include="Utils\" />
+    <Folder Include="CustomValidators\" />
+    <Folder Include="Contracts\Reference\" />
+    <Folder Include="Contracts\Reference\Request\" />
+    <Folder Include="Contracts\Reference\Response\" />
+    <Folder Include="Contracts\Notebook\" />
+    <Folder Include="Contracts\Notebook\Request\" />
+    <Folder Include="Contracts\Notebook\Response\" />
+    <Folder Include="Contracts\Slipnote\" />
+    <Folder Include="Contracts\Slipnote\Request\" />
+    <Folder Include="Contracts\Slipnote\Response\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LightNote.Dal\LightNote.Dal.csproj">
@@ -71,6 +103,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-     <InternalsVisibleTo Include="LightNote.Tests" />
+     <InternalsVisibleTo Include="LightNote.UnitTests" />
+     <InternalsVisibleTo Include="LightNote.IntegrationTests" />
 </ItemGroup>
 </Project>

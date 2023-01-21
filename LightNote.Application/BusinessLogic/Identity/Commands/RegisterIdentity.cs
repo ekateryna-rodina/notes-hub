@@ -1,10 +1,11 @@
 ﻿using LightNote.Application.Helpers;
+using LightNote.Application.Models;
 using MediatR;
 
 namespace LightNote.Application.BusinessLogic.Identity.Commands
 {
-    public class RegisterIdentity : IRequest<OperationResult<string>>
-	{
+    public class RegisterIdentity : IRequest<OperationResult<AuthenticatedResponse>>
+    {
         public string FirstName { get; set; } = default!;
         public string LastName { get; set; } = default!;
         public string Email { get; set; } = default!;

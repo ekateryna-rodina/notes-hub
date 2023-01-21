@@ -16,7 +16,6 @@
     <None Remove="Tag\CommandHandlers\" />
     <None Remove="Options\" />
     <None Remove="BusinessLogic\" />
-    <None Remove="BusinessLogic\Notes\" />
     <None Remove="BusinessLogic\Identity\" />
     <None Remove="BusinessLogic\References\" />
     <None Remove="BusinessLogic\Tags\" />
@@ -24,9 +23,10 @@
     <None Remove="System.IdentityModel.Tokens.Jwt" />
     <None Remove="Helpers\" />
     <None Remove="Exceptions\" />
+    <None Remove="Services\" />
+    <None Remove="Contracts\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0" />
     <PackageReference Include="MediatR" Version="11.1.0" />
     <PackageReference Include="AutoMapper" Version="12.0.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.25.1" />
@@ -34,13 +34,14 @@
   <ItemGroup>
     <Folder Include="Options\" />
     <Folder Include="BusinessLogic\" />
-    <Folder Include="BusinessLogic\Notes\" />
     <Folder Include="BusinessLogic\Identity\" />
     <Folder Include="BusinessLogic\References\" />
     <Folder Include="BusinessLogic\Tags\" />
     <Folder Include="BusinessLogic\Users\" />
     <Folder Include="Helpers\" />
     <Folder Include="Exceptions\" />
+    <Folder Include="Services\" />
+    <Folder Include="Contracts\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LightNote.Domain\LightNote.Domain.csproj" />

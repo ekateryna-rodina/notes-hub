@@ -3,8 +3,8 @@ using System;
 using LightNote.Dal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -17,192 +17,350 @@ namespace LightNote.Dal.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.0")
-                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+                .HasAnnotation("ProductVersion", "7.0.1")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("LightNote.Domain.Models.Note.Comment", b =>
+            modelBuilder.Entity("LightNote.Domain.Models.NotebookAggregate.Entities.Insight", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CommentId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("NoteId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Text")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("UserProfileId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CommentId");
-
-                    b.HasIndex("NoteId");
-
-                    b.HasIndex("UserProfileId");
-
-                    b.ToTable("Comments");
-                });
-
-            modelBuilder.Entity("LightNote.Domain.Models.Note.Interaction", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CommentId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("InteractionType")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("NoteId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("UserProfileId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CommentId");
-
-                    b.HasIndex("NoteId");
-
-                    b.HasIndex("UserProfileId");
-
-                    b.ToTable("Interactions");
-                });
-
-            modelBuilder.Entity("LightNote.Domain.Models.Note.Note", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Content")
-                        .HasColumnType("text");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
 
-                    b.Property<bool>("IsPublic")
-                        .HasColumnType("boolean");
-
-                    b.Property<Guid>("ReferenceId")
-                        .HasColumnType("uuid");
+                    b.Property<Guid>("NotebookId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Title")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("UserProfileId")
-                        .HasColumnType("uuid");
+                    b.Property<Guid>("UserProfileId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("NotebookId");
+
+                    b.HasIndex("UserProfileId");
+
+                    b.ToTable("Insights", (string)null);
+                });
+
+            modelBuilder.Entity("LightNote.Domain.Models.NotebookAggregate.Entities.InsightPermanentNote", b =>
+                {
+                    b.Property<Guid>("InsightId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PermanentNoteId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("InsightId", "PermanentNoteId");
+
+                    b.HasIndex("PermanentNoteId");
+
+                    b.ToTable("InsightPermanentNotes", (string)null);
+                });
+
+            modelBuilder.Entity("LightNote.Domain.Models.NotebookAggregate.Entities.PermanentNote", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("NotebookId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("UserProfileId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NotebookId");
+
+                    b.HasIndex("UserProfileId");
+
+                    b.ToTable("PermanentNotes", (string)null);
+                });
+
+            modelBuilder.Entity("LightNote.Domain.Models.NotebookAggregate.Entities.Question", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid?>("InsightId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("NotebookId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("PermanentNoteId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("UserProfileId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InsightId");
+
+                    b.HasIndex("NotebookId");
+
+                    b.HasIndex("PermanentNoteId");
+
+                    b.HasIndex("UserProfileId");
+
+                    b.ToTable("Questions", (string)null);
+                });
+
+            modelBuilder.Entity("LightNote.Domain.Models.NotebookAggregate.Entities.QuestionReference", b =>
+                {
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ReferenceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("QuestionId", "ReferenceId");
 
                     b.HasIndex("ReferenceId");
 
-                    b.HasIndex("UserId");
+                    b.ToTable("QuestionReferences", (string)null);
+                });
+
+            modelBuilder.Entity("LightNote.Domain.Models.NotebookAggregate.Entities.Reference", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<bool>("IsLink")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<Guid>("NotebookId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("UserProfileId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NotebookId");
 
                     b.HasIndex("UserProfileId");
 
-                    b.ToTable("Notes");
+                    b.ToTable("References", (string)null);
                 });
 
-            modelBuilder.Entity("LightNote.Domain.Models.Note.Reference", b =>
+            modelBuilder.Entity("LightNote.Domain.Models.NotebookAggregate.Entities.ReferenceTag", b =>
+                {
+                    b.Property<Guid>("ReferenceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TagId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ReferenceId", "TagId");
+
+                    b.HasIndex("TagId");
+
+                    b.ToTable("ReferenceTags", (string)null);
+                });
+
+            modelBuilder.Entity("LightNote.Domain.Models.NotebookAggregate.Entities.SlipNote", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("NotebookId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("PermanentNoteId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ReferenceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("UserProfileId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NotebookId");
+
+                    b.HasIndex("PermanentNoteId");
+
+                    b.HasIndex("ReferenceId");
+
+                    b.HasIndex("UserProfileId");
+
+                    b.ToTable("SlipNotes", (string)null);
+                });
+
+            modelBuilder.Entity("LightNote.Domain.Models.NotebookAggregate.Entities.Tag", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getutcdate()");
 
                     b.Property<string>("Name")
-                        .HasColumnType("text");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2")
+                        .HasComputedColumnSql("getutcdate()");
 
                     b.HasKey("Id");
 
-                    b.ToTable("References");
+                    b.ToTable("Tags", (string)null);
                 });
 
-            modelBuilder.Entity("LightNote.Domain.Models.Note.Tag", b =>
+            modelBuilder.Entity("LightNote.Domain.Models.NotebookAggregate.Notebook", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Tags");
-                });
-
-            modelBuilder.Entity("LightNote.Domain.Models.User.UserProfile", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getutcdate()");
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2")
+                        .HasComputedColumnSql("getutcdate()");
+
+                    b.Property<Guid>("UserProfileId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserProfileId");
+
+                    b.ToTable("Notebooks", (string)null);
+                });
+
+            modelBuilder.Entity("LightNote.Domain.Models.UserProfileAggregate.UserProfile", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Country")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("IdentityId")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhotoUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2")
+                        .HasComputedColumnSql("GETUTCDATE()");
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserProfiles");
+                    b.ToTable("UserProfiles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("NormalizedName")
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
-                        .HasDatabaseName("RoleNameIndex");
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
                 });
@@ -211,19 +369,19 @@ namespace LightNote.Dal.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RoleId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -235,54 +393,54 @@ namespace LightNote.Dal.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("PasswordHash")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<string>("SecurityStamp")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
@@ -291,7 +449,8 @@ namespace LightNote.Dal.Migrations
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasDatabaseName("UserNameIndex");
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -300,19 +459,19 @@ namespace LightNote.Dal.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -324,17 +483,17 @@ namespace LightNote.Dal.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -346,10 +505,10 @@ namespace LightNote.Dal.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("RoleId")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -361,171 +520,211 @@ namespace LightNote.Dal.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("NoteNote", b =>
+            modelBuilder.Entity("LightNote.Domain.Models.NotebookAggregate.Entities.Insight", b =>
                 {
-                    b.Property<Guid>("LinksId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("NoteId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("LinksId", "NoteId");
-
-                    b.HasIndex("NoteId");
-
-                    b.ToTable("NoteNote");
-                });
-
-            modelBuilder.Entity("NoteTag", b =>
-                {
-                    b.Property<Guid>("NotesId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("TagsId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("NotesId", "TagsId");
-
-                    b.HasIndex("TagsId");
-
-                    b.ToTable("NoteTag");
-                });
-
-            modelBuilder.Entity("LightNote.Domain.Models.Note.Comment", b =>
-                {
-                    b.HasOne("LightNote.Domain.Models.Note.Comment", "Commented")
-                        .WithMany("Comments")
-                        .HasForeignKey("CommentId");
-
-                    b.HasOne("LightNote.Domain.Models.Note.Note", "Note")
-                        .WithMany("Comments")
-                        .HasForeignKey("NoteId")
+                    b.HasOne("LightNote.Domain.Models.NotebookAggregate.Notebook", "Notebook")
+                        .WithMany("Insights")
+                        .HasForeignKey("NotebookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LightNote.Domain.Models.User.UserProfile", "UserProfile")
-                        .WithMany("Comments")
+                    b.HasOne("LightNote.Domain.Models.UserProfileAggregate.UserProfile", "UserProfile")
+                        .WithMany("Insights")
                         .HasForeignKey("UserProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Commented");
-
-                    b.Navigation("Note");
+                    b.Navigation("Notebook");
 
                     b.Navigation("UserProfile");
                 });
 
-            modelBuilder.Entity("LightNote.Domain.Models.Note.Interaction", b =>
+            modelBuilder.Entity("LightNote.Domain.Models.NotebookAggregate.Entities.InsightPermanentNote", b =>
                 {
-                    b.HasOne("LightNote.Domain.Models.Note.Comment", "Comment")
-                        .WithMany("Interactions")
-                        .HasForeignKey("CommentId");
+                    b.HasOne("LightNote.Domain.Models.NotebookAggregate.Entities.Insight", "Insight")
+                        .WithMany("BasedOnPermanentNotes")
+                        .HasForeignKey("InsightId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
-                    b.HasOne("LightNote.Domain.Models.Note.Note", "Note")
-                        .WithMany("Interactions")
-                        .HasForeignKey("NoteId")
+                    b.HasOne("LightNote.Domain.Models.NotebookAggregate.Entities.PermanentNote", "PermanentNote")
+                        .WithMany("Insights")
+                        .HasForeignKey("PermanentNoteId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Insight");
+
+                    b.Navigation("PermanentNote");
+                });
+
+            modelBuilder.Entity("LightNote.Domain.Models.NotebookAggregate.Entities.PermanentNote", b =>
+                {
+                    b.HasOne("LightNote.Domain.Models.NotebookAggregate.Notebook", "Notebook")
+                        .WithMany("PermanentNotes")
+                        .HasForeignKey("NotebookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LightNote.Domain.Models.User.UserProfile", "UserProfile")
-                        .WithMany()
+                    b.HasOne("LightNote.Domain.Models.UserProfileAggregate.UserProfile", "UserProfile")
+                        .WithMany("PermanentNotes")
                         .HasForeignKey("UserProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Comment");
-
-                    b.Navigation("Note");
+                    b.Navigation("Notebook");
 
                     b.Navigation("UserProfile");
                 });
 
-            modelBuilder.Entity("LightNote.Domain.Models.Note.Note", b =>
+            modelBuilder.Entity("LightNote.Domain.Models.NotebookAggregate.Entities.Question", b =>
                 {
-                    b.HasOne("LightNote.Domain.Models.Note.Reference", "Reference")
-                        .WithMany("Notes")
+                    b.HasOne("LightNote.Domain.Models.NotebookAggregate.Entities.Insight", "Insight")
+                        .WithMany("Questions")
+                        .HasForeignKey("InsightId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("LightNote.Domain.Models.NotebookAggregate.Notebook", "Notebook")
+                        .WithMany("Questions")
+                        .HasForeignKey("NotebookId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("LightNote.Domain.Models.NotebookAggregate.Entities.PermanentNote", "PermanentNote")
+                        .WithMany("Questions")
+                        .HasForeignKey("PermanentNoteId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("LightNote.Domain.Models.UserProfileAggregate.UserProfile", "UserProfile")
+                        .WithMany("Questions")
+                        .HasForeignKey("UserProfileId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Insight");
+
+                    b.Navigation("Notebook");
+
+                    b.Navigation("PermanentNote");
+
+                    b.Navigation("UserProfile");
+                });
+
+            modelBuilder.Entity("LightNote.Domain.Models.NotebookAggregate.Entities.QuestionReference", b =>
+                {
+                    b.HasOne("LightNote.Domain.Models.NotebookAggregate.Entities.Question", "Question")
+                        .WithMany("ReferencesFound")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("LightNote.Domain.Models.NotebookAggregate.Entities.Reference", "Reference")
+                        .WithMany("RelatedQuestions")
                         .HasForeignKey("ReferenceId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Question");
+
+                    b.Navigation("Reference");
+                });
+
+            modelBuilder.Entity("LightNote.Domain.Models.NotebookAggregate.Entities.Reference", b =>
+                {
+                    b.HasOne("LightNote.Domain.Models.NotebookAggregate.Notebook", "Notebook")
+                        .WithMany("References")
+                        .HasForeignKey("NotebookId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("LightNote.Domain.Models.UserProfileAggregate.UserProfile", "UserProfile")
+                        .WithMany("References")
+                        .HasForeignKey("UserProfileId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Notebook");
+
+                    b.Navigation("UserProfile");
+                });
+
+            modelBuilder.Entity("LightNote.Domain.Models.NotebookAggregate.Entities.ReferenceTag", b =>
+                {
+                    b.HasOne("LightNote.Domain.Models.NotebookAggregate.Entities.Reference", "Reference")
+                        .WithMany("TagsAttached")
+                        .HasForeignKey("ReferenceId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("LightNote.Domain.Models.NotebookAggregate.Entities.Tag", "Tag")
+                        .WithMany("ReferencesAttached")
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Reference");
+
+                    b.Navigation("Tag");
+                });
+
+            modelBuilder.Entity("LightNote.Domain.Models.NotebookAggregate.Entities.SlipNote", b =>
+                {
+                    b.HasOne("LightNote.Domain.Models.NotebookAggregate.Notebook", "Notebook")
+                        .WithMany("SlipNotes")
+                        .HasForeignKey("NotebookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LightNote.Domain.Models.User.UserProfile", "UserProfile")
-                        .WithMany("Notes")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("LightNote.Domain.Models.NotebookAggregate.Entities.PermanentNote", "PermanentNote")
+                        .WithMany("SlipNotes")
+                        .HasForeignKey("PermanentNoteId");
+
+                    b.HasOne("LightNote.Domain.Models.NotebookAggregate.Entities.Reference", "Reference")
+                        .WithMany("SlipNotes")
+                        .HasForeignKey("ReferenceId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("LightNote.Domain.Models.User.UserProfile", null)
-                        .WithMany("Interactions")
-                        .HasForeignKey("UserProfileId");
+                    b.HasOne("LightNote.Domain.Models.UserProfileAggregate.UserProfile", "UserProfile")
+                        .WithMany("SlipNotes")
+                        .HasForeignKey("UserProfileId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Notebook");
+
+                    b.Navigation("PermanentNote");
 
                     b.Navigation("Reference");
 
                     b.Navigation("UserProfile");
                 });
 
-            modelBuilder.Entity("LightNote.Domain.Models.User.UserProfile", b =>
+            modelBuilder.Entity("LightNote.Domain.Models.NotebookAggregate.Notebook", b =>
                 {
-                    b.OwnsOne("LightNote.Domain.Models.User.BasicUserInfo", "BasicUserInfo", b1 =>
-                        {
-                            b1.Property<Guid>("UserProfileId")
-                                .HasColumnType("uuid");
+                    b.HasOne("LightNote.Domain.Models.UserProfileAggregate.UserProfile", "UserProfile")
+                        .WithMany("Notebooks")
+                        .HasForeignKey("UserProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                            b1.Property<string>("City")
-                                .HasColumnType("text");
-
-                            b1.Property<string>("Country")
-                                .HasColumnType("text");
-
-                            b1.Property<string>("FirstName")
-                                .HasColumnType("text");
-
-                            b1.Property<string>("LastName")
-                                .HasColumnType("text");
-
-                            b1.Property<string>("PhotoUrl")
-                                .HasColumnType("text");
-
-                            b1.HasKey("UserProfileId");
-
-                            b1.ToTable("UserProfiles");
-
-                            b1.WithOwner()
-                                .HasForeignKey("UserProfileId");
-                        });
-
-                    b.OwnsOne("LightNote.Domain.Models.User.Subscription", "Subscription", b1 =>
-                        {
-                            b1.Property<Guid>("UserProfileId")
-                                .HasColumnType("uuid");
-
-                            b1.HasKey("UserProfileId");
-
-                            b1.ToTable("UserProfiles");
-
-                            b1.WithOwner()
-                                .HasForeignKey("UserProfileId");
-                        });
-
-                    b.Navigation("BasicUserInfo");
-
-                    b.Navigation("Subscription");
+                    b.Navigation("UserProfile");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -579,62 +778,67 @@ namespace LightNote.Dal.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("NoteNote", b =>
+            modelBuilder.Entity("LightNote.Domain.Models.NotebookAggregate.Entities.Insight", b =>
                 {
-                    b.HasOne("LightNote.Domain.Models.Note.Note", null)
-                        .WithMany()
-                        .HasForeignKey("LinksId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("BasedOnPermanentNotes");
 
-                    b.HasOne("LightNote.Domain.Models.Note.Note", null)
-                        .WithMany()
-                        .HasForeignKey("NoteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Questions");
                 });
 
-            modelBuilder.Entity("NoteTag", b =>
+            modelBuilder.Entity("LightNote.Domain.Models.NotebookAggregate.Entities.PermanentNote", b =>
                 {
-                    b.HasOne("LightNote.Domain.Models.Note.Note", null)
-                        .WithMany()
-                        .HasForeignKey("NotesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Insights");
 
-                    b.HasOne("LightNote.Domain.Models.Note.Tag", null)
-                        .WithMany()
-                        .HasForeignKey("TagsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Questions");
+
+                    b.Navigation("SlipNotes");
                 });
 
-            modelBuilder.Entity("LightNote.Domain.Models.Note.Comment", b =>
+            modelBuilder.Entity("LightNote.Domain.Models.NotebookAggregate.Entities.Question", b =>
                 {
-                    b.Navigation("Comments");
-
-                    b.Navigation("Interactions");
+                    b.Navigation("ReferencesFound");
                 });
 
-            modelBuilder.Entity("LightNote.Domain.Models.Note.Note", b =>
+            modelBuilder.Entity("LightNote.Domain.Models.NotebookAggregate.Entities.Reference", b =>
                 {
-                    b.Navigation("Comments");
+                    b.Navigation("RelatedQuestions");
 
-                    b.Navigation("Interactions");
+                    b.Navigation("SlipNotes");
+
+                    b.Navigation("TagsAttached");
                 });
 
-            modelBuilder.Entity("LightNote.Domain.Models.Note.Reference", b =>
+            modelBuilder.Entity("LightNote.Domain.Models.NotebookAggregate.Entities.Tag", b =>
                 {
-                    b.Navigation("Notes");
+                    b.Navigation("ReferencesAttached");
                 });
 
-            modelBuilder.Entity("LightNote.Domain.Models.User.UserProfile", b =>
+            modelBuilder.Entity("LightNote.Domain.Models.NotebookAggregate.Notebook", b =>
                 {
-                    b.Navigation("Comments");
+                    b.Navigation("Insights");
 
-                    b.Navigation("Interactions");
+                    b.Navigation("PermanentNotes");
 
-                    b.Navigation("Notes");
+                    b.Navigation("Questions");
+
+                    b.Navigation("References");
+
+                    b.Navigation("SlipNotes");
+                });
+
+            modelBuilder.Entity("LightNote.Domain.Models.UserProfileAggregate.UserProfile", b =>
+                {
+                    b.Navigation("Insights");
+
+                    b.Navigation("Notebooks");
+
+                    b.Navigation("PermanentNotes");
+
+                    b.Navigation("Questions");
+
+                    b.Navigation("References");
+
+                    b.Navigation("SlipNotes");
                 });
 #pragma warning restore 612, 618
         }
